@@ -1780,7 +1780,9 @@
         	
         	global $wpdb;
         	$table_name = $wpdb->prefix."booking_package_calendarAccount";
-			$rows = $wpdb->get_results("SELECT ".$columns." FROM `".$table_name."`;", ARRAY_A);
+            	// HACK 2.2: MODIFICA QUERY
+            	$current_user_id = get_current_user_id();
+            	$rows = $wpdb->get_results("SELECT $columns FROM $table_name WHERE created_by = $current_user_id;", ARRAY_A);
 			foreach ((array) $rows as $key => $row) {
 				
 				if (isset($row['icalToken']) && intval($row['icalToken']) == 0) {
