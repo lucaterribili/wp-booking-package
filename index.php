@@ -1,14 +1,14 @@
 <?php
 /*
-Plugin Name: Booking Package SAASPROJECT
-Plugin URI:  https://saasproject.net/plans/
+Plugin Name: WP Booking Package
+Plugin URI:  https://github.com/lucaterribili/wp-booking-package
 Description: Booking Package is a high-performance booking calendar system that anyone can easily use.
 Version:     1.5.75
-Author:      SAASPROJECT Booking Package
-Author URI:  https://saasproject.net/
+Author:      Luca Terribili
+Author URI:  https://lucaterribili.it/
 License:     GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: booking-package
+Text Domain: wp-booking-package
 Domain Path: /languages
 */
 	
@@ -360,7 +360,7 @@ Domain Path: /languages
 				
 			}
 			
-			$this->createFirstCalendar();
+			//$this->createFirstCalendar();
 			
 		}
 		
