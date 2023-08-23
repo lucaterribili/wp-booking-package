@@ -925,10 +925,9 @@
         calendarPanel.appendChild(topPanel);
         
         object.create(calendarPanel, regularHolidays, month, 1, year, '', function(callbackOnDay){
-			
 			object._console.log(callbackOnDay);
-			var key = callbackOnDay.key;
-			var holiday = regularHolidays.calendar[key];
+			let key = callbackOnDay.key,
+                holiday = regularHolidays.calendar[key];
 			if (parseInt(holiday.status) == 1) {
 				
 				callbackOnDay.eventPanel.classList.add("selectedDayPanel");

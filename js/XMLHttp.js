@@ -10,7 +10,7 @@
 		this._error = false;
 		this._count = 0;
 		
-		var object = this;
+		const object = this;
 		object.request(url, data, callback, responseCallback);
 		
 		
@@ -136,10 +136,10 @@
 	
 	Booking_App_XMLHttp.prototype.request = function(url, data, callback, responseCallback){
 		
-		var object = this;
+		const object = this;
 		try {
 			
-			var xhr = new XMLHttpRequest();
+			const xhr = new XMLHttpRequest();
 			xhr.onreadystatechange = function(){
 				
 				switch (xhr.readyState) {
@@ -185,10 +185,10 @@
 				}
 				
 				//var bool = object.isJSON(xhr.responseText);
-				var bool = true;
+				let bool = true;
 				if (xhr.status == 200 || xhr.status == 304) {
 					
-					var responseJson = JSON.parse(xhr.responseText);
+					const responseJson = JSON.parse(xhr.responseText);
 					callback(responseJson);
 					
 				} else {
