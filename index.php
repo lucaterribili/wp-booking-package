@@ -3,7 +3,7 @@
 Plugin Name: WP Booking Package
 Plugin URI:  https://github.com/lucaterribili/wp-booking-package
 Description: Booking Package is a high-performance booking calendar system that anyone can easily use.
-Version:     1.0.0
+Version:     1.0.2
 Author:      Luca Terribili
 Author URI:  https://lucaterribili.it/
 License:     GPL2
