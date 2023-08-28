@@ -7076,11 +7076,6 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         submit.value = this._i18n.get("Download CSV");
         submit.setAttribute("class", "downloadButton button media-button button-primary button-large media-button-insert");
         //submit.setAttribute("style", "padding: 0 0.5em;");
-        if(downloadBool == false){
-
-    	    submit.disabled = true;
-
-    	}
         form.appendChild(submit);
         form.setAttribute("style", style);
 

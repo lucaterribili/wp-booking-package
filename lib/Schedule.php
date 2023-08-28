@@ -21,6 +21,7 @@ class booking_package_schedule
     public $userRoleName = null;
 
     private $isExtensionsValid = null;
+    private $str;
 
     public function __construct($prefix, $pluginName, $userRoleName = 'booking_package_user')
     {
@@ -3275,7 +3276,7 @@ class booking_package_schedule
         $_POST['displayRemainingCapacityHasMoreThenThreshold'] = stripslashes($_POST['displayRemainingCapacityHasMoreThenThreshold']);
         $_POST['displayRemainingCapacityHasLessThenThreshold'] = stripslashes($_POST['displayRemainingCapacityHasLessThenThreshold']);
         $_POST['displayRemainingCapacityHas0'] = stripslashes($_POST['displayRemainingCapacityHas0']);
-
+        // TODO HACK PER CANCELLAZIONE
         $isExtensionsValid = $this->getExtensionsValid(false);
         $hotelCharges = array(
             'hotelChargeOnSunday',
@@ -3357,7 +3358,6 @@ class booking_package_schedule
         $date = date('U');
         global $wpdb;
         $table_name = $wpdb->prefix . 'booking_package_calendarAccount';
-
         $wpdb->insert(
             $table_name,
             array(
@@ -4005,10 +4005,12 @@ class booking_package_schedule
             $_POST['hasMultipleServices'] = 0;
             $_POST['displayRemainingCapacity'] = 0;
             $_POST['enableSubscriptionForStripe'] = 0;
-            $_POST['cancellationOfBooking'] = 0;
-            $_POST['allowCancellationVisitor'] = 0;
-            $_POST['allowCancellationUser'] = 0;
-            $_POST['refuseCancellationOfBooking'] = 'not_refuse';
+
+            //$_POST['cancellationOfBooking'] = 0;
+            //$_POST['allowCancellationVisitor'] = 0;
+            //$_POST['allowCancellationUser'] = 0;
+            //$_POST['refuseCancellationOfBooking'] = 'not_refuse';
+
             $_POST['preparationTime'] = 0;
             $_POST['positionPreparationTime'] = 'before_after';
             $_POST['hotelChargeOnDayBeforeNationalHoliday'] = 0;
@@ -9596,14 +9598,33 @@ class booking_package_schedule
         $startUnixTime = 0;
         $stopUnixTime = 0;
         if (isset($_POST['day']) && $_POST['day'] != '') {
-
+            $period = $_POST['day'] . '-' . $_POST['month'] . '-' . $_POST['year'];
             $startUnixTime = date('U',
                 mktime(0, 0, 0, intval($_POST['month']), intval($_POST['day']), intval($_POST['year'])));
             $stopUnixTime = date('U',
                 mktime(23, 59, 59, intval($_POST['month']), intval($_POST['day']), intval($_POST['year'])));
 
         } else {
+            $month_number = $_POST['month'];
 
+            $translate_month = function ($english_name) {
+                $english_months = array(
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                );
+
+                $italian_months = array(
+                    'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
+                    'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'
+                );
+
+                return str_replace($english_months, $italian_months, $english_name);
+            };
+
+            $english_month_name = date("F", mktime(0, 0, 0, $month_number, 1));
+            $italian_month_name = $translate_month($english_month_name);
+
+            $period = $italian_month_name . '-' . $_POST['year'];
             $lastDay = date('t', mktime(0, 0, 0, intval($_POST['month']), 1, intval($_POST['year'])));
             $startUnixTime = date('U', mktime(0, 0, 0, intval($_POST['month']), 1, intval($_POST['year'])));
             $stopUnixTime = date('U',
@@ -9615,6 +9636,7 @@ class booking_package_schedule
             array(intval($_POST['accountKey']), $startUnixTime, $stopUnixTime)
         );
         $rows = $wpdb->get_results($sql, ARRAY_A);
+        $this->str = 'booking_package_download_booked_customer';
         foreach ((array)$rows as $row) {
 
             $guestsList = array();
@@ -9769,6 +9791,7 @@ class booking_package_schedule
             }
 
             $customer = apply_filters('booking_package_download_booked_customer', $customer);
+
             array_push($customersList, $customer);
             $csv .= implode(',', $customer) . "\r\n";
 
@@ -9777,9 +9800,20 @@ class booking_package_schedule
         $temp = tmpfile();
         $path = stream_get_meta_data($temp)['uri'];
         $fp = fopen($path, 'w');
+        $index = 0;
         foreach ((array)$customersList as $key => $value) {
-
+            // INSERISCO LE INTESTAZIONI NEL FILE
+            if($index === 0) {
+                $headers_column = array_keys($value);
+                $columns = [];
+                foreach ($headers_column as $item) {
+                    $item = str_replace('form_', '', $item);
+                    $columns[] = __($item, $this->pluginName);
+                }
+               fputcsv($fp, $columns);
+            }
             fputcsv($fp, $value);
+            $index++;
 
         }
         fseek($fp, 0);
@@ -9791,6 +9825,7 @@ class booking_package_schedule
         $response['customersList'] = $customersList;
         $response['calendarAccount'] = $calendarAccount;
         $response['csv'] = $csv;
+        $response['period'] = $period;
         return $response;
 
     }

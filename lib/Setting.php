@@ -823,7 +823,7 @@
                 'email_from' => array('key' => 'email_from', 'name' => __('From (Email Address)', $this->pluginName), 'target' => 'both', 'value' => '', 'inputLimit' => 2, 'inputType' => 'TEXT', 'isExtensionsValid' => 0, 'option' => 0),
                 'email_from_title' => array('key' => 'email_from_title', 'name' => __('From (Email Title)', $this->pluginName), 'target' => 'both', 'value' => '', 'inputLimit' => 2, 'inputType' => 'TEXT', 'isExtensionsValid' => 0, 'option' => 0),
                 'status' => array('key' => 'status', 'name' => __('Calendar', $this->pluginName), 'target' => 'both', 'value' => 'open', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array('open' => __('Open', $this->pluginName), 'closed' => __('Closed', $this->pluginName))),
-
+                /*
                 'calendar_sharing' => array(
                     'key' => 'calendar_sharing', 
                     'name' => __('Schedules sharing', $this->pluginName), 
@@ -855,7 +855,7 @@
                         ),
                     ),
                 ), 
-                
+                */
                 'timezone' => array('key' => 'timezone', 'name' => __('Timezone', $this->pluginName), 'target' => 'both', 'value' => 'open', 'inputLimit' => 1, 'inputType' => 'SELECT_TIMEZONE', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array()),
                 /**
                 'clock' => array('key' => 'clock', 'name' => 'Clock', 'value' => '24', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array('12' => __('12 hour am-pm clock', $this->pluginName), '24' => __('24 hour clock', $this->pluginName))),
@@ -991,11 +991,11 @@
                 'expressionsCheck' => array('key' => 'expressionsCheck', 'name' => __('Display format of the "Arrival and Departure"', $this->pluginName), 'target' => 'hotel', 'disabled' => 0, 'value' => 0, 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(0 => __('Arrival (Check-in) & Departure (Check-out)', $this->pluginName), 1 => __('Arrival & Departure', $this->pluginName), 2 => __('Check-in & Check-out', $this->pluginName))),
                 'multipleRooms' => array('key' => 'multipleRooms', 'name' => __('Allow booking of multiple rooms', $this->pluginName), 'target' => 'hotel', 'disabled' => 0, 'value' => 0, 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 
-                'preparationTime' => array('key' => 'preparationTime', 'name' => __('Preparation time', $this->pluginName), 'target' => 'day', 'value' => '', 'inputLimit' => 1, 'inputType' => 'SELECT', 'isExtensionsValid' => 1, 'valueList' => array()),
-                'positionPreparationTime' => array('key' => 'positionPreparationTime', 'name' => __('Position of preparation time', $this->pluginName), 'target' => 'day', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array('before_after' => __('Before and after booked time', $this->pluginName), 'before' => __('Before booked time', $this->pluginName), 'after' => __('After booked time', $this->pluginName))),
+                //'preparationTime' => array('key' => 'preparationTime', 'name' => __('Preparation time', $this->pluginName), 'target' => 'day', 'value' => '', 'inputLimit' => 1, 'inputType' => 'SELECT', 'isExtensionsValid' => 1, 'valueList' => array()),
+                //'positionPreparationTime' => array('key' => 'positionPreparationTime', 'name' => __('Position of preparation time', $this->pluginName), 'target' => 'day', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array('before_after' => __('Before and after booked time', $this->pluginName), 'before' => __('Before booked time', $this->pluginName), 'after' => __('After booked time', $this->pluginName))),
                 'flowOfBooking' => array('key' => 'flowOfBooking', 'name' => __('Flow of booking procedure on front-end page', $this->pluginName), 'target' => 'day', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array('calendar' => __('Start by selecting a date', $this->pluginName), 'services' => __('Start by selecting a service', $this->pluginName))),
                 'courseBool' => array('key' => 'courseBool', 'name' => __('Service function', $this->pluginName), 'target' => 'day', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
-                'hasMultipleServices' => array('key' => 'hasMultipleServices', 'name' => __('Selection of multiple services', $this->pluginName), 'target' => 'day', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
+                //'hasMultipleServices' => array('key' => 'hasMultipleServices', 'name' => __('Selection of multiple services', $this->pluginName), 'target' => 'day', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 'courseTitle' => array('key' => 'courseTitle', 'name' => __('Service name', $this->pluginName), 'target' => 'day', 'value' => '', 'inputLimit' => 2, 'inputType' => 'TEXT', 'isExtensionsValid' => 0, 'option' => 0),
                 'guestsBool' => array('key' => 'guestsBool', 'name' => __('Guest function', $this->pluginName), 'target' => 'day', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 
@@ -1086,7 +1086,7 @@
                 ), 
                 
                 
-                'insertConfirmedPage' => array('key' => 'insertConfirmedPage', 'name' => __('Insert a booking confirmed page between the input page and the completed page', $this->pluginName), 'target' => 'both', 'value' => '0', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
+                //'insertConfirmedPage' => array('key' => 'insertConfirmedPage', 'name' => __('Insert a booking confirmed page between the input page and the completed page', $this->pluginName), 'target' => 'both', 'value' => '0', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 'displayRemainingCapacityInCalendar' => array('key' => 'displayRemainingCapacityInCalendar', 'name' => __('Display the remaining capacity as a phrase or symbol in the calendar', $this->pluginName), 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 'displayRemainingCapacityInCalendarAsNumber' => array('key' => 'displayRemainingCapacityInCalendarAsNumber', 'name' => __('Display the remaining capacity as a number instead of symbols in the calendar', $this->pluginName), 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 'displayThresholdOfRemainingCapacity' => array('key' => 'displayThresholdOfRemainingCapacity', 'name' => __('Threshold of remaining capacity', $this->pluginName), 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'SELECT', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(90 => '90%', 80 => '80%', 70 => '70%', 60 => '60%', 50 => '50%', 40 => '40%', 30 => '30%', 20 => '20%', 10 => '10%')),
@@ -1105,7 +1105,7 @@
                 #'googleCalendarID' => array('key' => 'googleCalendarID', 'name' => 'Google Calendar ID', 'value' => '', 'inputLimit' => 2, 'inputType' => 'TEXT', 'isExtensionsValid' => 1, 'option' => 0),
                 
                 'displayDetailsOfCanceled' => array('key' => 'displayDetailsOfCanceled', 'name' => __('Display details of the canceled visitors and user on the Report & Booking page', $this->pluginName), 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
-                //'cancellationOfBooking' => array('key' => 'cancellationOfBooking', 'name' => __('Cancellation of booking by visitor and user', $this->pluginName), 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
+              //  'cancellationOfBookingByUser' => array('key' => 'cancellationOfBookingByUser', 'name' => __('Cancellation of booking by visitor and user', $this->pluginName), 'target' => 'both', 'value' => 1, 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 'blockSameTimeBookingByUser' => array('key' => 'blockSameTimeBookingByUser', 'name' => __('Block multiple booking in the same time slot', $this->pluginName), 'target' => 'day', 'value' => '0', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 /**
                 'allowCancellationVisitor' => array('key' => 'allowCancellationVisitor', 'name' => __('Allow cancellation by visitor up to', $this->pluginName), 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'SELECT', 'isExtensionsValid' => 1, 'option' => 0, 
@@ -1149,11 +1149,11 @@
                     'key' => 'cancellation_of_booking', 
                     'name' => __('Cancel a booking by your customer', $this->pluginName), 
                     'target' => 'both', 
-                    'disabled' => 0, 
+                    'disabled' => 0,
                     'value' => '1', 
                     'inputLimit' => 2, 
                     'inputType' => 'MULTIPLE_FIELDS', 
-                    'isExtensionsValid' => 1, 
+                    'isExtensionsValid' => 0,
                     'option' => 0,
                     'valueList' => array(
                         0 => array(
@@ -1161,7 +1161,7 @@
                             'name' => '',
                             'value' => null,
                             'inputType' => 'RADIO',
-                            'isExtensionsValid' => 1, 
+                            'isExtensionsValid' => 1,
                             'actions' => null,
                             'valueList' => array(1 => __('Enabled', $this->pluginName), 0 => __('Disabled', $this->pluginName)),
                         ),
@@ -1170,7 +1170,7 @@
                             'name' => __('Time', $this->pluginName) . ': ',
                             'value' => '30',
                             'inputType' => 'SELECT',
-                            'isExtensionsValid' => 1, 
+                            'isExtensionsValid' => 0,
                             'actions' => null,
                             'valueList' => array(
                                 30 => array('key' => 30, 'name' => sprintf(__('%s minutes ago', $this->pluginName), "30")), 
@@ -1200,7 +1200,7 @@
                             'name' => __('Status of booking', $this->pluginName) . ': ',
                             'value' => '30',
                             'inputType' => 'SELECT',
-                            'isExtensionsValid' => 1, 
+                            'isExtensionsValid' => 0,
                             'actions' => null,
                             'valueList' => array(
                                 0 => array('key' => 'not_refuse', 'name' => __('Pending and Approved', $this->pluginName)), 

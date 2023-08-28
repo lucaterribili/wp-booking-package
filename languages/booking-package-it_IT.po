@@ -1,12 +1,11 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Booking Package\n"
 "POT-Creation-Date: 2023-08-24 10:46+0400\n"
-"PO-Revision-Date: 2021-06-13 13:45+0900\n"
+"PO-Revision-Date: 2023-08-25 12:02+0400\n"
 "Last-Translator: \n"
 "Language-Team: MASAAKI TANAKA\n"
-"Language: en\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,546 +16,541 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 
 #: index.php:450
-msgid ""
-"You currently have a valid subscription. Do you want to deactivate the "
-"Booking Package?"
-msgstr ""
+msgid "You currently have a valid subscription. Do you want to deactivate the Booking Package?"
+msgstr "Attualmente hai un abbonamento valido. Vuoi disattivare il Pacchetto Prenotazione?"
 
 #: index.php:599
 msgid "E-mail or password you entered is incorrect."
-msgstr ""
+msgstr "L'email o la password inserita non è corretta."
 
 #: index.php:603 index.php:607
 msgid "Username or password you entered is incorrect."
-msgstr ""
+msgstr "Lo username o la password inseriti non sono corretti."
 
 #: index.php:611 lib/Schedule.php:6303 lib/Schedule.php:6346
 msgid "Unknown error."
-msgstr ""
+msgstr "Errore sconosciuto."
 
 #: index.php:658 index.php:750 index.php:2138
 msgid "Booking Package"
-msgstr ""
+msgstr "Pacchetto Prenotazione"
 
 #: index.php:672 index.php:751
 msgid "Report & Booking"
-msgstr ""
+msgstr "Report e Prenotazioni"
 
 #: index.php:681 index.php:752 index.php:3028 index.php:3051
 #: lib/Setting.php:171 lib/Setting.php:1174 lib/Setting.php:1553
 msgid "Users"
-msgstr ""
+msgstr "Utenti"
 
 #: index.php:690 index.php:754
 msgid "Calendar Setting"
-msgstr ""
+msgstr "Impostazioni Calendario"
 
 #: index.php:699 index.php:755
 msgid "General Setting"
-msgstr ""
+msgstr "Impostazioni Generali"
 
 #: index.php:765 index.php:3355
 msgid "Subscription"
-msgstr ""
+msgstr "Abbonamento"
 
 #: index.php:875 index.php:1960 index.php:1972 index.php:2249 index.php:2418
 #: index.php:2884 index.php:2897 index.php:3229 index.php:5357
 #: lib/Setting.php:127
 msgid "Title"
-msgstr ""
+msgstr "Titolo"
 
 #: index.php:876 index.php:1961 index.php:1973 index.php:2250 index.php:2898
 #: index.php:3230
 msgid "Message"
-msgstr ""
+msgstr "Messaggio"
 
 #: index.php:878 index.php:1963 index.php:1977 index.php:2252 index.php:2900
 #: index.php:3232 lib/Setting.php:120 lib/Setting.php:1519 lib/Setting.php:1546
 #: lib/Setting.php:1547 lib/Setting.php:1548 lib/Setting.php:1549
 #: lib/Setting.php:1550 lib/Setting.php:1551 lib/Setting.php:1552
 msgid "Yes"
-msgstr ""
+msgstr "Sì"
 
 #: index.php:879 index.php:1964 index.php:1978 index.php:2253 index.php:2901
 #: index.php:3233 lib/Setting.php:120 lib/Setting.php:1519 lib/Setting.php:1546
 #: lib/Setting.php:1547 lib/Setting.php:1548 lib/Setting.php:1549
 #: lib/Setting.php:1550 lib/Setting.php:1551 lib/Setting.php:1552
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: index.php:926 index.php:5415
 msgid "No visitors"
-msgstr ""
+msgstr "Nessun visitatore"
 
 #: index.php:949 index.php:961 index.php:973 lib/Schedule.php:9566
 #, php-format
 msgid "%s:%s "
-msgstr ""
+msgstr "%s:%s"
 
 #: index.php:983
 #, php-format
 msgid "Until %s"
-msgstr ""
+msgstr "Fino al %s"
 
 #: index.php:1041
 msgid "Booking calendar was not found."
-msgstr ""
+msgstr "Il calendario delle prenotazioni non è stato trovato."
 
 #: index.php:1062
 msgid "Service"
-msgstr ""
+msgstr "Servizio"
 
 #: index.php:1333
 #, php-format
 msgid "Not found services in the %s."
-msgstr ""
+msgstr "Servizi non trovati in %s."
 
 #: index.php:1349
 msgid "We do not accept reservations for this calendar."
-msgstr ""
+msgstr "Non accettiamo prenotazioni per questo calendario."
 
 #: index.php:1619
 #, php-format
 msgid "Hello, %s"
-msgstr ""
+msgstr "Ciao, %s"
 
 #: index.php:1634
 msgid "Create account"
-msgstr ""
+msgstr "Crea account"
 
 #: index.php:1635 index.php:5568
 msgid "Sign in"
-msgstr ""
+msgstr "Accedi"
 
 #: index.php:1636
 msgid "Sign out"
-msgstr ""
+msgstr "Esci"
 
 #: index.php:1637
 msgid "Edit My Profile"
-msgstr ""
+msgstr "Modifica il mio profilo"
 
 #: index.php:1638 index.php:2182 lib/Html.php:332 lib/Html.php:375
 msgid "Booking history"
-msgstr ""
+msgstr "Cronologia prenotazioni"
 
 #: index.php:1656
 #, php-format
 msgid "Please select %s"
-msgstr ""
+msgstr "Seleziona %s"
 
 #: index.php:1657
 #, php-format
 msgid "Your %s details"
-msgstr ""
+msgstr "I tuoi dettagli %s"
 
 #: index.php:1671 index.php:1672 index.php:2354 index.php:5290 lib/Html.php:191
 #: lib/Html.php:382
 msgid "Return"
-msgstr ""
+msgstr "Indietro"
 
 #: index.php:1675 index.php:5570
 msgid "Next"
-msgstr ""
+msgstr "Avanti"
 
 #: index.php:1693 index.php:5579
 msgid "We sent a verification code to the following address."
-msgstr ""
+msgstr "Abbiamo inviato un codice di verifica al seguente indirizzo."
 
 #: index.php:1695
 msgid "Please enter a verification code."
-msgstr ""
+msgstr "Inserisci un codice di verifica."
 
 #: index.php:1697
 msgid "Verify"
-msgstr ""
+msgstr "Verifica"
 
 #: index.php:1780
-msgid ""
-"Shortcode of the Booking Package cannot insert multiple shortcodes on one "
-"page."
-msgstr ""
+msgid "Shortcode of the Booking Package cannot insert multiple shortcodes on one page."
+msgstr "Lo shortcode del Pacchetto Prenotazione non può inserire più shortcode in una singola pagina."
 
 #: index.php:1782
 #, php-format
 msgid "ID: %s has canceled the display."
-msgstr ""
+msgstr "ID: %s ha annullato la visualizzazione."
 
 #: index.php:1935 lib/Setting.php:171 lib/Setting.php:1174 lib/Setting.php:1553
 msgid "Customers"
-msgstr ""
+msgstr "Clienti"
 
 #: index.php:1936 index.php:5298 index.php:5413
 msgid "Booking"
-msgstr ""
+msgstr "Prenotazione"
 
 #: index.php:1975
 msgid "Decision"
-msgstr ""
+msgstr "Decisione"
 
 #: index.php:2003
 msgid "Looking for users"
-msgstr ""
+msgstr "Ricerca utenti"
 
 #: index.php:2012 index.php:2104
 msgid "Search"
-msgstr ""
+msgstr "Cerca"
 
 #: index.php:2105 index.php:5360
 msgid "Clear"
-msgstr ""
+msgstr "Pulisci"
 
 #: index.php:2108
 msgid "Add user"
-msgstr ""
+msgstr "Aggiungi utente"
 
 #: index.php:2118 index.php:2192 lib/Html.php:186
 msgid "Username"
-msgstr ""
+msgstr "Nome utente"
 
 #: index.php:2118 index.php:2196 index.php:2455 lib/Html.php:187
 #: lib/Setting.php:106 lib/Setting.php:756 lib/Setting.php:770
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 #: index.php:2118
 msgid "Registered"
-msgstr ""
+msgstr "Registrato"
 
 #: index.php:2142
 msgid "Subscriber"
-msgstr ""
+msgstr "Iscritto"
 
 #: index.php:2148
 msgid "Contributor"
-msgstr ""
+msgstr "Collaboratore"
 
 #: index.php:2183
 msgid "User"
-msgstr ""
+msgstr "Utente"
 
 #: index.php:2200 index.php:5367 index.php:5441 lib/Html.php:193
 #: lib/Html.php:338 lib/Html.php:381
 msgid "Status"
-msgstr ""
+msgstr "Stato"
 
 #: index.php:2204 index.php:5464 lib/Html.php:194 lib/Setting.php:1067
 msgid "Approved"
-msgstr ""
+msgstr "Approvato"
 
 #: index.php:2209 lib/Html.php:188
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: index.php:2212 lib/Html.php:195
 msgid "Change password"
-msgstr ""
+msgstr "Cambia password"
 
 #: index.php:2232 lib/Html.php:196
 msgid "Update Profile"
-msgstr ""
+msgstr "Aggiorna profilo"
 
 #: index.php:2233 index.php:2422 index.php:2629 index.php:2646 index.php:5286
 #: lib/Html.php:197
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: index.php:2343
 msgid "Add new calendar"
-msgstr ""
+msgstr "Aggiungi nuovo calendario"
 
 #: index.php:2344
 msgid "Create a clone"
-msgstr ""
+msgstr "Crea clone"
 
 #: index.php:2360 index.php:2772 index.php:5516
 msgid "Schedules"
-msgstr ""
+msgstr "Programmazioni"
 
 #: index.php:2361 index.php:2773
 msgid "Form fields"
-msgstr ""
+msgstr "Campi modulo"
 
 #: index.php:2362 index.php:2774
 msgid "Services"
-msgstr ""
+msgstr "Servizi"
 
 #: index.php:2363 index.php:2775
 msgid "Guests"
-msgstr ""
+msgstr "Ospiti"
 
 #: index.php:2364 index.php:2781
 msgid "Subscriptions"
-msgstr ""
+msgstr "Abbonamenti"
 
 #: index.php:2365 index.php:5455 index.php:5532 lib/Setting.php:127
 #: lib/Setting.php:1335
 msgid "Options"
-msgstr ""
+msgstr "Opzioni"
 
 #: index.php:2366 index.php:5395
 msgid "Coupons"
-msgstr ""
+msgstr "Coupon"
 
 #: index.php:2367
 msgid "Surcharge | Tax"
-msgstr ""
+msgstr "Supplemento | Tassa"
 
 #: index.php:2368 index.php:2453
 msgid "Notifications"
-msgstr ""
+msgstr "Notifiche"
 
 #: index.php:2369 index.php:3029
 msgid "Sync"
-msgstr ""
+msgstr "Sincronizza"
 
 #: index.php:2370 index.php:3025
 msgid "Setting"
-msgstr ""
+msgstr "Impostazioni"
 
 #: index.php:2416 index.php:2663 lib/Setting.php:1038
 msgid "Time"
-msgstr ""
+msgstr "Orario"
 
 #: index.php:2417 index.php:2716 index.php:2833 index.php:5433
 msgid "Deadline time"
-msgstr ""
+msgstr "Orario scadenza"
 
 #: index.php:2419 index.php:2728 index.php:2845
 msgid "Capacities"
-msgstr ""
+msgstr "Capienze"
 
 #: index.php:2420 index.php:2857 index.php:5388 index.php:5432
 msgid "Remaining"
-msgstr ""
+msgstr "Rimanenti"
 
 #: index.php:2421 index.php:2630 index.php:5498
 msgid "Stop"
-msgstr ""
+msgstr "Ferma"
 
 #: index.php:2429 index.php:5509
 msgid "There are incompletely deleted schedules."
-msgstr ""
+msgstr "Ci sono programmazioni eliminate in modo incompleto."
 
 #: index.php:2430
-msgid ""
-"But if you delete it perfectly, the schedules rebuilt based in \"Weekly "
-"schedule templates\"."
-msgstr ""
+#, fuzzy
+msgid "But if you delete it perfectly, the schedules rebuilt based in \"Weekly schedule templates\"."
+msgstr "Ma se le elimini perfettamente, le programmazioni verranno ricostruite in base ai \"Modelli di programmazione settimanale\"."
 
 #: index.php:2452
 msgid "Enable / Disable"
-msgstr ""
+msgstr "Abilita / Disabilita"
 
 #: index.php:2456 lib/Setting.php:757 lib/Setting.php:771
 msgid "SMS"
-msgstr ""
+msgstr "SMS"
 
 #: index.php:2461
 msgid "Format"
-msgstr ""
+msgstr "Formato"
 
 #: index.php:2471
 msgid "For customer"
-msgstr ""
+msgstr "Per il cliente"
 
 #: index.php:2472
 msgid "For administrator"
-msgstr ""
+msgstr "Per l'amministratore"
 
 #: index.php:2514 index.php:5486
 msgid "Delete schedules"
-msgstr ""
+msgstr "Elimina programmazioni"
 
 #: index.php:2521
 msgid "Period"
-msgstr ""
+msgstr "Periodo"
 
 #: index.php:2524
 msgid "All"
-msgstr ""
+msgstr "Tutto"
 
 #: index.php:2527
 msgid "After the specified date"
-msgstr ""
+msgstr "Dopo la data specificata"
 
 #: index.php:2530
 msgid "Within the specified date"
-msgstr ""
+msgstr "Entro la data specificata"
 
 #: index.php:2535 index.php:5471
 msgid "Date"
-msgstr ""
+msgstr "Data"
 
 #: index.php:2540 index.php:2582 index.php:5299 lib/Schedule.php:9516
 msgid "January"
-msgstr ""
+msgstr "Gennaio"
 
 #: index.php:2541 index.php:2583 index.php:5300 lib/Schedule.php:9516
 msgid "February"
-msgstr ""
+msgstr "Febbraio"
 
 #: index.php:2542 index.php:2584 index.php:5301 lib/Schedule.php:9516
 msgid "March"
-msgstr ""
+msgstr "Marzo"
 
 #: index.php:2543 index.php:2585 index.php:5302 lib/Schedule.php:9516
 msgid "April"
-msgstr ""
+msgstr "Aprile"
 
 #: index.php:2544 index.php:2586 index.php:5303 index.php:5315
 #: lib/Schedule.php:9516 lib/Schedule.php:9523 lib/Setting.php:141
 #: lib/Setting.php:1145 lib/Setting.php:1392
 msgid "May"
-msgstr ""
+msgstr "Maggio"
 
 #: index.php:2545 index.php:2587 index.php:5304 lib/Schedule.php:9516
 msgid "June"
-msgstr ""
+msgstr "Giugno"
 
 #: index.php:2546 index.php:2588 index.php:5305 lib/Schedule.php:9516
 msgid "July"
-msgstr ""
+msgstr "Luglio"
 
 #: index.php:2547 index.php:2589 index.php:5306 lib/Schedule.php:9516
 msgid "August"
-msgstr ""
+msgstr "Agosto"
 
 #: index.php:2548 index.php:2590 index.php:5307 lib/Schedule.php:9516
 msgid "September"
-msgstr ""
+msgstr "Settembre"
 
 #: index.php:2549 index.php:2591 index.php:5308 lib/Schedule.php:9516
 msgid "October"
-msgstr ""
+msgstr "Ottobre"
 
 #: index.php:2550 index.php:2592 index.php:5309 lib/Schedule.php:9516
 msgid "November"
-msgstr ""
+msgstr "Novembre"
 
 #: index.php:2551 index.php:2593 index.php:5310 lib/Schedule.php:9516
 msgid "December"
-msgstr ""
+msgstr "Dicembre"
 
 #: index.php:2622
 msgid "The selection of the date can not be done with the free plan."
-msgstr ""
+msgstr "La selezione della data non può essere fatta con il piano gratuito."
 
 #: index.php:2627
 msgid "Action"
-msgstr ""
+msgstr "Azione"
 
 #: index.php:2634
 msgid "Deletion type"
-msgstr ""
+msgstr "Tipo di eliminazione"
 
 #: index.php:2636
 msgid "Incomplete"
-msgstr ""
+msgstr "Incompleto"
 
 #: index.php:2637
 msgid "Perfect"
-msgstr ""
+msgstr "Perfettamente"
 
 #: index.php:2643
 msgid "If a visitor made booking, the schedule will not be deleted."
-msgstr ""
+msgstr "Se un visitatore ha effettuato una prenotazione, la programmazione non verrà eliminata."
 
 #: index.php:2656
 msgid "Set up schedules"
-msgstr ""
+msgstr "Imposta programmazioni"
 
 #: index.php:2704
 msgid "Interval"
-msgstr ""
+msgstr "Intervallo"
 
 #: index.php:2709
 #, php-format
 msgid "%s minutes"
-msgstr ""
+msgstr "%s minuti"
 
 #: index.php:2721 index.php:5434
 #, php-format
 msgid "%s min ago"
-msgstr ""
+msgstr "%s min fa"
 
 #: index.php:2742 index.php:2871 index.php:5401
 msgid "Apply"
-msgstr ""
+msgstr "Applica"
 
 #: index.php:2753
 msgid "Select a calendar"
-msgstr ""
+msgstr "Seleziona un calendario"
 
 #: index.php:2759 lib/Html.php:337
 msgid "Calendar"
-msgstr ""
+msgstr "Calendario"
 
 #: index.php:2770 lib/Setting.php:123 lib/Setting.php:171 lib/Setting.php:1174
 #: lib/Setting.php:1520
 msgid "Target"
-msgstr ""
+msgstr "Destinazione"
 
 #: index.php:2787 index.php:5374
 msgid "Surcharge and Tax"
-msgstr ""
+msgstr "Sovrattassa e Tasse"
 
 #: index.php:2788
 msgid "Emails"
-msgstr ""
+msgstr "Email"
 
 #: index.php:2794
 msgid "Create"
-msgstr ""
+msgstr "Crea"
 
 #: index.php:2804
 msgid "Choose a schedule"
-msgstr ""
+msgstr "Scegli un orario"
 
 #: index.php:2809
 msgid "Hours"
-msgstr ""
+msgstr "Ore"
 
 #: index.php:2821
 msgid "Minutes"
-msgstr ""
+msgstr "Minuti"
 
 #: index.php:2870 index.php:2887
 msgid "Reset"
-msgstr ""
+msgstr "Reset"
 
 #: index.php:2888 index.php:5293
 msgid "Close"
-msgstr ""
+msgstr "Chiudi"
 
 #: index.php:2908
 msgid "Copy a shortcode and paste it in your page on the Dashboard > Pages."
-msgstr ""
+msgstr "Copia un shortcode e incollalo nella tua pagina su Dashboard > Pagine."
 
 #: index.php:3026 index.php:3041
 msgid "Closed days"
-msgstr ""
+msgstr "Giorni chiusi"
 
 #: index.php:3027 index.php:3045 index.php:5491 lib/Setting.php:847
 msgid "National holiday"
-msgstr ""
+msgstr "Festa nazionale"
 
 #: index.php:3032
 msgid "Subscription details"
-msgstr ""
+msgstr "Dettagli dell'abbonamento"
 
 #: index.php:3038 index.php:3160 index.php:3170 index.php:3177 index.php:3185
 msgid "Save Changes"
-msgstr ""
+msgstr "Salva modifiche"
 
 #: index.php:3054
 msgid "User account"
-msgstr ""
+msgstr "Account utente"
 
 #: index.php:3057 index.php:3070 index.php:3083 index.php:3096 index.php:3109
 #: index.php:3122 index.php:3148 index.php:5364
 msgid "Subscribed users only"
-msgstr ""
+msgstr "Solo utenti abbonati"
 
 #: index.php:3060 index.php:3073 index.php:3086 index.php:3099 index.php:3112
 #: index.php:3125 index.php:3151 index.php:5386 lib/Setting.php:125
@@ -572,1657 +566,1643 @@ msgstr ""
 #: lib/Setting.php:1375 lib/Setting.php:1419 lib/Setting.php:1444
 #: lib/Setting.php:1518
 msgid "Enabled"
-msgstr ""
+msgstr "Abilitato"
 
 #: index.php:3067
 msgid "Reject non-user account bookings"
-msgstr ""
+msgstr "Rifiuta prenotazioni da account non utente"
 
 #: index.php:3080
 msgid "User registration from visitors"
-msgstr ""
+msgstr "Registrazione utente da visitatori"
 
 #: index.php:3093
 msgid "Send the verification code by email when registering and editing"
-msgstr ""
+msgstr "Invia il codice di verifica via email durante la registrazione e la modifica"
 
 #: index.php:3106
 msgid "Accept subscribers as users"
-msgstr ""
+msgstr "Accetta abbonati come utenti"
 
 #: index.php:3119
 msgid "Accept contributors as users"
-msgstr ""
+msgstr "Accetta collaboratori come utenti"
 
 #: index.php:3145
 msgid "Toolbar"
-msgstr ""
+msgstr "Barra degli strumenti"
 
 #: index.php:3175
 msgid "Change the front-end page design by defining CSS."
-msgstr ""
+msgstr "Cambia il design della pagina front-end definendo il CSS."
 
 #: index.php:3215 index.php:5291
 msgid "Save"
-msgstr ""
+msgstr "Salva"
 
 #: index.php:3358 index.php:3373 lib/Html.php:335 lib/Html.php:379
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: index.php:3362 index.php:5535
 msgid "Subscription ID"
-msgstr ""
+msgstr "ID abbonamento"
 
 #: index.php:3366 index.php:5536 lib/Setting.php:175 lib/Setting.php:1251
 #: lib/Setting.php:1428
 msgid "Expiration date"
-msgstr ""
+msgstr "Data di scadenza"
 
 #: index.php:3377 index.php:5537
 msgid "Your email"
-msgstr ""
+msgstr "Tua email"
 
 #: index.php:3384
 msgid "Add a new subscription"
-msgstr ""
+msgstr "Aggiungi un nuovo abbonamento"
 
 #: index.php:3386
 msgid "Cancel this subscription"
-msgstr ""
+msgstr "Annulla questo abbonamento"
 
 #: index.php:3387
 msgid "Payment a new subscription"
-msgstr ""
+msgstr "Pagamento un nuovo abbonamento"
 
 #: index.php:4199
 msgid "You are not allowed to access this part of the site"
-msgstr ""
+msgstr "Non ti è permesso accedere a questa parte del sito"
 
 #: index.php:4305
 msgid "Get subscription"
-msgstr ""
+msgstr "Ottieni l'abbonamento"
 
 #: index.php:4317
 msgid "Upgrade"
-msgstr ""
+msgstr "Aggiorna"
 
 #: index.php:4533 index.php:5377 lib/Schedule.php:7305 lib/Setting.php:2077
 msgid "Select"
-msgstr ""
+msgstr "Seleziona"
 
 #: index.php:4780 index.php:4793
 msgid "How do I show the booking calendar on the page?"
-msgstr ""
+msgstr "Come mostro il calendario delle prenotazioni sulla pagina?"
 
 #: index.php:4781 index.php:4794
 msgid "How do I send a booking email?"
-msgstr ""
+msgstr "Come invio una email di prenotazione?"
 
 #: index.php:4782 index.php:4795
 msgid "How do I create booking schedules?"
-msgstr ""
+msgstr "Come creo programmi di prenotazione?"
 
 #: index.php:4786
 msgid "Documents"
-msgstr ""
+msgstr "Documenti"
 
 #: index.php:4799
 msgid "Videos"
-msgstr ""
+msgstr "Video"
 
 #: index.php:5284
 msgid "Error"
-msgstr ""
+msgstr "Errore"
 
 #: index.php:5285
 msgid "Add"
-msgstr ""
+msgstr "Aggiungi"
 
 #: index.php:5287
 msgid "Edit"
-msgstr ""
+msgstr "Modifica"
 
 #: index.php:5288
 msgid "Change"
-msgstr ""
+msgstr "Cambia"
 
 #: index.php:5289
 msgid "Copy"
-msgstr ""
+msgstr "Copia"
 
 #: index.php:5292
 msgid "Cancel"
-msgstr ""
+msgstr "Annulla"
 
 #: index.php:5294
 msgid "Help"
-msgstr ""
+msgstr "Aiuto"
 
 #: index.php:5295 index.php:5446 index.php:5527
 msgid "Price"
-msgstr ""
+msgstr "Prezzo"
 
 #: index.php:5296
 msgid "Attention"
-msgstr ""
+msgstr "Attenzione"
 
 #: index.php:5297 index.php:5478
 msgid "Warning"
-msgstr ""
+msgstr "Avviso"
 
 #: index.php:5311 lib/Schedule.php:9523 lib/Setting.php:137
 #: lib/Setting.php:1141 lib/Setting.php:1388
 msgid "Jan"
-msgstr ""
+msgstr "Gen"
 
 #: index.php:5312 lib/Schedule.php:9523 lib/Setting.php:138
 #: lib/Setting.php:1142 lib/Setting.php:1389
 msgid "Feb"
-msgstr ""
+msgstr "Feb"
 
 #: index.php:5313 lib/Schedule.php:9523 lib/Setting.php:139
 #: lib/Setting.php:1143 lib/Setting.php:1390
 msgid "Mar"
-msgstr ""
+msgstr "Mar"
 
 #: index.php:5314 lib/Schedule.php:9523 lib/Setting.php:140
 #: lib/Setting.php:1144 lib/Setting.php:1391
 msgid "Apr"
-msgstr ""
+msgstr "Apr"
 
 #: index.php:5316 lib/Schedule.php:9523 lib/Setting.php:142
 #: lib/Setting.php:1146 lib/Setting.php:1393
 msgid "Jun"
-msgstr ""
+msgstr "Giu"
 
 #: index.php:5317 lib/Schedule.php:9523 lib/Setting.php:143
 #: lib/Setting.php:1147 lib/Setting.php:1394
 msgid "Jul"
-msgstr ""
+msgstr "Lug"
 
 #: index.php:5318 lib/Schedule.php:9523 lib/Setting.php:144
 #: lib/Setting.php:1148 lib/Setting.php:1395
 msgid "Aug"
-msgstr ""
+msgstr "Ago"
 
 #: index.php:5319 lib/Schedule.php:9523 lib/Setting.php:145
 #: lib/Setting.php:1149 lib/Setting.php:1396
 msgid "Sep"
-msgstr ""
+msgstr "Set"
 
 #: index.php:5320 lib/Schedule.php:9523 lib/Setting.php:146
 #: lib/Setting.php:1150 lib/Setting.php:1397
 msgid "Oct"
-msgstr ""
+msgstr "Ott"
 
 #: index.php:5321 lib/Schedule.php:9523 lib/Setting.php:147
 #: lib/Setting.php:1151 lib/Setting.php:1398
 msgid "Nov"
-msgstr ""
+msgstr "Nov"
 
 #: index.php:5322 lib/Schedule.php:9523 lib/Setting.php:148
 #: lib/Setting.php:1152 lib/Setting.php:1399
 msgid "Dec"
-msgstr ""
+msgstr "Dic"
 
 #: index.php:5323 lib/Schedule.php:9518 lib/Setting.php:735 lib/Setting.php:835
 msgid "Sunday"
-msgstr ""
+msgstr "Domenica"
 
 #: index.php:5324 lib/Schedule.php:9518 lib/Setting.php:735 lib/Setting.php:799
 msgid "Monday"
-msgstr ""
+msgstr "Lunedì"
 
 #: index.php:5325 lib/Schedule.php:9518 lib/Setting.php:735 lib/Setting.php:805
 msgid "Tuesday"
-msgstr ""
+msgstr "Martedì"
 
 #: index.php:5326 lib/Schedule.php:9518 lib/Setting.php:735 lib/Setting.php:811
 msgid "Wednesday"
-msgstr ""
+msgstr "Mercoledì"
 
 #: index.php:5327 lib/Schedule.php:9518 lib/Setting.php:735 lib/Setting.php:817
 msgid "Thursday"
-msgstr ""
+msgstr "Giovedì"
 
 #: index.php:5328 lib/Schedule.php:9518 lib/Setting.php:735 lib/Setting.php:823
 msgid "Friday"
-msgstr ""
+msgstr "Venerdì"
 
 #: index.php:5329 lib/Schedule.php:9518 lib/Setting.php:735 lib/Setting.php:829
 msgid "Saturday"
-msgstr ""
+msgstr "Sabato"
 
 #: index.php:5330 lib/Schedule.php:9524
 msgid "Sun"
-msgstr ""
+msgstr "Dom"
 
 #: index.php:5331 lib/Schedule.php:9524
 msgid "Mon"
-msgstr ""
+msgstr "Lun"
 
 #: index.php:5332 lib/Schedule.php:9524
 msgid "Tue"
-msgstr ""
+msgstr "Mar"
 
 #: index.php:5333 lib/Schedule.php:9524
 msgid "Wed"
-msgstr ""
+msgstr "Mer"
 
 #: index.php:5334 lib/Schedule.php:9524
 msgid "Thu"
-msgstr ""
+msgstr "Gio"
 
 #: index.php:5335 lib/Schedule.php:9524
 msgid "Fri"
-msgstr ""
+msgstr "Ven"
 
 #: index.php:5336 lib/Schedule.php:9524
 msgid "Sat"
-msgstr ""
+msgstr "Sab"
 
 #: index.php:5337 index.php:5338 lib/Html.php:336 lib/Html.php:380
 msgid "Booking Date"
-msgstr ""
+msgstr "Data di Prenotazione"
 
 #: index.php:5339
 msgid "Arrival (Check-in)"
-msgstr ""
+msgstr "Arrivo (Check-in)"
 
 #: index.php:5340
 msgid "Departure (Check-out)"
-msgstr ""
+msgstr "Partenza (Check-out)"
 
 #: index.php:5341
 msgid "Arrival"
-msgstr ""
+msgstr "Arrivo"
 
 #: index.php:5342
 msgid "Departure"
-msgstr ""
+msgstr "Partenza"
 
 #: index.php:5343
 msgid "Check-in"
-msgstr ""
+msgstr "Check-in"
 
 #: index.php:5344
 msgid "Check-out"
-msgstr ""
+msgstr "Check-out"
 
 #: index.php:5345 lib/Schedule.php:9839
 msgid "Total number of guests"
-msgstr ""
+msgstr "Numero totale di ospiti"
 
 #: index.php:5346 lib/Schedule.php:9773
 msgid "Total length of stay"
-msgstr ""
+msgstr "Durata totale del soggiorno"
 
 #: index.php:5347
 msgid "Additional fees"
-msgstr ""
+msgstr "Tariffe aggiuntive"
 
 #: index.php:5348
 msgid "Accommodation fees"
-msgstr ""
+msgstr "Tariffe di alloggio"
 
 #: index.php:5349
 msgid "Total amount"
-msgstr ""
+msgstr "Importo totale"
 
 #: index.php:5350
 msgid "Summary"
-msgstr ""
+msgstr "Riepilogo"
 
 #: index.php:5351 lib/Schedule.php:9760
 msgid "night"
-msgstr ""
+msgstr "notte"
 
 #: index.php:5352 lib/Schedule.php:9756
 msgid "nights"
-msgstr ""
+msgstr "notti"
 
 #: index.php:5353
 msgid "Night"
-msgstr ""
+msgstr "Notte"
 
 #: index.php:5354
 msgid "Nights"
-msgstr ""
+msgstr "Notti"
 
 #: index.php:5355 lib/Schedule.php:9765
 msgid "room"
-msgstr ""
+msgstr "camera"
 
 #: index.php:5356 lib/Schedule.php:9769
 msgid "rooms"
-msgstr ""
+msgstr "camere"
 
 #: index.php:5358 index.php:5561 lib/Html.php:302
 msgid "Booking details"
-msgstr ""
+msgstr "Dettagli della prenotazione"
 
 #: index.php:5359
 msgid "Reception date"
-msgstr ""
+msgstr "Data di ricezione"
 
 #: index.php:5361 lib/Schedule.php:7366 lib/Schedule.php:7376
 #: lib/Schedule.php:7391 lib/Schedule.php:7398 lib/Schedule.php:9824
 msgid "person"
-msgstr ""
+msgstr "persona"
 
 #: index.php:5362 lib/Schedule.php:7370 lib/Schedule.php:7380
 #: lib/Schedule.php:9829
 msgid "people"
-msgstr ""
+msgstr "persone"
 
 #: index.php:5363
 #, php-format
 msgid "Please choose %s"
-msgstr ""
+msgstr "Scegli %s"
 
 #: index.php:5365
 #, php-format
 msgid "%s remaining"
-msgstr ""
+msgstr "%s rimanenti"
 
 #: index.php:5366
 msgid "An unknown cause of error occurred"
-msgstr ""
+msgstr "Si è verificato un errore sconosciuto"
 
 #: index.php:5368
 msgid "approved"
-msgstr ""
+msgstr "approvato"
 
 #: index.php:5369
 msgid "pending"
-msgstr ""
+msgstr "in attesa"
 
 #: index.php:5370
 msgid "canceled"
-msgstr ""
+msgstr "cancellato"
 
 #: index.php:5371
 msgid "Can we really cancel your booking?"
-msgstr ""
+msgstr "Possiamo davvero cancellare la tua prenotazione?"
 
 #: index.php:5372
 msgid "We have canceled your booking."
-msgstr ""
+msgstr "Abbiamo cancellato la tua prenotazione."
 
 #: index.php:5373
 msgid "Your personal details do not displayed on this page."
-msgstr ""
+msgstr "I tuoi dati personali non vengono visualizzati in questa pagina."
 
 #: index.php:5375 lib/Setting.php:127 lib/Setting.php:1420
 msgid "Surcharge"
-msgstr ""
+msgstr "Sovrapprezzo"
 
 #: index.php:5376 lib/Setting.php:1420 lib/Setting.php:1421
 msgid "Tax"
-msgstr ""
+msgstr "Tassa"
 
 #: index.php:5378
 #, php-format
 msgid "%s:%s a.m."
-msgstr ""
+msgstr "%s:%s mattina"
 
 #: index.php:5379
 #, php-format
 msgid "%s:%s p.m."
-msgstr ""
+msgstr "%s:%s pomeriggio"
 
 #: index.php:5380
 #, php-format
 msgid "%s:%s am"
-msgstr ""
+msgstr "%s:%s am"
 
 #: index.php:5381
 #, php-format
 msgid "%s:%s pm"
-msgstr ""
+msgstr "%s:%s pm"
 
 #: index.php:5382
 #, php-format
 msgid "%s:%s AM"
-msgstr ""
+msgstr "%s:%s AM"
 
 #: index.php:5383
 #, php-format
 msgid "%s:%s PM"
-msgstr ""
+msgstr "%s:%s PM"
 
 #: index.php:5384
 msgid "Change status"
-msgstr ""
+msgstr "Cambia stato"
 
 #: index.php:5385
 msgid "Add another room"
-msgstr ""
+msgstr "Aggiungi un'altra camera"
 
 #: index.php:5387 lib/Setting.php:125 lib/Setting.php:126 lib/Setting.php:332
 #: lib/Setting.php:341 lib/Setting.php:349 lib/Setting.php:355
 #: lib/Setting.php:361 lib/Setting.php:367 lib/Setting.php:758
 #: lib/Setting.php:772 lib/Setting.php:1034
 msgid "Disabled"
-msgstr ""
+msgstr "Disabilitato"
 
 #: index.php:5389 lib/Schedule.php:7438
 #, php-format
 msgid "The required total number of people must be %s or less."
-msgstr ""
+msgstr "Il numero totale richiesto di persone deve essere %s o meno."
 
 #: index.php:5390 lib/Schedule.php:7415
 #, php-format
 msgid "The required total number of people must be %s or more."
-msgstr ""
+msgstr "Il numero totale richiesto di persone deve essere %s o più."
 
 #: index.php:5391 lib/Schedule.php:7433
 #, php-format
 msgid "The total number of people must be %s or less."
-msgstr ""
+msgstr "Il numero totale di persone deve essere %s o meno."
 
 #: index.php:5392 lib/Schedule.php:7410
 #, php-format
 msgid "The total number of people must be %s or more."
-msgstr ""
+msgstr "Il numero totale di persone deve essere %s o più."
 
 #: index.php:5393
 msgid "Total number of people"
-msgstr ""
+msgstr "Numero totale di persone"
 
 #: index.php:5394 lib/Schedule.php:10822 lib/Schedule.php:10864
 #, php-format
 msgid "%s to %s"
-msgstr ""
+msgstr "%s a %s"
 
 #: index.php:5396 lib/Setting.php:167
 msgid "Coupon code"
-msgstr ""
+msgstr "Codice coupon"
 
 #: index.php:5397
 msgid "Coupon"
-msgstr ""
+msgstr "Coupon"
 
 #: index.php:5398
 msgid "Discount"
-msgstr ""
+msgstr "Sconto"
 
 #: index.php:5399
 msgid "Add a coupon code"
-msgstr ""
+msgstr "Aggiungi un codice coupon"
 
 #: index.php:5400
 msgid "Added a coupon"
-msgstr ""
+msgstr "Aggiunto un coupon"
 
 #: index.php:5402
 msgid " to "
-msgstr ""
+msgstr " a "
 
 #: index.php:5403
 msgid "Usernames can only contain lowercase letters (a-z) and numbers."
-msgstr ""
+msgstr "I nomi utente possono contenere solo lettere minuscole (a-z) e numeri."
 
 #: index.php:5404
 msgid "Please enter a valid email address."
-msgstr ""
+msgstr "Inserisci un indirizzo email valido."
 
 #: index.php:5405
 msgid "Please enter a valid password."
-msgstr ""
+msgstr "Inserisci una password valida."
 
 #: index.php:5411
 msgid "Download CSV"
-msgstr ""
+msgstr "Scarica CSV"
 
 #: index.php:5412 index.php:5515 lib/Setting.php:731
 msgid "Timezone"
-msgstr ""
+msgstr "Fuso orario"
 
 #: index.php:5414
 msgid "No schedules"
-msgstr ""
+msgstr "Nessun orario disponibile"
 
 #: index.php:5416
-msgid ""
-"This booking has been paid by credit card. Do you refund the price to the "
-"customer?"
-msgstr ""
+msgid "This booking has been paid by credit card. Do you refund the price to the customer?"
+msgstr "Questa prenotazione è stata pagata con carta di credito. Vuoi rimborsare l'importo al cliente?"
 
 #: index.php:5417
 msgid "Do you send e-mail notifications to customers or administrators?"
-msgstr ""
+msgstr "Invii notifiche via email ai clienti o agli amministratori?"
 
 #: index.php:5418
 msgid "Are you sure you want to delete this booking?"
-msgstr ""
+msgstr "Sei sicuro di voler eliminare questa prenotazione?"
 
 #: index.php:5419
 msgid "Please upgrade your free plan to enable this feature."
-msgstr ""
+msgstr "Aggiorna il tuo piano gratuito per abilitare questa funzionalità."
 
 #: index.php:5420 index.php:5566
 msgid "Service is not registered. "
-msgstr ""
+msgstr "Il servizio non è registrato."
 
 #: index.php:5421
 msgid "Please create a service."
-msgstr ""
+msgstr "Crea un servizio, per favore."
 
 #: index.php:5422
 msgid "The user was not found."
-msgstr ""
+msgstr "L'utente non è stato trovato."
 
 #: index.php:5426
 #, php-format
 msgid "Every %s"
-msgstr ""
+msgstr "Ogni %s"
 
 #: index.php:5427
 msgid "hour"
-msgstr ""
+msgstr "ora"
 
 #: index.php:5428
 msgid "hours"
-msgstr ""
+msgstr "ore"
 
 #: index.php:5429
 msgid "minutes"
-msgstr ""
+msgstr "minuti"
 
 #: index.php:5430
 msgid "deadline time"
-msgstr ""
+msgstr "tempo limite"
 
 #: index.php:5431
 msgid "capacities"
-msgstr ""
+msgstr "capacità"
 
 #: index.php:5435 lib/Setting.php:1352
 #, php-format
 msgid "%s min"
-msgstr ""
+msgstr "%s min"
 
 #: index.php:5436
 #, php-format
 msgid "Choose %s"
-msgstr ""
+msgstr "Scegli %s"
 
 #: index.php:5437
 msgid "Select a type"
-msgstr ""
+msgstr "Seleziona un tipo"
 
 #: index.php:5438
 msgid "Accommodation (Hotel)"
-msgstr ""
+msgstr "Alloggio (Hotel)"
 
 #: index.php:5439 index.php:5460 index.php:5538
-#, php-format
+#, fuzzy, php-format
 msgid "Do you delete the \"%s\"?"
-msgstr ""
+msgstr "Vuoi eliminare \"%s\"?"
 
 #: index.php:5440
 msgid "Edit schedule"
-msgstr ""
+msgstr "Modifica orario"
 
 #: index.php:5442
 msgid "Shortcode"
-msgstr ""
+msgstr "Shortcode"
 
 #: index.php:5443 index.php:5525 lib/Setting.php:119 lib/Setting.php:168
 #: lib/Setting.php:1171 lib/Setting.php:1354 lib/Setting.php:1418
 #: lib/Setting.php:1517
 msgid "Name"
-msgstr ""
+msgstr "Nome"
 
 #: index.php:5444 lib/Setting.php:121 lib/Setting.php:170 lib/Setting.php:1172
 msgid "Description"
-msgstr ""
+msgstr "Descrizione"
 
 #: index.php:5445 index.php:5526 lib/Setting.php:332 lib/Setting.php:341
 #: lib/Setting.php:349 lib/Setting.php:355 lib/Setting.php:361
 #: lib/Setting.php:367 lib/Setting.php:1173 lib/Setting.php:1419
 #: lib/Setting.php:1518
 msgid "Active"
-msgstr ""
+msgstr "Attivo"
 
 #: index.php:5447 index.php:5528 lib/Setting.php:1331
 msgid "Duration time"
-msgstr ""
+msgstr "Durata"
 
 #: index.php:5448 index.php:5529
 msgid "Unique ID"
-msgstr ""
+msgstr "ID univoco"
 
 #: index.php:5449 index.php:5530 lib/Setting.php:256 lib/Setting.php:1425
 msgid "Value"
-msgstr ""
+msgstr "Valore"
 
 #: index.php:5450 lib/Setting.php:120
 msgid "Required"
-msgstr ""
+msgstr "Richiesto"
 
 #: index.php:5451
 msgid "Is Name"
-msgstr ""
+msgstr "È un nome"
 
 #: index.php:5452
 msgid "Is a location in Google Calendar"
-msgstr ""
+msgstr "È una posizione in Google Calendar"
 
 #: index.php:5453
 msgid "Is Email"
-msgstr ""
+msgstr "È un'email"
 
 #: index.php:5454 index.php:5531 lib/Setting.php:1420
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: index.php:5456
 msgid "Add service"
-msgstr ""
+msgstr "Aggiungi un servizio"
 
 #: index.php:5457
 msgid "Change ranking"
-msgstr ""
+msgstr "Cambia il ranking"
 
 #: index.php:5458
 msgid "Add field"
-msgstr ""
+msgstr "Aggiungi campo"
 
 #: index.php:5459
 #, php-format
 msgid "Do you copy the \"%s\"?"
-msgstr ""
+msgstr "Vuoi copiare \"%s\"?"
 
 #: index.php:5461
 msgid "Disable"
-msgstr ""
+msgstr "Disabilita"
 
 #: index.php:5462
 msgid "Enable"
-msgstr ""
+msgstr "Abilita"
 
 #: index.php:5463
 msgid "New"
-msgstr ""
+msgstr "Nuovo"
 
 #: index.php:5465 lib/Setting.php:1066
 msgid "Pending"
-msgstr ""
+msgstr "In sospeso"
 
 #: index.php:5466
 msgid "Reminder"
-msgstr ""
+msgstr "Promemoria"
 
 #: index.php:5467
 msgid "Canceled"
-msgstr ""
+msgstr "Annullato"
 
 #: index.php:5468
 msgid "Deleted"
-msgstr ""
+msgstr "Eliminato"
 
 #: index.php:5469 index.php:5545
 msgid "Subject"
-msgstr ""
+msgstr "Oggetto"
 
 #: index.php:5470 index.php:5546
 msgid "Content"
-msgstr ""
+msgstr "Contenuto"
 
 #: index.php:5472 index.php:5517
 msgid "Number of rooms available"
-msgstr ""
+msgstr "Numero di camere disponibili"
 
 #: index.php:5473
 msgid "Cost per night"
-msgstr ""
+msgstr "Costo per notte"
 
 #: index.php:5474
 msgid "Maximum number of people staying in one room"
-msgstr ""
+msgstr "Numero massimo di persone che possono soggiornare in una stanza"
 
 #: index.php:5475
 msgid "Include children in the maximum number of people in the room"
-msgstr ""
+msgstr "Includi i bambini nel numero massimo di persone nella stanza"
 
 #: index.php:5476
 msgid "Exclude"
-msgstr ""
+msgstr "Escludi"
 
 #: index.php:5477
 msgid "Include"
-msgstr ""
+msgstr "Includi"
 
 #: index.php:5479 lib/Setting.php:127
 msgid "Number of people"
-msgstr ""
+msgstr "Numero di persone"
 
 #: index.php:5480
 msgid "Booking is completed within 24 hours (hair salon, hospital etc.)"
-msgstr ""
+msgstr "La prenotazione viene completata entro 24 ore (parrucchiere, ospedale, ecc.)"
 
 #: index.php:5481
 msgid "Accommodation (hotels, campgrounds, etc.)"
-msgstr ""
+msgstr "Alloggio (hotel, campeggi, ecc.)"
 
 #: index.php:5482
 #, php-format
 msgid "[%s] is inserting \"%s\""
-msgstr ""
+msgstr "[%s] sta inserendo \"%s\""
 
 #: index.php:5483
 msgid "Fixed calendar"
-msgstr ""
+msgstr "Calendario fisso"
 
 #: index.php:5484
 msgid "Public days from today"
-msgstr ""
+msgstr "Giorni pubblici da oggi"
 
 #: index.php:5485
 msgid "Unavailable days from today"
-msgstr ""
+msgstr "Giorni non disponibili da oggi"
 
 #: index.php:5487
 msgid "Refresh token"
-msgstr ""
+msgstr "Token di aggiornamento"
 
 #: index.php:5488
 #, php-format
 msgid "The \"%s\" is only available to subscribed users."
-msgstr ""
+msgstr "\"%s\" è disponibile solo per gli utenti abbonati."
 
 #: index.php:5489
 msgid "Cancellation URI"
-msgstr ""
+msgstr "URI di cancellazione"
 
 #: index.php:5490
 msgid "Received URI"
-msgstr ""
+msgstr "URI ricevuto"
 
 #: index.php:5492
 msgid "Published"
-msgstr ""
+msgstr "Pubblicato"
 
 #: index.php:5493 lib/Schedule.php:9950
 msgid "Taxes"
-msgstr ""
+msgstr "Tasse"
 
 #: index.php:5494 lib/Schedule.php:9939
 msgid "Surcharges"
-msgstr ""
+msgstr "Sovrapprezzi"
 
 #: index.php:5495
 msgid "Add option"
-msgstr ""
+msgstr "Aggiungi opzione"
 
 #: index.php:5496
 msgid "Add surcharge or tax"
-msgstr ""
+msgstr "Aggiungi sovrapprezzo o tassa"
 
 #: index.php:5497
 msgid "Payment method"
-msgstr ""
+msgstr "Metodo di pagamento"
 
 #: index.php:5499
 msgid "You can use following shortcodes in content editer."
-msgstr ""
+msgstr "Puoi utilizzare i seguenti shortcode nell'editor di contenuti."
 
 #: index.php:5500
 #, php-format
 msgid "This calendar shares the schedules of the \"%s\"."
-msgstr ""
+msgstr "Questo calendario condivide gli orari di \"%s\"."
 
 #: index.php:5501
 msgid "Weekly schedule templates"
-msgstr ""
+msgstr "Modelli di orario settimanale"
 
 #: index.php:5502
 msgid "Coupon name"
-msgstr ""
+msgstr "Nome del coupon"
 
 #: index.php:5503
 msgid "Add new item"
-msgstr ""
+msgstr "Aggiungi nuovo elemento"
 
 #: index.php:5504
 msgid "Add Coupon"
-msgstr ""
+msgstr "Aggiungi coupon"
 
 #: index.php:5505
 msgid "Add Guest"
-msgstr ""
+msgstr "Aggiungi ospite"
 
 #: index.php:5506
 msgid "Enable the guests function"
-msgstr ""
+msgstr "Abilita la funzione degli ospiti"
 
 #: index.php:5507
 msgid "Enable the coupons function"
-msgstr ""
+msgstr "Abilita la funzione dei coupon"
 
 #: index.php:5508
 msgid "Choose all the time"
-msgstr ""
+msgstr "Scegli sempre"
 
 #: index.php:5510
 msgid "Delete the schedules perfectly"
-msgstr ""
+msgstr "Elimina gli orari perfettamente"
 
 #: index.php:5511
 msgid "Discount value"
-msgstr ""
+msgstr "Valore dello sconto"
 
 #: index.php:5512
 msgid "Booking date and time"
-msgstr ""
+msgstr "Data e ora della prenotazione"
 
 #: index.php:5513
 msgid "Booking date"
-msgstr ""
+msgstr "Data della prenotazione"
 
 #: index.php:5514
 msgid "Booking time"
-msgstr ""
+msgstr "Ora della prenotazione"
 
 #: index.php:5518 lib/Setting.php:788
 msgid "Hotel charges"
-msgstr ""
+msgstr "Costi dell'hotel"
 
 #: index.php:5522
 msgid "Cancel subscription"
-msgstr ""
+msgstr "Annulla l'abbonamento"
 
 #: index.php:5523
 msgid "Register credit card"
-msgstr ""
+msgstr "Registra carta di credito"
 
 #: index.php:5524
 msgid "Update subscription"
-msgstr ""
+msgstr "Aggiorna abbonamento"
 
 #: index.php:5533
 msgid "Cancellation of booking"
-msgstr ""
+msgstr "Cancellazione della prenotazione"
 
 #: index.php:5534
 msgid "The Service account must be in JSON format."
-msgstr ""
+msgstr "L'account di servizio deve essere in formato JSON."
 
 #: index.php:5539
 msgid "Do you really cancel the subscription?"
-msgstr ""
+msgstr "Vuoi davvero cancellare l'abbonamento?"
 
 #: index.php:5540
 msgid "General"
-msgstr ""
+msgstr "Generale"
 
 #: index.php:5541 lib/Setting.php:273
 msgid "Country"
-msgstr ""
+msgstr "Paese"
 
 #: index.php:5542
 msgid "Selected country"
-msgstr ""
+msgstr "Paese selezionato"
 
 #: index.php:5543
 msgid "Frequently used countries"
-msgstr ""
+msgstr "Paesi utilizzati frequentemente"
 
 #: index.php:5544
 msgid "Other countries"
-msgstr ""
+msgstr "Altri paesi"
 
 #: index.php:5560
 msgid "Please fill in your details"
-msgstr ""
+msgstr "Per favore, compila i tuoi dettagli"
 
 #: index.php:5562
 msgid "Your Booking Details"
-msgstr ""
+msgstr "Dettagli della tua prenotazione"
 
 #: index.php:5563
 msgid "Book now"
-msgstr ""
+msgstr "Prenota ora"
 
 #: index.php:5564
 msgid "Booking Completed"
-msgstr ""
+msgstr "Prenotazione completata"
 
 #: index.php:5565
 msgid "Credit card"
-msgstr ""
+msgstr "Carta di credito"
 
 #: index.php:5567
 msgid "Submit Payment"
-msgstr ""
+msgstr "Invia pagamento"
 
 #: index.php:5569
 msgid "Cancel booking"
-msgstr ""
+msgstr "Annulla prenotazione"
 
 #: index.php:5571
 msgid "You have not selected anything"
-msgstr ""
+msgstr "Non hai selezionato nulla"
 
 #: index.php:5572
 msgid "Select option"
-msgstr ""
+msgstr "Seleziona opzione"
 
 #: index.php:5573
 msgid "Choose a date"
-msgstr ""
+msgstr "Scegli una data"
 
 #: index.php:5574
 msgid "Select payment method"
-msgstr ""
+msgstr "Seleziona metodo di pagamento"
 
 #: index.php:5575 lib/Schedule.php:10058 lib/Schedule.php:10694
 #: lib/Setting.php:779
 msgid "I will pay locally"
-msgstr ""
+msgstr "Pagherò in loco"
 
 #: index.php:5576 lib/Schedule.php:10697
 msgid "Pay with Credit Card"
-msgstr ""
+msgstr "Paga con carta di credito"
 
 #: index.php:5577 lib/Schedule.php:10701 lib/Setting.php:779
 msgid "Pay with PayPal"
-msgstr ""
+msgstr "Paga con PayPal"
 
 #: index.php:5578
 msgid "Do you really want to delete the license as a member?"
-msgstr ""
+msgstr "Vuoi davvero eliminare la licenza come membro?"
 
 #: index.php:5666
 msgid "Booking Calendar :"
-msgstr ""
+msgstr "Calendario delle prenotazioni:"
 
 #: lib/Html.php:184
 msgid "Register For This Site"
-msgstr ""
+msgstr "Registrati per questo sito"
 
 #: lib/Html.php:185
 msgid "Sign up"
-msgstr ""
+msgstr "Iscriviti"
 
 #: lib/Html.php:190
 msgid "Register"
-msgstr ""
+msgstr "Registrati"
 
 #: lib/Html.php:192
 msgid "Profile"
-msgstr ""
+msgstr "Profilo"
 
 #: lib/Html.php:198
 msgid "Subscribed items"
-msgstr ""
+msgstr "Elementi sottoscritti"
 
 #: lib/Html.php:303 lib/Html.php:333 lib/Html.php:376
 msgid "Return to calendar"
-msgstr ""
+msgstr "Torna al calendario"
 
 #: lib/Html.php:304 lib/Html.php:334 lib/Html.php:377
 msgid "Cancel this booking"
-msgstr ""
+msgstr "Annulla questa prenotazione"
 
 #: lib/Html.php:378
 msgid "My booking details"
-msgstr ""
+msgstr "Dettagli della mia prenotazione"
 
 #: lib/Schedule.php:141 lib/Schedule.php:320
 msgid "Member related functions are not available"
-msgstr ""
+msgstr "Le funzioni relative ai membri non sono disponibili"
 
 #: lib/Schedule.php:269 lib/Schedule.php:282
 msgid "Your information could not be found."
-msgstr ""
+msgstr "Le tue informazioni non sono state trovate."
 
 #: lib/Schedule.php:303
 msgid "You have already been approved."
-msgstr ""
+msgstr "Sei già stato approvato."
 
 #: lib/Schedule.php:805
 msgid "Your email address has not been accepted."
-msgstr ""
+msgstr "Il tuo indirizzo email non è stato accettato."
 
 #: lib/Schedule.php:1085
 msgid "Your username has not been approved."
-msgstr ""
+msgstr "Il tuo nome utente non è stato approvato."
 
 #: lib/Schedule.php:3043
-msgid ""
-"If you want to delete this calendar, delete the calendar sharing the "
-"schedules."
-msgstr ""
+msgid "If you want to delete this calendar, delete the calendar sharing the schedules."
+msgstr "Se vuoi eliminare questo calendario, elimina il calendario che condivide gli orari."
 
 #: lib/Schedule.php:5374
 #, php-format
 msgid "You have already used the coupon code of \"%s\"."
-msgstr ""
+msgstr "Hai già utilizzato il codice coupon di \"%s\"."
 
 #: lib/Schedule.php:5383 lib/Schedule.php:5396 lib/Schedule.php:5408
 #, php-format
 msgid "Not found the coupon code of \"%s\"."
-msgstr ""
+msgstr "Codice coupon \"%s\" non trovato."
 
 #: lib/Schedule.php:5441 lib/Schedule.php:5449
 #, php-format
 msgid "%s was not found"
-msgstr ""
+msgstr "%s non è stato trovato"
 
 #: lib/Schedule.php:5617
 #, php-format
 msgid "There is no vacancy in the room on %s"
-msgstr ""
+msgstr "Non ci sono posti disponibili nella stanza il %s"
 
 #: lib/Schedule.php:5623
 #, php-format
 msgid "Booking of %s is suspended."
-msgstr ""
+msgstr "La prenotazione di %s è sospesa."
 
 #: lib/Schedule.php:5634 lib/Schedule.php:6704
 msgid "Schedule was not found"
-msgstr ""
+msgstr "L'orario non è stato trovato"
 
 #: lib/Schedule.php:6189
 #, php-format
 msgid "You have already booked between %s and %s."
-msgstr ""
+msgstr "Hai già prenotato tra %s e %s."
 
 #: lib/Schedule.php:6201
 #, php-format
 msgid "You have already booked at %s."
-msgstr ""
+msgstr "Hai già prenotato alle %s."
 
 #: lib/Schedule.php:6258
 #, php-format
 msgid "You have already booked between %s and %s by %s."
-msgstr ""
+msgstr "Hai già prenotato tra %s e %s da %s."
 
 #: lib/Schedule.php:6270
 #, php-format
 msgid "You have already booked at %s by %s."
-msgstr ""
+msgstr "Hai già prenotato alle %s da %s."
 
 #: lib/Schedule.php:6459
 msgid "Verification code"
-msgstr ""
+msgstr "Codice di verifica"
 
 #: lib/Schedule.php:6460
 #, php-format
 msgid "Your verification code is: %s"
-msgstr ""
+msgstr "Il tuo codice di verifica è: %s"
 
 #: lib/Schedule.php:6487 lib/Schedule.php:6499
 msgid "We couldn't send you a verification code."
-msgstr ""
+msgstr "Non siamo riusciti a inviarti un codice di verifica."
 
 #: lib/Schedule.php:6517
 msgid "The verification code is incorrect."
-msgstr ""
+msgstr "Il codice di verifica non è corretto."
 
 #: lib/Schedule.php:6759 lib/Schedule.php:6780
 msgid "The schedule you requested has been closed."
-msgstr ""
+msgstr "L'orario che hai richiesto è stato chiuso."
 
 #: lib/Schedule.php:9230 lib/Schedule.php:9273
 msgid "There is a problem with the remaining capacity in the schedules."
-msgstr ""
+msgstr "C'è un problema con la capacità rimanente negli orari."
 
 #: lib/Schedule.php:9411
 msgid "The format of the email address is incorrect."
-msgstr ""
+msgstr "Il formato dell'indirizzo email non è corretto."
 
 #: lib/Schedule.php:9848 lib/Schedule.php:9849 lib/Schedule.php:10513
 msgid "Room"
-msgstr ""
+msgstr "Stanza"
 
 #: lib/Schedule.php:10354 lib/Schedule.php:10378 lib/Schedule.php:10416
 msgid "None"
-msgstr ""
+msgstr "Nessuno"
 
 #: lib/Setting.php:104
 msgid "First name"
-msgstr ""
+msgstr "Nome"
 
 #: lib/Setting.php:105
 msgid "Last name"
-msgstr ""
+msgstr "Cognome"
 
 #: lib/Setting.php:107
 msgid "Phone"
-msgstr ""
+msgstr "Telefono"
 
 #: lib/Setting.php:108
 msgid "Zip"
-msgstr ""
+msgstr "CAP"
 
 #: lib/Setting.php:109
 msgid "Address"
-msgstr ""
+msgstr "Indirizzo"
 
 #: lib/Setting.php:110
 msgid "Terms of Service"
-msgstr ""
+msgstr "Termini di servizio"
 
 #: lib/Setting.php:110
 msgid "I agree"
-msgstr ""
+msgstr "Accetto"
 
 #: lib/Setting.php:122
 msgid "Select one from standard cost to cost 6 in services"
-msgstr ""
+msgstr "Seleziona uno tra costo standard e costo 6 nei servizi"
 
 #: lib/Setting.php:122 lib/Setting.php:1189 lib/Setting.php:1356
 msgid "Standard cost"
-msgstr ""
+msgstr "Costo standard"
 
 #: lib/Setting.php:122 lib/Setting.php:1199 lib/Setting.php:1357
 msgid "Cost 2"
-msgstr ""
+msgstr "Costo 2"
 
 #: lib/Setting.php:122 lib/Setting.php:1209 lib/Setting.php:1358
 msgid "Cost 3"
-msgstr ""
+msgstr "Costo 3"
 
 #: lib/Setting.php:122 lib/Setting.php:1219 lib/Setting.php:1359
 msgid "Cost 4"
-msgstr ""
+msgstr "Costo 4"
 
 #: lib/Setting.php:122 lib/Setting.php:1229 lib/Setting.php:1360
 msgid "Cost 5"
-msgstr ""
+msgstr "Costo 5"
 
 #: lib/Setting.php:122 lib/Setting.php:1239 lib/Setting.php:1361
 msgid "Cost 6"
-msgstr ""
+msgstr "Costo 6"
 
 #: lib/Setting.php:123
 msgid "Adult"
-msgstr ""
+msgstr "Adulto"
 
 #: lib/Setting.php:123
 msgid "Children"
-msgstr ""
+msgstr "Bambini"
 
 #: lib/Setting.php:124
 msgid "Include the number of guests in the capacity"
-msgstr ""
+msgstr "Includi il numero di ospiti nella capacità"
 
 #: lib/Setting.php:124
 msgid "Excluded"
-msgstr ""
+msgstr "Escluso"
 
 #: lib/Setting.php:124 lib/Setting.php:899 lib/Setting.php:942
 msgid "Included"
-msgstr ""
+msgstr "Incluso"
 
 #: lib/Setting.php:125
 msgid "Reflect the number of visitors in the selected service costs"
-msgstr ""
+msgstr "Rifletti il numero di visitatori nei costi del servizio selezionato"
 
 #: lib/Setting.php:126
 msgid "Reflect the number of visitors in the additional costs"
-msgstr ""
+msgstr "Rifletti il numero di visitatori nei costi aggiuntivi"
 
 #: lib/Setting.php:172
 msgid "Coupon usage"
-msgstr ""
+msgstr "Utilizzo coupon"
 
 #: lib/Setting.php:172
 msgid "Offer unlimited coupons"
-msgstr ""
+msgstr "Offri coupon illimitati"
 
 #: lib/Setting.php:172
 msgid "Offer a limited one-time coupon per users"
-msgstr ""
+msgstr "Offri un coupon monouso limitato per utenti"
 
 #: lib/Setting.php:195 lib/Setting.php:1271 lib/Setting.php:1448
 msgid "From"
-msgstr ""
+msgstr "Da"
 
 #: lib/Setting.php:225 lib/Setting.php:1301 lib/Setting.php:1478
 msgid "To"
-msgstr ""
+msgstr "A"
 
 #: lib/Setting.php:255 lib/Setting.php:1422
 msgid "Calculation method"
-msgstr ""
+msgstr "Metodo di calcolo"
 
 #: lib/Setting.php:255
 msgid "Subtraction"
-msgstr ""
+msgstr "Sottrazione"
 
 #: lib/Setting.php:255 lib/Setting.php:1422
 msgid "Multiplication"
-msgstr ""
+msgstr "Moltiplicazione"
 
 #: lib/Setting.php:266
 msgid "Site name"
-msgstr ""
+msgstr "Nome del sito"
 
 #: lib/Setting.php:267 lib/Setting.php:694
 msgid "To (Email Address)"
-msgstr ""
+msgstr "A (Indirizzo email)"
 
 #: lib/Setting.php:269 lib/Setting.php:695
 msgid "From (Email Address)"
-msgstr ""
+msgstr "Da (Indirizzo email)"
 
 #: lib/Setting.php:270 lib/Setting.php:696
 msgid "From (Email Title)"
-msgstr ""
+msgstr "Da (Titolo email)"
 
 #: lib/Setting.php:272
 msgid "Default Timezone"
-msgstr ""
+msgstr "Fuso orario predefinito"
 
 #: lib/Setting.php:274
 msgid "Currency"
-msgstr ""
+msgstr "Valuta"
 
 #: lib/Setting.php:300
 msgid "Date format"
-msgstr ""
+msgstr "Formato data"
 
 #: lib/Setting.php:301
 msgid "Time Format"
-msgstr ""
+msgstr "Formato ora"
 
 #: lib/Setting.php:303
 msgid "09:00 a.m."
-msgstr ""
+msgstr "09:00 a.m."
 
 #: lib/Setting.php:304
 msgid "09:00 am"
-msgstr ""
+msgstr "09:00 am"
 
 #: lib/Setting.php:305
 msgid "03:00 PM"
-msgstr ""
+msgstr "03:00 PM"
 
 #: lib/Setting.php:306
 msgid "17:00"
-msgstr ""
+msgstr "17:00"
 
 #: lib/Setting.php:309
 msgid "Position of the day of the week"
-msgstr ""
+msgstr "Posizione del giorno della settimana"
 
 #: lib/Setting.php:309
 msgid "Before the date and time"
-msgstr ""
+msgstr "Prima della data e dell'ora"
 
 #: lib/Setting.php:309
 msgid "After the date and time"
-msgstr ""
+msgstr "Dopo la data e l'ora"
 
 #: lib/Setting.php:310
 msgid "Automatic approve of booking"
-msgstr ""
+msgstr "Approvazione automatica della prenotazione"
 
 #: lib/Setting.php:311
 msgid "Javascript syntax error notification"
-msgstr ""
+msgstr "Notifica errore di sintassi JavaScript"
 
 #: lib/Setting.php:311
 msgid "Automatically notify developers"
-msgstr ""
+msgstr "Notifica automatica agli sviluppatori"
 
 #: lib/Setting.php:313
 msgid "Character code of download file"
-msgstr ""
+msgstr "Codice carattere del file da scaricare"
 
 #: lib/Setting.php:314
 msgid "Tracking ID for the Google analytics"
-msgstr ""
+msgstr "ID di monitoraggio per Google Analytics"
 
 #: lib/Setting.php:317
-msgid ""
-"Define \"position: sticky\" for the css (style) in the calendar for visitors"
-msgstr ""
+msgid "Define \"position: sticky\" for the css (style) in the calendar for visitors"
+msgstr "Definisci \"position: sticky\" per il CSS (stile) nel calendario per i visitatori"
 
 #: lib/Setting.php:318
 msgid "Font size"
-msgstr ""
+msgstr "Dimensione del carattere"
 
 #: lib/Setting.php:320
 msgid "Background color"
-msgstr ""
+msgstr "Colore di sfondo"
 
 #: lib/Setting.php:321
 msgid "Calendar background color with schedule"
-msgstr ""
+msgstr "Colore di sfondo del calendario con programma"
 
 #: lib/Setting.php:322
 msgid "Calendar background color with no schedule"
-msgstr ""
+msgstr "Colore di sfondo del calendario senza programma"
 
 #: lib/Setting.php:323
 msgid "Background color of closed days"
-msgstr ""
+msgstr "Colore di sfondo dei giorni chiusi"
 
 #: lib/Setting.php:325
 msgid "Schedule and service background color"
-msgstr ""
+msgstr "Colore di sfondo del programma e del servizio"
 
 #: lib/Setting.php:326
 msgid "Background color of selected label"
-msgstr ""
+msgstr "Colore di sfondo dell'etichetta selezionata"
 
 #: lib/Setting.php:327
 msgid "Background color when the pointer overlaps a link"
-msgstr ""
+msgstr "Colore di sfondo quando il puntatore si sovrappone a un link"
 
 #: lib/Setting.php:328
 msgid "Border color"
-msgstr ""
+msgstr "Colore del bordo"
 
 #: lib/Setting.php:333
 msgid "Sending method"
-msgstr ""
+msgstr "Metodo di invio"
 
 #: lib/Setting.php:333 lib/Setting.php:338
 msgid "Phone number"
-msgstr ""
+msgstr "Numero di telefono"
 
 #: lib/Setting.php:333
 msgid "Alphanumeric Sender ID"
-msgstr ""
+msgstr "ID mittente alfanumerico"
 
 #: lib/Setting.php:334
 msgid "Account SID"
-msgstr ""
+msgstr "Account SID"
 
 #: lib/Setting.php:335
 msgid "Messaging Service SID"
-msgstr ""
+msgstr "Messaging Service SID"
 
 #: lib/Setting.php:336
 msgid "Auth token"
-msgstr ""
+msgstr "Token di autenticazione"
 
 #: lib/Setting.php:337
 msgid "Country calling code"
-msgstr ""
+msgstr "Prefisso internazionale del paese"
 
 #: lib/Setting.php:342
 msgid "API Base URL"
-msgstr ""
+msgstr "URL base dell'API"
 
 #: lib/Setting.php:343
 msgid "API Key"
-msgstr ""
+msgstr "Chiave API"
 
 #: lib/Setting.php:350
 msgid "Public Key"
-msgstr ""
+msgstr "Chiave pubblica"
 
 #: lib/Setting.php:351 lib/Setting.php:358 lib/Setting.php:363
 #: lib/Setting.php:369
 msgid "Secret Key"
-msgstr ""
+msgstr "Chiave segreta"
 
 #: lib/Setting.php:352
 msgid "Capture method for payment intent"
-msgstr ""
+msgstr "Metodo di acquisizione per l'intento di pagamento"
 
 #: lib/Setting.php:352
 msgid "Automatic"
-msgstr ""
+msgstr "Automatico"
 
 #: lib/Setting.php:352
 msgid "Manual"
-msgstr ""
+msgstr "Manuale"
 
 #: lib/Setting.php:356
 msgid "Mode"
-msgstr ""
+msgstr "Modalità"
 
 #: lib/Setting.php:356
 msgid "Live"
-msgstr ""
+msgstr "Vivo"
 
 #: lib/Setting.php:356
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 #: lib/Setting.php:357
 msgid "Client ID"
-msgstr ""
+msgstr "ID client"
 
 #: lib/Setting.php:362 lib/Setting.php:368
 msgid "Site Key"
-msgstr ""
+msgstr "Chiave del sito"
 
 #: lib/Setting.php:364
 msgid "Version"
-msgstr ""
+msgstr "Versione"
 
 #: lib/Setting.php:370
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
 #: lib/Setting.php:370
 msgid "Light"
-msgstr ""
+msgstr "Chiaro"
 
 #: lib/Setting.php:370
 msgid "Dark"
-msgstr ""
+msgstr "Scuro"
 
 #: lib/Setting.php:371
 msgid "Size"
-msgstr ""
+msgstr "Dimensione"
 
 #: lib/Setting.php:371
 msgid "Normal"
-msgstr ""
+msgstr "Normale"
 
 #: lib/Setting.php:371
 msgid "Compact"
-msgstr ""
+msgstr "Compatto"
 
 #: lib/Setting.php:697
 msgid "Open"
-msgstr ""
+msgstr "Aperto"
 
 #: lib/Setting.php:697
 msgid "Closed"
-msgstr ""
+msgstr "Chiuso"
 
 #: lib/Setting.php:701
 msgid "Schedules sharing"
-msgstr ""
+msgstr "Condivisione dei programmi"
 
 #: lib/Setting.php:721
 msgid "Target calendar"
-msgstr ""
+msgstr "Calendario di destinazione"
 
 #: lib/Setting.php:735
 msgid "Week Starts On"
-msgstr ""
+msgstr "La settimana inizia il"
 
 #: lib/Setting.php:738
 msgid "Send a booking verification code"
-msgstr ""
+msgstr "Invia un codice di verifica della prenotazione"
 
 #: lib/Setting.php:749
 msgid "For customers"
-msgstr ""
+msgstr "Per i clienti"
 
 #: lib/Setting.php:755 lib/Setting.php:769
 msgid "Email and SMS"
-msgstr ""
+msgstr "Email e SMS"
 
 #: lib/Setting.php:763
 msgid "For users"
-msgstr ""
+msgstr "Per gli utenti"
 
 #: lib/Setting.php:779
 msgid "Payment methods"
-msgstr ""
+msgstr "Metodi di pagamento"
 
 #: lib/Setting.php:779
 msgid "Pay with Stripe"
-msgstr ""
+msgstr "Paga con Stripe"
 
 #: lib/Setting.php:781
 msgid "Product ID"
-msgstr ""
+msgstr "ID prodotto"
 
 #: lib/Setting.php:841
 msgid "The day Before National holiday"
-msgstr ""
+msgstr "Il giorno prima di una festa nazionale"
 
 #: lib/Setting.php:855
 msgid "Minimum nights"
-msgstr ""
+msgstr "Numero minimo di notti"
 
 #: lib/Setting.php:856
 msgid "Maximum nights"
-msgstr ""
+msgstr "Numero massimo di notti"
 
 #: lib/Setting.php:860
 msgid "Arrival (Check-in) & Departure (Check-out)"
-msgstr ""
+msgstr "Arrivo (Check-in) e Partenza (Check-out)"
 
 #: lib/Setting.php:860
 msgid "Arrival & Departure"
-msgstr ""
+msgstr "Arrivo e Partenza"
 
 #: lib/Setting.php:860
 msgid "Check-in & Check-out"
-msgstr ""
+msgstr "Check-in e Check-out"
 
 #: lib/Setting.php:861
 msgid "Allow booking of multiple rooms"
-msgstr ""
+msgstr "Consenti prenotazioni di camere multiple"
 
 #: lib/Setting.php:863
 msgid "Preparation time"
-msgstr ""
+msgstr "Tempo di preparazione"
 
 #: lib/Setting.php:864
 msgid "Position of preparation time"
-msgstr ""
+msgstr "Posizione del tempo di preparazione"
 
 #: lib/Setting.php:864
 msgid "Before and after booked time"
-msgstr ""
+msgstr "Prima e dopo l'orario prenotato"
 
 #: lib/Setting.php:864
 msgid "Before booked time"
-msgstr ""
+msgstr "Prima dell'orario prenotato"
 
 #: lib/Setting.php:864
 msgid "After booked time"
-msgstr ""
+msgstr "Dopo l'orario prenotato"
 
 #: lib/Setting.php:865
 msgid "Flow of booking procedure on front-end page"
-msgstr ""
+msgstr "Flusso della procedura di prenotazione sulla pagina front-end"
 
 #: lib/Setting.php:865
 msgid "Start by selecting a date"
-msgstr ""
+msgstr "Inizia selezionando una data"
 
 #: lib/Setting.php:865
 msgid "Start by selecting a service"
-msgstr ""
+msgstr "Inizia selezionando un servizio"
 
 #: lib/Setting.php:866
 msgid "Service function"
-msgstr ""
+msgstr "Funzione del servizio"
 
 #: lib/Setting.php:867
 msgid "Selection of multiple services"
-msgstr ""
+msgstr "Selezione di servizi multipli"
 
 #: lib/Setting.php:868
 msgid "Service name"
-msgstr ""
+msgstr "Nome del servizio"
 
 #: lib/Setting.php:869
 msgid "Guest function"
-msgstr ""
+msgstr "Funzione degli ospiti"
 
 #: lib/Setting.php:873
 msgid "Minimum the number of guests per one booking"
-msgstr ""
+msgstr "Numero minimo di ospiti per una prenotazione"
 
 #: lib/Setting.php:893 lib/Setting.php:936
 msgid "Includes \"No\" selected on \"Required\" in the Guests"
-msgstr ""
+msgstr "Include \"No\" selezionato su \"Richiesto\" nei partecipanti"
 
 #: lib/Setting.php:903 lib/Setting.php:946
 msgid "Number of guests"
-msgstr ""
+msgstr "Numero di ospiti"
 
 #: lib/Setting.php:916
 msgid "Maximum the number of guests per one booking"
-msgstr ""
+msgstr "Numero massimo di ospiti per una prenotazione"
 
 #: lib/Setting.php:958
 msgid "Display the remaining capacity as a phrase or symbol in the calendar"
-msgstr ""
+msgstr "Mostra la capacità rimanente come frase o simbolo nel calendario"
 
 #: lib/Setting.php:959
-msgid ""
-"Display the remaining capacity as a number instead of symbols in the calendar"
-msgstr ""
+msgid "Display the remaining capacity as a number instead of symbols in the calendar"
+msgstr "Mostra la capacità rimanente come numero anziché come simboli nel calendario"
 
 #: lib/Setting.php:960
 msgid "Threshold of remaining capacity"
-msgstr ""
+msgstr "Soglia della capacità rimanente"
 
 #: lib/Setting.php:961
-msgid ""
-"A phrase or symbol on a day when the remaining capacity has more than "
-"threshold"
-msgstr ""
+msgid "A phrase or symbol on a day when the remaining capacity has more than threshold"
+msgstr "Una frase o un simbolo in un giorno in cui la capacità rimanente supera la soglia"
 
 #: lib/Setting.php:961 lib/Setting.php:962 lib/Setting.php:963
-msgid ""
-"You can use the web font of <a href=\"https://material.io/tools/icons/?"
-"style=baseline\" target=\"_blank\">Material icons</a>."
-msgstr ""
+msgid "You can use the web font of <a href=\"https://material.io/tools/icons/?style=baseline\" target=\"_blank\">Material icons</a>."
+msgstr "È possibile utilizzare il font web di <a href=\"https://material.io/tools/icons/?style=baseline\" target=\"_blank\">Material icons</a>."
 
 #: lib/Setting.php:962
-msgid ""
-"A phrase or symbol on a day when the remaining capacity has less than "
-"threshold"
-msgstr ""
+msgid "A phrase or symbol on a day when the remaining capacity has less than threshold"
+msgstr "Una frase o un simbolo in un giorno in cui la capacità rimanente è inferiore alla soglia"
 
 #: lib/Setting.php:963
 msgid "A phrase or symbol on a day when remaining capacity has 0%"
-msgstr ""
+msgstr "Una frase o un simbolo in un giorno in cui la capacità rimanente è del 0%"
 
 #: lib/Setting.php:969
 msgid "Display remaining capacity in schedule label"
-msgstr ""
+msgstr "Mostra la capacità rimanente nell'etichetta del programma"
 
 #: lib/Setting.php:975
-msgid ""
-"Display details of the canceled visitors and user on the Report & Booking "
-"page"
-msgstr ""
+msgid "Display details of the canceled visitors and user on the Report & Booking page"
+msgstr "Mostra i dettagli dei visitatori e dell'utente annullati sulla pagina Rapporti & Prenotazioni"
 
 #: lib/Setting.php:977
 msgid "Block multiple booking in the same time slot"
-msgstr ""
+msgstr "Blocca prenotazioni multiple nello stesso intervallo di tempo"
 
 #: lib/Setting.php:995
 msgid "Booking reminder"
-msgstr ""
+msgstr "Promemoria prenotazione"
 
 #: lib/Setting.php:997
 #, php-format
 msgid "About %d hour ago"
-msgstr ""
+msgstr "Circa %d ora fa"
 
 #: lib/Setting.php:998 lib/Setting.php:999 lib/Setting.php:1000
 #: lib/Setting.php:1001 lib/Setting.php:1002 lib/Setting.php:1003
@@ -2232,190 +2212,141 @@ msgstr ""
 #: lib/Setting.php:1013
 #, php-format
 msgid "About %d hours ago"
-msgstr ""
+msgstr "Circa %d ore fa"
 
 #: lib/Setting.php:1018
 msgid "Allow cancellation of booking by your customers"
-msgstr ""
+msgstr "Consenti la cancellazione delle prenotazioni da parte dei clienti"
 
 #: lib/Setting.php:1044
 #, php-format
 msgid "%s minutes ago"
-msgstr ""
+msgstr "%s minuti fa"
 
 #: lib/Setting.php:1045
 #, php-format
 msgid "%s hour ago"
-msgstr ""
+msgstr "%s ora fa"
 
 #: lib/Setting.php:1046 lib/Setting.php:1047 lib/Setting.php:1048
 #: lib/Setting.php:1049
 #, php-format
 msgid "%s hours ago"
-msgstr ""
+msgstr "%s ore fa"
 
 #: lib/Setting.php:1050
 #, php-format
 msgid "%s day ago"
-msgstr ""
-
-#: lib/Setting.php:1051 lib/Setting.php:1052 lib/Setting.php:1053
-#: lib/Setting.php:1054
-#, php-format
-msgid "%s days ago"
-msgstr ""
-
-#: lib/Setting.php:1059
-msgid "Status of booking"
-msgstr ""
-
-#: lib/Setting.php:1065
-msgid "Pending and Approved"
-msgstr ""
-
-#: lib/Setting.php:1082
-msgid "Services page for front-end"
-msgstr ""
-
-#: lib/Setting.php:1082 lib/Setting.php:1083 lib/Setting.php:1084
-#: lib/Setting.php:1085 lib/Setting.php:1086 lib/Setting.php:1117
-msgid ""
-"Add \"booking-package\" to the name and \"front-end\" to the value on the "
-"Custom Fields in the Pages."
-msgstr ""
-
-#: lib/Setting.php:1083
-msgid "Calendar page for front-end"
-msgstr ""
-
-#: lib/Setting.php:1084
-msgid "Schedules page for front-end"
-msgstr ""
-
-#: lib/Setting.php:1085
-msgid "Visitor details page for front-end"
-msgstr ""
-
-#: lib/Setting.php:1086
-msgid "Booking completed page for front-end"
-msgstr ""
-
-#: lib/Setting.php:1090
-msgid "Redirect to another page without displaying the booking completion page"
-msgstr ""
-
-#: lib/Setting.php:1106 lib/Setting.php:1110
-msgid "Pages"
-msgstr ""
-
-#: lib/Setting.php:1106 lib/Setting.php:1121
-msgid "URL"
-msgstr ""
-
-#: lib/Setting.php:1174 lib/Setting.php:1553
-msgid "Customers and Users"
-msgstr ""
-
-#: lib/Setting.php:1177
-msgid "Costs"
-msgstr ""
-
-#: lib/Setting.php:1332
-msgid "Time to provide service"
-msgstr ""
-
-#: lib/Setting.php:1333
-msgid "Selection of multiple options"
-msgstr ""
-
-#: lib/Setting.php:1363
-msgid "Additional time"
-msgstr ""
-
-#: lib/Setting.php:1376 lib/Setting.php:1377
-msgid "Invalid"
-msgstr ""
-
-#: lib/Setting.php:1376 lib/Setting.php:1377
-msgid "Valid"
-msgstr ""
+msgstr "%s giorno fa"
 
 #: lib/Setting.php:1421
 msgid "Tax-exclusive pricing"
-msgstr ""
+msgstr "Prezzi esclusi di tasse"
 
 #: lib/Setting.php:1421
 msgid "Tax-inclusive pricing"
-msgstr ""
+msgstr "Prezzi inclusi di tasse"
 
 #: lib/Setting.php:1422
 msgid "Addition"
-msgstr ""
+msgstr "Aggiunta"
 
 #: lib/Setting.php:1423
 msgid "Target of tax or surcharge"
-msgstr ""
+msgstr "Destinazione della tassa o sovrattassa"
 
 #: lib/Setting.php:1423 lib/Setting.php:1520
 msgid "Per room"
-msgstr ""
+msgstr "Per camera"
 
 #: lib/Setting.php:1423 lib/Setting.php:1520
 msgid "Per guest"
-msgstr ""
+msgstr "Per ospite"
 
 #: lib/Setting.php:1424
 msgid "Range of tax or surcharge"
-msgstr ""
+msgstr "Intervallo di tassa o sovrattassa"
 
 #: lib/Setting.php:1424
 msgid "Per day"
-msgstr ""
+msgstr "Al giorno"
 
 #: lib/Setting.php:1424
 msgid "Per one booking"
-msgstr ""
+msgstr "Per una prenotazione"
 
 #: lib/Setting.php:1424
 msgid "Per one booking for all guests"
-msgstr ""
+msgstr "Per una prenotazione per tutti gli ospiti"
 
 #: lib/Setting.php:1521
 msgid "Charge for adults"
-msgstr ""
+msgstr "Costo per adulti"
 
 #: lib/Setting.php:1522
 msgid "Charge for children"
-msgstr ""
+msgstr "Costo per bambini"
 
 #: lib/Setting.php:1523
 msgid "Charge for room"
-msgstr ""
+msgstr "Costo per camera"
 
 #: lib/Setting.php:1542
 msgid "Placeholder text"
-msgstr ""
+msgstr "Testo segnaposto"
 
 #: lib/Setting.php:1544
 msgid "On"
-msgstr ""
+msgstr "Attivo"
 
 #: lib/Setting.php:1546
 msgid "The front-end and the dashboard"
-msgstr ""
+msgstr "La pagina front-end e la dashboard"
 
 #: lib/Setting.php:1546
 msgid "The front-end only"
-msgstr ""
+msgstr "Solo la pagina front-end"
 
 #: lib/Setting.php:1551
 msgid "Is Terms of Service or Privacy Policy"
-msgstr ""
+msgstr "È Termini di servizio o Informativa sulla privacy"
 
 #: lib/Setting.php:1552
 msgid "Save a value of this field as autocomplete on user"
-msgstr ""
+msgstr "Salva il valore di questo campo come completamento automatico per l'utente"
 
 #: lib/Setting.php:1553
 msgid "Target customers"
-msgstr ""
+msgstr "Clienti di destinazione"
+
+#TRADUZIONI AGGIUNTE
+
+msgid "Booked Customers"
+msgstr "Prenotazioni"
+
+msgid "Calendar Settings"
+msgstr "Impostazioni calendari"
+
+msgid "status"
+msgstr "Stato"
+
+msgid "scheduleDate"
+msgstr "Data di prenotazione"
+
+msgid "firstname"
+msgstr "Nome"
+
+msgid "lastname"
+msgstr "Cognome"
+
+msgid "phone"
+msgstr "Telefono"
+
+msgid "zip"
+msgstr "Cap"
+
+msgid "address"
+msgstr "Indirizzo"
+
+msgid "terms"
+msgstr "Accettazione privacy"

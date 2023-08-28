@@ -3,7 +3,7 @@
 Plugin Name: WP Booking Package
 Plugin URI:  https://github.com/lucaterribili/wp-booking-package
 Description: Booking Package is a high-performance booking calendar system that anyone can easily use.
-Version:     1.0.2
+Version:     1.0.1
 Author:      Luca Terribili
 Author URI:  https://lucaterribili.it/
 License:     GPL2
@@ -168,10 +168,14 @@ class BOOKING_PACKAGE
         }
 
         add_filter('locale', array($this, 'plugin_localized'));
-        add_filter('load_textdomain_mofile', array($this, 'plugin_textdomain'), 10, 2);
+        //add_filter('load_textdomain_mofile', array($this, 'plugin_textdomain'), 10, 2);
 
         $pluginName = $this->plugin_name;
-        $test = load_plugin_textdomain($pluginName, false, dirname(plugin_basename(__FILE__)) . '/languages');
+
+
+        add_action('init', function () use ($pluginName) {
+            load_plugin_textdomain($pluginName, false, dirname(plugin_basename(__FILE__)) . '/languages/');
+        });
 
         add_action('booking_package_notification', array($this, 'do_booking_notification'));
         add_action('wp_dashboard_setup', array($this, 'add_dashboard_widget'));
@@ -247,6 +251,18 @@ class BOOKING_PACKAGE
             add_action('admin_init', array($this, 'getDownloadCSV'));
 
         }
+        /**
+         * HACK PER CANCELLARE DATI CHE NON INTERESSANO NELLO SCARICO DELLE PRENOTAZIONI
+         */
+        add_filter('booking_package_download_booked_customer', function($customer){
+            $remove_list = ['amount', 'key', 'services', 'guests', 'coupon'];
+            foreach ($remove_list as $item) {
+                if(array_key_exists($item, $customer)) {
+                    unset($customer[$item]);
+                }
+            }
+            return $customer;
+        });
 
     }
 
@@ -815,8 +831,10 @@ class BOOKING_PACKAGE
             array($this, 'adomin'), 'dashicons-calendar-alt', 26);
         add_submenu_page(__FILE__, $plugin_name, __('Booked Customers', $this->plugin_name), $editor_cap, __FILE__,
             array($this, 'adomin'));
+        /*
         add_submenu_page(__FILE__, $plugin_name, __('Users', $this->plugin_name), $editor_cap,
             $this->plugin_name . '_members_page', array($this, 'members_page'));
+        */
         $schedule_page = add_submenu_page(__FILE__, $plugin_name, __('Calendar Settings', $this->plugin_name),
             $manager_cap, $this->plugin_name . '_schedule_page', array($this, 'schedule_page'));
         add_submenu_page(__FILE__, $plugin_name, __('General Settings', $this->plugin_name), $manager_cap,
@@ -4760,7 +4778,14 @@ class BOOKING_PACKAGE
 
     public function getDownloadCSV()
     {
-
+        $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
+/*
+        $calendar_data = $schedule->getDownloadCSV();
+        echo '<pre>';
+        var_dump($calendar_data);
+        echo '</pre>';
+        die();
+*/
         $download = false;
         if (current_user_can('manage_options') && current_user_can('edit_pages')) {
 
@@ -4770,51 +4795,48 @@ class BOOKING_PACKAGE
 
         $roles = array($this->prefix . 'manager', $this->prefix . 'editor');
         for ($i = 0; $i < count($roles); $i++) {
-
             if (current_user_can($roles[$i]) === true) {
-
                 $download = true;
                 break;
-
             }
-
         }
 
 
-			if ($download === false && (!defined('DOING_AJAX') || !DOING_AJAX)) {
+        if ($download === false && (!defined('DOING_AJAX') || !DOING_AJAX)) {
 
-                wp_die(__('You are not allowed to access this part of the site'));
+            wp_die(__('You are not allowed to access this part of the site'));
+
+        } else {
+
+            $nonce = $_POST['nonce'];
+            if (!wp_verify_nonce($nonce, $this->action_control . "_download")) {
+
+                die('Security check');
 
             } else {
 
-                $nonce = $_POST['nonce'];
-                if (!wp_verify_nonce($nonce, $this->action_control . "_download")) {
+                global $wpdb;
+                $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
+                $calendar_data = $schedule->getDownloadCSV();
+                $calendar_name =  str_replace(' ', '_', $calendar_data['calendarAccount']['name'] . '-' . $calendar_data['period']);
+                $characterCodeOfDownloadFile = get_option($this->prefix . "characterCodeOfDownloadFile", "UTF-8");
+                header("Content-Type: application/octet-stream");
+                header("Content-Disposition: attachment; filename=\"$calendar_name.csv\"");
+                $str = $calendar_data['csv'];
+                if ($characterCodeOfDownloadFile != 'UTF-8' && function_exists('mb_convert_encoding')) {
 
-                    die('Security check');
-
-                } else {
-
-                    global $wpdb;
-                    $characterCodeOfDownloadFile = get_option($this->prefix . "characterCodeOfDownloadFile", "UTF-8");
-                    header("Content-Type: application/octet-stream");
-                    header("Content-Disposition: attachment; filename=\"List.csv\"");
-                    $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
-                    $data = $schedule->getDownloadCSV();
-                    $str = $data['csv'];
-                    if ($characterCodeOfDownloadFile != 'UTF-8' && function_exists('mb_convert_encoding')) {
-
-                        $str = mb_convert_encoding($data['csv'], $characterCodeOfDownloadFile, 'UTF-8');
-
-                    }
-
-                    echo $str;
+                    $str = mb_convert_encoding($calendar_data['csv'], $characterCodeOfDownloadFile, 'UTF-8');
 
                 }
-                die();
+
+                echo $str;
 
             }
+            die();
 
-		}
+        }
+
+    }
 
     public function activateSubscription()
     {
@@ -4937,10 +4959,6 @@ class BOOKING_PACKAGE
             }
 
         }
-
-        echo '<input type="hidden" name="getUpgradeUrl" value="' . 'https://saasproject.net/api/1.7/' . '">';
-        echo '<input id="upgradeSubmit" type="submit" class="media-button button-primary button-large media-button-insert" value="' . __('Get subscription',
-                $pluginName) . '">';
         echo '</form>';
 
     }
