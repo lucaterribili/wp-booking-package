@@ -66,6 +66,7 @@
 					"limitNumberOfGuests"							=> "`limitNumberOfGuests`					VARCHAR(255) DEFAULT '{}'",
 					"created"										=> "`created`								INT(11) DEFAULT NULL",
                     "created_by"                                    => "`created_by`						    BIGINT NOT NULL",
+                    "default_approved"                              => "`default_approved`						INT(1) DEFAULT 0",
 					"googleCalendarID"								=> "`googleCalendarID`						VARCHAR(255) DEFAULT NULL",
 					"idForGoogleWebhook"							=> "`idForGoogleWebhook`					VARCHAR(255) DEFAULT NULL",
 					"expirationForGoogleWebhook"					=> "`expirationForGoogleWebhook`			INT(1) DEFAULT 0",

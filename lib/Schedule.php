@@ -649,7 +649,6 @@ class booking_package_schedule
             $row['paymentMethod'] = $this->setPaymentMethod($accountKey);
 
         }
-
         return $row;
 
     }
@@ -3322,9 +3321,9 @@ class booking_package_schedule
             $_POST['hasMultipleServices'] = 0;
             $_POST['displayRemainingCapacity'] = 0;
             $_POST['enableSubscriptionForStripe'] = 0;
-            $_POST['cancellationOfBooking'] = 0;
-            $_POST['allowCancellationVisitor'] = 0;
-            $_POST['allowCancellationUser'] = 0;
+            //$_POST['cancellationOfBooking'] = 0;
+            //$_POST['allowCancellationVisitor'] = 0;
+            //$_POST['allowCancellationUser'] = 0;
             $_POST['refuseCancellationOfBooking'] = 'not_refuse';
             $_POST['preparationTime'] = 0;
             $_POST['positionPreparationTime'] = 'before_after';
@@ -3437,7 +3436,8 @@ class booking_package_schedule
                 'insertConfirmedPage' => intval($_POST['insertConfirmedPage']),
                 'confirmDetailsPage' => $confirmDetailsPage,
                 'formatNightDay' => intval($_POST['formatNightDay']),
-                'created_by' => get_current_user_id()
+                'created_by' => get_current_user_id(),
+                'default_approved' => intval($_POST['default_approved'])
             ),
             array(
                 '%s',
@@ -3512,6 +3512,7 @@ class booking_package_schedule
                 '%d',
                 '%s',
                 '%s',
+                '%d',
                 '%d',
                 '%d',
                 '%d',
@@ -4118,6 +4119,7 @@ class booking_package_schedule
                     'insertConfirmedPage' => intval($_POST['insertConfirmedPage']),
                     'confirmDetailsPage' => $confirmDetailsPage,
                     'formatNightDay' => intval($_POST['formatNightDay']),
+                    'default_approved' => intval($_POST['default_approved'])
                 ),
                 array('key' => intval($_POST['accountKey'])),
                 array(
@@ -4188,6 +4190,7 @@ class booking_package_schedule
                     '%d',
                     '%s',
                     '%s',
+                    '%d',
                     '%d',
                     '%d',
                     '%d',
@@ -10245,6 +10248,14 @@ class booking_package_schedule
 
     }
 
+    protected function getCalendarStatus($administrator, $account)
+    {
+        if(!$administrator) {
+            return ($account['default_approved'] === 1) ? 'approved' : 'pending';
+        }
+        return 'approved';
+    }
+
     public function sendBooking($administrator = false)
     {
 
@@ -10724,7 +10735,7 @@ class booking_package_schedule
                     return $response;
 
                 }
-                $status = $this->getStatus();
+                $status = $this->getCalendarStatus($administrator, $calendarAccount);
                 $privateResponse = $this->insertPrivateData($sendDate, $_POST['permission'], $status, $_POST['timeKey'],
                     $scheduleUnixTime, $scheduleTitle, $scheduleCost, $services, $form, $emails, $currency, null, null,
                     $accountKey, $permalink, $preparation, $taxes, $responseGuests, $coupon, $administrator,

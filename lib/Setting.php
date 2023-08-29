@@ -777,7 +777,7 @@
         }
         
         public function getElementForCalendarAccount(){
-            
+
             $calendarAccount = array(
                 'name' => array('key' => 'name', 'name' => 'Name', 'target' => 'both', 'value' => '', 'inputLimit' => 1, 'inputType' => 'TEXT', 'isExtensionsValid' => 0, 'option' => 0),
                 'type' => array(
@@ -1103,7 +1103,7 @@
                 'unavailableDaysFromToday' => array('key' => 'unavailableDaysFromToday', 'name' => 'Unavailable days from today', 'target' => 'both', 'disabled' => 0, 'value' => '0', 'inputLimit' => 1, 'inputType' => 'SELECT', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array('0' => '0', '1' => '1', '2' => '2', '3' => '3', '4' => '4', '5' => '5', '6' => '6', '7' => '7', '8' => '8', '9' => '9', '10' => '10', '11' => '11', '12' => '12', '13' => '13', '14' => '14', '15' => '15', '16' => '16', '17' => '17', '18' => '18', '19' => '19', '20' => '20', '21' => '21', '22' => '22', '23' => '23', '24' => '24', '25' => '25', '26' => '26', '27' => '27', '28' => '28', '29' => '29', '30' => '30')),
                 'fixCalendar' => array('key' => 'fixCalendar', 'name' => 'Fixed calendar', 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'FIX_CALENDAR', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(0 => 'month', 1 => 'year')),
                 #'googleCalendarID' => array('key' => 'googleCalendarID', 'name' => 'Google Calendar ID', 'value' => '', 'inputLimit' => 2, 'inputType' => 'TEXT', 'isExtensionsValid' => 1, 'option' => 0),
-                
+                'default_approved' => array('key' => 'default_approved', 'name' => __('Automatic approve schedule', $this->pluginName), 'target' => 'both', 'value' => '0', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 'displayDetailsOfCanceled' => array('key' => 'displayDetailsOfCanceled', 'name' => __('Display details of the canceled visitors and user on the Report & Booking page', $this->pluginName), 'target' => 'both', 'value' => 'false', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
               //  'cancellationOfBookingByUser' => array('key' => 'cancellationOfBookingByUser', 'name' => __('Cancellation of booking by visitor and user', $this->pluginName), 'target' => 'both', 'value' => 1, 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 0, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),
                 'blockSameTimeBookingByUser' => array('key' => 'blockSameTimeBookingByUser', 'name' => __('Block multiple booking in the same time slot', $this->pluginName), 'target' => 'day', 'value' => '0', 'inputLimit' => 1, 'inputType' => 'RADIO', 'isExtensionsValid' => 1, 'option' => 0, 'valueList' => array(1 => 'Enabled', 0 => 'Disabled')),

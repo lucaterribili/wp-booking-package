@@ -5151,24 +5151,22 @@ function SCHEDULE(schedule_data, booking_package_dictionary, webApp) {
 	}
 
     this.settingPanel = function(accountList, month, day, year, account, callback){
-        
-        var object = this;
-        var settingPanel = document.getElementById("settingPanel");
+        const object = this;
+        const settingPanel = document.getElementById("settingPanel");
         settingPanel.textContent = null;
         const oldMaxAccountScheduleDay = parseInt(account.maxAccountScheduleDay);
         object._console.log('settingPanel');
         object._console.log('_remakeBookingSchedules = ' + object._remakeBookingSchedules);
         object._console.log('oldMaxAccountScheduleDay = ' + oldMaxAccountScheduleDay);
         
-        var addPanel = document.createElement("div");
+        const addPanel = document.createElement("div");
         
         settingPanel.appendChild(addPanel);
     	addPanel.id = "addCoursePanel";
     	
-    	var calendarNamePanel = document.getElementById("calendarName");
-        var inputData = {};
-        var inputTypeList = object.schedule_data['elementForCalendarAccount'];
-        
+    	const calendarNamePanel = document.getElementById("calendarName");
+        const inputData = {};
+        const inputTypeList = object.schedule_data['elementForCalendarAccount'];
         var table = document.createElement("table");
     	table.setAttribute("class", "form-table");
     	addPanel.appendChild(table);
@@ -5828,7 +5826,8 @@ function SCHEDULE(schedule_data, booking_package_dictionary, webApp) {
             
             inputTypeList.status.value = "open";
             inputTypeList.courseBool.value = 0;
-            inputTypeList.positionPreparationTime.value = "before_after";
+            inputTypeList.default_approved.value = 0;
+            //inputTypeList.positionPreparationTime.value = "before_after";
             inputTypeList.displayRemainingCapacityInCalendarAsNumber.value = 0;
             
             inputTypeList.minimumNights.value = 0;
@@ -6460,17 +6459,16 @@ function SCHEDULE(schedule_data, booking_package_dictionary, webApp) {
     }
 
     this.editItem = function(columns, editKey, mainPanel, columnsPanel, mode, account, itemData, inputTypeList, callback){
-    	
-    	var object = this;
+    	const object = this;
     	object._console.log(account);
     	object._console.log("editKey = " + editKey);
     	object._console.log(columns[editKey]);
     	object._console.log(itemData);
     	object._console.log(inputTypeList);
-    	var addPanel = document.createElement("div");
+    	const addPanel = document.createElement("div");
     	addPanel.id = "addCoursePanel";
     	
-        var inputData = {};
+        const inputData = {};
         if (mode == object._prefix + 'updateCourse') {
             
             inputTypeList.name.value = itemData.name;

@@ -837,7 +837,7 @@ class BOOKING_PACKAGE
         */
         $schedule_page = add_submenu_page(__FILE__, $plugin_name, __('Calendar Settings', $this->plugin_name),
             $manager_cap, $this->plugin_name . '_schedule_page', array($this, 'schedule_page'));
-        add_submenu_page(__FILE__, $plugin_name, __('General Settings', $this->plugin_name), $manager_cap,
+        add_submenu_page(__FILE__, $plugin_name, __('General Settings', $this->plugin_name), 'manage_options',
             $this->plugin_name . '_setting_page', array($this, 'setting_page'));
 
 
