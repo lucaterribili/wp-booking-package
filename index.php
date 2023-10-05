@@ -16,14 +16,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define("BOOKING_PACKAGE_EXTENSION_URL", "https://saasproject.net/api/1.7/");
+define('BOOKING_PACKAGE_EXTENSION_URL', 'https://saasproject.net/api/1.7/');
 
-define("BOOKING_PACKAGE_MAX_DEADLINE_TIME", 1440);
+define('BOOKING_PACKAGE_MAX_DEADLINE_TIME', 1440);
 
 class BOOKING_PACKAGE
 {
 
-    public $db_version = "0.9.9";
+    public $db_version = '0.9.9';
 
     public $plugin_version = 0;
 
@@ -58,32 +58,19 @@ class BOOKING_PACKAGE
     public $widget = false;
 
     public $schedule = null;
-
-    private $setting = null;
-
-    private $isExtensionsValid = null;
-
     public $visitorSubscriptionForStripe = 0;
-
     public $groupOfInputField = 0;
-
     public $siteNetwork = 0;
-
     public $dubug_javascript = 0;
-
     public $optionsForHotel = 0;
-
     public $multipleRooms = 0;
-
     public $expirationDateForTax = 0;
-
     public $maxAndMinNumberOfGuests = 0;
-
     public $stopService = 0;
-
     public $guestForDayOfTheWeekRates = 0;
-
     public $remakeBookingSchedules = 0;
+    private $setting = null;
+    private $isExtensionsValid = null;
 
     public function __construct($shortcodes = 0, $widget = false)
     {
@@ -109,7 +96,7 @@ class BOOKING_PACKAGE
 
         }
 
-        $monitorNumberOfShortcode = get_option($this->prefix . "monitorNumberOfShortcode", 1);
+        $monitorNumberOfShortcode = get_option($this->prefix . 'monitorNumberOfShortcode', 1);
         if (intval($monitorNumberOfShortcode) == 1) {
 
             $this->shortcodes++;
@@ -254,10 +241,10 @@ class BOOKING_PACKAGE
         /**
          * HACK PER CANCELLARE DATI CHE NON INTERESSANO NELLO SCARICO DELLE PRENOTAZIONI
          */
-        add_filter('booking_package_download_booked_customer', function($customer){
+        add_filter('booking_package_download_booked_customer', function ($customer) {
             $remove_list = ['amount', 'key', 'services', 'guests', 'coupon'];
             foreach ($remove_list as $item) {
-                if(array_key_exists($item, $customer)) {
+                if (array_key_exists($item, $customer)) {
                     unset($customer[$item]);
                 }
             }
@@ -350,6 +337,26 @@ class BOOKING_PACKAGE
 
     }
 
+    public function create_database($activation = true)
+    {
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+        add_option($this->prefix . 'javascriptSyntaxErrorNotification', 1);
+        $database = new booking_package_database($this->prefix, $this->db_version);
+        $database->create();
+        if ($activation === true) {
+
+            $setting = $this->setting;
+            $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, 'activation', $this->plugin_version);
+            $setting->updatePluginSubscription('activation');
+
+        }
+
+        //$this->createFirstCalendar();
+
+    }
+
     /**
      * public function booking_package_notification() {
      *
@@ -372,71 +379,35 @@ class BOOKING_PACKAGE
 
     }
 
-    public function create_database($activation = true)
+    private function getExtensionsValid($loadScript = false)
     {
 
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-        add_option($this->prefix . "javascriptSyntaxErrorNotification", 1);
-        $database = new booking_package_database($this->prefix, $this->db_version);
-        $database->create();
-        if ($activation === true) {
+        if (is_null($this->isExtensionsValid)) {
 
             $setting = $this->setting;
-            $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, "activation", $this->plugin_version);
-            $setting->updatePluginSubscription('activation');
+            $this->isExtensionsValid = $setting->getSiteStatus($loadScript);
+            if (get_option($this->prefix . 'blocksEmail') === false) {
 
-        }
+                add_option($this->prefix . 'blocksEmail', 0);
 
-        //$this->createFirstCalendar();
+            }
 
-    }
+            if ($this->isExtensionsValid === true) {
 
-    public function upgrader_process()
-    {
+                $setting->updateRolesOfPlugin();
+                update_option($this->prefix . 'blocksEmail', 1);
 
-        $key = $this->prefix . "version";
-        $now_version = get_option($key, 0);
-        if ($now_version == 0) {
 
-            add_option($key, $this->plugin_version);
+            } else {
 
-        } else {
-
-            if ($this->plugin_version != $now_version) {
-
-                update_option($key, $this->plugin_version);
-                $setting = $this->setting;
-                $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, "upgrader", $this->plugin_version);
+                $setting->deleteRolesOfPlugin();
+                update_option($this->prefix . 'blocksEmail', 0);
 
             }
 
         }
 
-    }
-
-    public function update_database()
-    {
-
-        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-        $this->setHomePath();
-        $this->update_memberAccount();
-        $installed_ver = get_option($this->prefix . "db_version");
-        if ($installed_ver != $this->db_version) {
-
-            #$this->create_database(true, false);
-            $database = new booking_package_database($this->prefix, $this->db_version);
-            $database->create();
-            update_option($this->prefix . "db_version", $this->db_version);
-            if ($installed_ver < $this->db_version && $this->db_version == "0.1.7") {
-
-                $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
-                $schedule->changeMaxAccountScheduleDay();
-
-            }
-
-        }
+        return $this->isExtensionsValid;
 
     }
 
@@ -469,7 +440,7 @@ class BOOKING_PACKAGE
                 $localize_script = array(
                     'url' => admin_url('admin-ajax.php'),
                     'action' => $this->action_control,
-                    'nonce' => wp_create_nonce($this->action_control . "_ajax"),
+                    'nonce' => wp_create_nonce($this->action_control . '_ajax'),
                     'prefix' => $this->prefix,
                     'year' => date('Y'),
                     'month' => date('m'),
@@ -480,13 +451,13 @@ class BOOKING_PACKAGE
                     'general_setting_url' => admin_url('admin.php?page=booking-package_setting_page&tab=subscriptionLink'),
                 );
 
-                $p_v = "?p_v=" . $this->plugin_version;
+                $p_v = '?p_v=' . $this->plugin_version;
                 wp_enqueue_style('Control.css', plugin_dir_url(__FILE__) . 'css/Control.css', array(),
                     $this->plugin_version);
                 wp_enqueue_style('Control_for_madia_css', plugin_dir_url(__FILE__) . 'css/Control_for_madia.css',
                     array(), $this->plugin_version);
                 $fontFaceStyle = $this->getFontFaceStyle();
-                wp_add_inline_style("Control.css", $fontFaceStyle);
+                wp_add_inline_style('Control.css', $fontFaceStyle);
 
                 wp_enqueue_script('i18n_js', plugin_dir_url(__FILE__) . 'js/i18n.js' . $p_v);
                 wp_enqueue_script('Delete_Plugin_js', plugin_dir_url(__FILE__) . 'js/Delete_plugin.js', array(),
@@ -497,6 +468,28 @@ class BOOKING_PACKAGE
             }
 
         }
+
+    }
+
+    public function getFontFaceStyle()
+    {
+
+        $url = plugin_dir_url(__FILE__);
+
+        #$style = "<style>\n";
+        $style = "	@font-face {\n";
+        $style .= "		font-family: 'Material Icons';\n";
+        $style .= "		font-style: normal;\n";
+        $style .= "		font-weight: 400;\n";
+        $style .= '		src: url(' . $url . "iconfont/MaterialIcons-Regular.eot);\n";
+        $style .= "		src: local('Material Icons'),\n";
+        $style .= "			local('MaterialIcons-Regular'),\n";
+        $style .= '			url(' . $url . "iconfont/MaterialIcons-Regular.woff2) format('woff2'),\n";
+        $style .= '			url(' . $url . "iconfont/MaterialIcons-Regular.woff) format('woff'),\n";
+        $style .= '			url(' . $url . "iconfont/MaterialIcons-Regular.ttf) format('truetype');\n";
+        $style .= "	}\n";
+        #$style .= "</style>\n";
+        return $style;
 
     }
 
@@ -596,15 +589,15 @@ class BOOKING_PACKAGE
         if (isset($_GET['plugin']) && $_GET['plugin'] == 'booking-package') {
 
             $setting = $this->setting;
-            $setting->getCss("front_end.css", plugin_dir_path(__FILE__));
-            $front_end_url = $setting->getCssUrl("front_end.css");
+            $setting->getCss('front_end.css', plugin_dir_path(__FILE__));
+            $front_end_url = $setting->getCssUrl('front_end.css');
             wp_enqueue_style('front_end_url', $front_end_url['dirname'], array(), $front_end_url['v']);
 
             $isExtensionsValid = $this->getExtensionsValid();
             if ($isExtensionsValid === true) {
 
-                $setting->getJavaScript("front_end.js", plugin_dir_path(__FILE__));
-                $front_end_javascript_url = $setting->getJavaScriptUrl("front_end.js");
+                $setting->getJavaScript('front_end.js', plugin_dir_path(__FILE__));
+                $front_end_javascript_url = $setting->getJavaScriptUrl('front_end.js');
                 wp_enqueue_script('front_end_javascript_url', $front_end_javascript_url['dirname'], array(),
                     $front_end_javascript_url['v']);
 
@@ -665,13 +658,13 @@ class BOOKING_PACKAGE
                 }
             }
 
-            $query = "?" . $this->prefix . "login_error=" . $error;
+            $query = '?' . $this->prefix . 'login_error=' . $error;
             $redirect_to = $_POST['redirect_to'];
             $parse = parse_url($redirect_to);
             if (isset($parse['query'])) {
 
-                $query = $parse['query'] . "&" . $this->prefix . "login_error=" . $error;
-                $redirect_to = $parse['scheme'] . "://" . $parse['host'] . $parse['path'] . "?" . $query;
+                $query = $parse['query'] . '&' . $this->prefix . 'login_error=' . $error;
+                $redirect_to = $parse['scheme'] . '://' . $parse['host'] . $parse['path'] . '?' . $query;
 
             } else {
 
@@ -721,53 +714,53 @@ class BOOKING_PACKAGE
         if ($displayMenu === true) {
 
             #wp_enqueue_style( 'Control.css', plugin_dir_url( __FILE__ ).'css/Control.css', array(), $this->plugin_version);
-            $title = '<span class="top_toolbar_icon"></span><span>' . __("Booking Package",
+            $title = '<span class="top_toolbar_icon"></span><span>' . __('Booking Package',
                     $this->plugin_name) . '</span>';
             $plugin_top_bar = $this->plugin_name . '_top_bar';
             $args = array(
-                "id" => $plugin_top_bar,
-                "meta" => array(),
+                'id' => $plugin_top_bar,
+                'meta' => array(),
                 'title' => $title,
-                'href' => admin_url("admin.php?page=" . $this->plugin_name . "/index.php")
+                'href' => admin_url('admin.php?page=' . $this->plugin_name . '/index.php')
             );
             $wp_admin_bar->add_node($args);
 
             $args = array(
-                "id" => $plugin_top_bar . "_report",
-                "parent" => $plugin_top_bar,
-                "meta" => array(),
+                'id' => $plugin_top_bar . '_report',
+                'parent' => $plugin_top_bar,
+                'meta' => array(),
                 /** 'title' => __('Report & Booking', $this->plugin_name), **/
                 'title' => __('Booked Customers', $this->plugin_name),
-                'href' => admin_url("admin.php?page=" . $this->plugin_name . "/index.php")
+                'href' => admin_url('admin.php?page=' . $this->plugin_name . '/index.php')
             );
             $wp_admin_bar->add_node($args);
 
             $args = array(
-                "id" => $plugin_top_bar . "_members",
-                "parent" => $plugin_top_bar,
-                "meta" => array(),
+                'id' => $plugin_top_bar . '_members',
+                'parent' => $plugin_top_bar,
+                'meta' => array(),
                 'title' => __('Users', $this->plugin_name),
-                'href' => admin_url("admin.php?page=" . $this->plugin_name . "_members_page")
+                'href' => admin_url('admin.php?page=' . $this->plugin_name . '_members_page')
             );
             $wp_admin_bar->add_node($args);
 
             if (current_user_can('manage_network') === true || current_user_can($this->prefix . 'editor') === false) {
 
                 $args = array(
-                    "id" => $plugin_top_bar . "_schedule",
-                    "parent" => $plugin_top_bar,
-                    "meta" => array(),
+                    'id' => $plugin_top_bar . '_schedule',
+                    'parent' => $plugin_top_bar,
+                    'meta' => array(),
                     'title' => __('Calendar Settings', $this->plugin_name),
-                    'href' => admin_url("admin.php?page=" . $this->plugin_name . "_schedule_page")
+                    'href' => admin_url('admin.php?page=' . $this->plugin_name . '_schedule_page')
                 );
                 $wp_admin_bar->add_node($args);
 
                 $args = array(
-                    "id" => $plugin_top_bar . "_setting",
-                    "parent" => $plugin_top_bar,
-                    "meta" => array(),
+                    'id' => $plugin_top_bar . '_setting',
+                    'parent' => $plugin_top_bar,
+                    'meta' => array(),
                     'title' => __('General Settings', $this->plugin_name),
-                    'href' => admin_url("admin.php?page=" . $this->plugin_name . "_setting_page")
+                    'href' => admin_url('admin.php?page=' . $this->plugin_name . '_setting_page')
                 );
                 $wp_admin_bar->add_node($args);
 
@@ -787,7 +780,7 @@ class BOOKING_PACKAGE
 
     public function add_pages()
     {
-
+        global $wpdb;
         $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
         $setting = $this->setting;
         $response = $schedule->get_user();
@@ -826,19 +819,30 @@ class BOOKING_PACKAGE
                 }
             }
         }
-
-        add_menu_page($plugin_name, __('Booking Package', $this->plugin_name), $editor_cap, __FILE__,
-            array($this, 'adomin'), 'dashicons-calendar-alt', 26);
-        add_submenu_page(__FILE__, $plugin_name, __('Booked Customers', $this->plugin_name), $editor_cap, __FILE__,
-            array($this, 'adomin'));
-        /*
-        add_submenu_page(__FILE__, $plugin_name, __('Users', $this->plugin_name), $editor_cap,
-            $this->plugin_name . '_members_page', array($this, 'members_page'));
-        */
-        $schedule_page = add_submenu_page(__FILE__, $plugin_name, __('Calendar Settings', $this->plugin_name),
-            $manager_cap, $this->plugin_name . '_schedule_page', array($this, 'schedule_page'));
-        add_submenu_page(__FILE__, $plugin_name, __('General Settings', $this->plugin_name), 'manage_options',
-            $this->plugin_name . '_setting_page', array($this, 'setting_page'));
+        // HACK NASCONDI MENU
+        $current_user = wp_get_current_user()->ID;
+        $user_groups = $wpdb->get_col("
+            SELECT g.group_id
+            FROM wp_groups_group g
+            INNER JOIN wp_groups_user_group ug ON g.group_id = ug.group_id 
+            WHERE ug.user_id = $current_user
+            AND g.name != 'Registered'
+            GROUP BY g.group_id
+        ");
+        if (!empty($user_groups)) {
+            add_menu_page($plugin_name, __('Booking Package', $this->plugin_name), $editor_cap, __FILE__,
+                array($this, 'adomin'), 'dashicons-calendar-alt', 26);
+            add_submenu_page(__FILE__, $plugin_name, __('Booked Customers', $this->plugin_name), $editor_cap, __FILE__,
+                array($this, 'adomin'));
+            /*
+            add_submenu_page(__FILE__, $plugin_name, __('Users', $this->plugin_name), $editor_cap,
+                $this->plugin_name . '_members_page', array($this, 'members_page'));
+            */
+            $schedule_page = add_submenu_page(__FILE__, $plugin_name, __('Calendar Settings', $this->plugin_name),
+                $manager_cap, $this->plugin_name . '_schedule_page', array($this, 'schedule_page'));
+            add_submenu_page(__FILE__, $plugin_name, __('General Settings', $this->plugin_name), 'manage_options',
+                $this->plugin_name . '_setting_page', array($this, 'setting_page'));
+        }
 
 
         if ($this->siteNetwork == 1) {
@@ -873,7 +877,7 @@ class BOOKING_PACKAGE
 
         #var_dump(wp_get_current_user());
         #$userId = get_currentuserinfo();
-        if (current_user_can("administrator") === true || current_user_can("editor") === true) {
+        if (current_user_can('administrator') === true || current_user_can('editor') === true) {
 
             wp_add_dashboard_widget($this->plugin_name, 'Booking Package', array($this, 'dashboard_widget_function'));
 
@@ -893,7 +897,7 @@ class BOOKING_PACKAGE
 
         $pluginName = $this->plugin_name;
         $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
-        $calendarAccountList = $schedule->getCalendarAccountListData("`key`,`name`,`type`,`status`,`timezone`");
+        $calendarAccountList = $schedule->getCalendarAccountListData('`key`,`name`,`type`,`status`,`timezone`');
         $newCalendarAccountList = array();
         for ($i = 0; $i < count($calendarAccountList); $i++) {
 
@@ -905,19 +909,19 @@ class BOOKING_PACKAGE
         $setting = $this->setting;
         $list = $setting->getList();
         $emailMessageList = $setting->getEmailMessage(array('enable'));
-        $dateFormat = get_option($this->prefix . "dateFormat", "0");
-        $positionOfWeek = get_option($this->prefix . "positionOfWeek", "before");
+        $dateFormat = get_option($this->prefix . 'dateFormat', '0');
+        $positionOfWeek = get_option($this->prefix . 'positionOfWeek', 'before');
 
         $list['General'][$this->prefix . 'clock']['value'] = $this->changeTimeFormat($list['General'][$this->prefix . 'clock']['value']);
 
-        $dictionary = $this->getDictionary("adomin", $this->plugin_name);
+        $dictionary = $this->getDictionary('adomin', $this->plugin_name);
         $localize_script = array(
             'url' => admin_url('admin-ajax.php'),
             'action' => $this->action_control,
-            'nonce' => wp_create_nonce($this->action_control . "_ajax"),
+            'nonce' => wp_create_nonce($this->action_control . '_ajax'),
             'prefix' => $this->prefix,
             'courseBool' => 0,
-            'courseName' => "",
+            'courseName' => '',
             'year' => date('Y'),
             'month' => date('m'),
             'day' => date('d'),
@@ -934,7 +938,7 @@ class BOOKING_PACKAGE
             'clock' => $list['General']['booking_package_clock']['value'],
         );
 
-        $p_v = "?p_v=" . $this->plugin_version;
+        $p_v = '?p_v=' . $this->plugin_version;
         wp_enqueue_style('Control.css', plugin_dir_url(__FILE__) . 'css/Control.css' . $p_v, array(),
             $this->plugin_version);
         wp_enqueue_style('Control_for_madia_css', plugin_dir_url(__FILE__) . 'css/Control_for_madia.css' . $p_v,
@@ -954,8 +958,8 @@ class BOOKING_PACKAGE
 
         print "<div id='booking_pacage_dashboard_widget'>";
 
-        $dateFormat = intval(get_option($this->prefix . "dateFormat", 0));
-        $positionOfWeek = get_option($this->prefix . "positionOfWeek", "before");
+        $dateFormat = intval(get_option($this->prefix . 'dateFormat', 0));
+        $positionOfWeek = get_option($this->prefix . 'positionOfWeek', 'before');
         $unixTime = date('U');
         $today = $schedule->dateFormat($dateFormat, $positionOfWeek, $unixTime, null, false, false, 'text');
         $lists = $schedule->getReservationUsersData(date('n', $unixTime), date('j', $unixTime), date('Y', $unixTime));
@@ -966,19 +970,19 @@ class BOOKING_PACKAGE
         $lists = $schedule->getReservationUsersData(date('n', $unixTime), date('j', $unixTime), date('Y', $unixTime));
         $this->customersList($nextDay, $unixTime, $calendarAccountList, $lists, $schedule);
 
-        print "</div>";
+        print '</div>';
 
         ?>
         <div id="blockPanel" class="edit_modal_backdrop hidden_panel"></div>
         <div id="dialogPanel" class="hidden_panel">
             <div class="blockPanel"></div>
             <div class="confirmPanel">
-                <div class="subject"><?php _e("Title", $pluginName); ?></div>
-                <div class="body"><?php _e("Message", $pluginName); ?></div>
+                <div class="subject"><?php _e('Title', $pluginName); ?></div>
+                <div class="body"><?php _e('Message', $pluginName); ?></div>
                 <div class="buttonPanel">
-                    <button id="dialogButtonYes" type="button" class="yesButton button button-primary"><?php _e("Yes",
+                    <button id="dialogButtonYes" type="button" class="yesButton button button-primary"><?php _e('Yes',
                             $pluginName); ?></button>
-                    <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e("No",
+                    <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e('No',
                             $pluginName); ?></button>
                 </div>
             </div>
@@ -996,14 +1000,425 @@ class BOOKING_PACKAGE
         <?php
     }
 
+    public function changeTimeFormat($timeFormat)
+    {
+
+        if (!is_numeric($timeFormat)) {
+
+            return $timeFormat;
+
+        }
+
+        if (intval($timeFormat) == 12) {
+
+            $timeFormat = '12a.m.p.m';
+
+        } else {
+            if (intval($timeFormat) == 24) {
+
+                $timeFormat = '24hours';
+
+            }
+        }
+
+        return $timeFormat;
+
+    }
+
+    public function getDictionary($mode, $pluginName)
+    {
+
+        $dictionary = array(
+            'Error' => __('Error', $pluginName),
+            'Add' => __('Add', $pluginName),
+            'Delete' => __('Delete', $pluginName),
+            'Edit' => __('Edit', $pluginName),
+            'Change' => __('Change', $pluginName),
+            'Copy' => __('Copy', $pluginName),
+            'Return' => __('Return', $pluginName),
+            'Save' => __('Save', $pluginName),
+            'Cancel' => __('Cancel', $pluginName),
+            'Close' => __('Close', $pluginName),
+            'Update' => __('Update', $pluginName),
+            'Help' => __('Help', $pluginName),
+            'Price' => __('Price', $pluginName),
+            'Attention' => __('Attention', $pluginName),
+            'Warning' => __('Warning', $pluginName),
+            'Booking' => __('Booking', $pluginName),
+            'January' => __('January', $pluginName),
+            'February' => __('February', $pluginName),
+            'March' => __('March', $pluginName),
+            'April' => __('April', $pluginName),
+            'May' => __('May', $pluginName),
+            'June' => __('June', $pluginName),
+            'July' => __('July', $pluginName),
+            'August' => __('August', $pluginName),
+            'September' => __('September', $pluginName),
+            'October' => __('October', $pluginName),
+            'November' => __('November', $pluginName),
+            'December' => __('December', $pluginName),
+            'Jan' => __('Jan', $pluginName),
+            'Feb' => __('Feb', $pluginName),
+            'Mar' => __('Mar', $pluginName),
+            'Apr' => __('Apr', $pluginName),
+            'May' => __('May', $pluginName),
+            'Jun' => __('Jun', $pluginName),
+            'Jul' => __('Jul', $pluginName),
+            'Aug' => __('Aug', $pluginName),
+            'Sep' => __('Sep', $pluginName),
+            'Oct' => __('Oct', $pluginName),
+            'Nov' => __('Nov', $pluginName),
+            'Dec' => __('Dec', $pluginName),
+            'Sunday' => __('Sunday', $pluginName),
+            'Monday' => __('Monday', $pluginName),
+            'Tuesday' => __('Tuesday', $pluginName),
+            'Wednesday' => __('Wednesday', $pluginName),
+            'Thursday' => __('Thursday', $pluginName),
+            'Friday' => __('Friday', $pluginName),
+            'Saturday' => __('Saturday', $pluginName),
+            'Sun' => __('Sun', $pluginName),
+            'Mon' => __('Mon', $pluginName),
+            'Tue' => __('Tue', $pluginName),
+            'Wed' => __('Wed', $pluginName),
+            'Thu' => __('Thu', $pluginName),
+            'Fri' => __('Fri', $pluginName),
+            'Sat' => __('Sat', $pluginName),
+            'Booking Date' => __('Booking Date', $pluginName),
+            'Booking date' => __('Booking Date', $pluginName),
+            'Arrival (Check-in)' => __('Arrival (Check-in)', $pluginName),
+            'Departure (Check-out)' => __('Departure (Check-out)', $pluginName),
+            'Arrival' => __('Arrival', $pluginName),
+            'Departure' => __('Departure', $pluginName),
+            'Check-in' => __('Check-in', $pluginName),
+            'Check-out' => __('Check-out', $pluginName),
+            'Total number of guests' => __('Total number of guests', $pluginName),
+            'Total length of stay' => __('Total length of stay', $pluginName),
+            'Additional fees' => __('Additional fees', $pluginName),
+            'Accommodation fees' => __('Accommodation fees', $pluginName),
+            'Total amount' => __('Total amount', $pluginName),
+            'Summary' => __('Summary', $pluginName),
+            '%s night %s days' => __('%s night %s days', $pluginName),
+            '%s nights %s days' => __('%s nights %s days', $pluginName),
+            'night' => __('night', $pluginName),
+            'nights' => __('nights', $pluginName),
+            'Night' => __('Night', $pluginName),
+            'Nights' => __('Nights', $pluginName),
+            'room' => __('room', $pluginName),
+            'rooms' => __('rooms', $pluginName),
+            'Title' => __('Title', $pluginName),
+            'Booking details' => __('Booking details', $pluginName),
+            'Submission date' => __('Submission date', $pluginName),
+            'Clear' => __('Clear', $pluginName),
+            'person' => __('person', $pluginName),
+            'people' => __('people', $pluginName),
+            'Please choose %s' => __('Please choose %s', $pluginName),
+            'Subscribed users only' => __('Subscribed users only', $pluginName),
+            '%s remaining' => __('%s remaining', $pluginName),
+            'An unknown cause of error occurred' => __('An unknown cause of error occurred', $pluginName),
+            'Status' => __('Status', $pluginName),
+            'approved' => __('approved', $pluginName),
+            'pending' => __('pending', $pluginName),
+            'canceled' => __('canceled', $pluginName),
+            'Can we really cancel your booking?' => __('Can we really cancel your booking?', $pluginName),
+            'We have canceled your booking.' => __('We have canceled your booking.', $pluginName),
+            'Your personal details do not displayed on this page.' => __('Your personal details do not displayed on this page.',
+                $pluginName),
+            'Surcharge and Tax' => __('Surcharge and Tax', $pluginName),
+            'Surcharge' => __('Surcharge', $pluginName),
+            'Tax' => __('Tax', $pluginName),
+            'Select' => __('Select', $pluginName),
+            '%s:%s a.m.' => __('%s:%s a.m.', $pluginName),
+            '%s:%s p.m.' => __('%s:%s p.m.', $pluginName),
+            '%s:%s am' => __('%s:%s am', $pluginName),
+            '%s:%s pm' => __('%s:%s pm', $pluginName),
+            '%s:%s AM' => __('%s:%s AM', $pluginName),
+            '%s:%s PM' => __('%s:%s PM', $pluginName),
+            'Change status' => __('Change status', $pluginName),
+            'Add another room' => __('Add another room', $pluginName),
+            'Enabled' => __('Enabled', $pluginName),
+            'Disabled' => __('Disabled', $pluginName),
+            'Remaining' => __('Remaining', $pluginName),
+            'The required total number of people must be %s or less.' => __('The required total number of people must be %s or less.',
+                $pluginName),
+            'The required total number of people must be %s or more.' => __('The required total number of people must be %s or more.',
+                $pluginName),
+            'The total number of people must be %s or less.' => __('The total number of people must be %s or less.',
+                $pluginName),
+            'The total number of people must be %s or more.' => __('The total number of people must be %s or more.',
+                $pluginName),
+            'Total number of people' => __('Total number of people', $pluginName),
+            '%s to %s' => __('%s to %s', $pluginName),
+            'Coupons' => __('Coupons', $pluginName),
+            'Coupon code' => __('Coupon code', $pluginName),
+            'Coupon' => __('Coupon', $pluginName),
+            'Discount' => __('Discount', $pluginName),
+            'Add a coupon code' => __('Add a coupon code', $pluginName),
+            'Added a coupon' => __('Added a coupon', $pluginName),
+            'Apply' => __('Apply', $pluginName),
+            ' to ' => __(' to ', $pluginName),
+            'I will pay locally' => __('I will pay locally', $pluginName),
+            'Pay locally' => __('Pay locally', $pluginName),
+            'Pay with Credit Card' => __('Pay with Credit Card', $pluginName),
+            'Pay with Stripe' => __('Pay with Stripe', $pluginName),
+            'Pay with PayPal' => __('PayPal', $pluginName),
+            'Pay at a convenience store' => __('Pay at a convenience store', $pluginName),
+            'Pay at a convenience store with Stripe' => __('Pay at a convenience store with Stripe', $pluginName),
+            'Usernames can only contain lowercase letters (a-z) and numbers.' => __('Usernames can only contain lowercase letters (a-z) and numbers.',
+                $pluginName),
+            'Please enter a valid email address.' => __('Please enter a valid email address.', $pluginName),
+            'Please enter a valid password.' => __('Please enter a valid password.', $pluginName),
+            'Deprecated' => __('Deprecated', $pluginName),
+        );
+
+
+        if ($mode == 'adomin') {
+
+            $dictionary['Download CSV'] = __('Download CSV', $pluginName);
+            $dictionary['Timezone'] = __('Timezone', $pluginName);
+            $dictionary['Booking'] = __('Booking', $pluginName);
+            $dictionary['No schedules'] = __('No schedules', $pluginName);
+            $dictionary['No visitors'] = __('No visitors', $pluginName);
+            $dictionary['This booking has been paid by credit card. Do you refund the price to the customer?'] = __('This booking has been paid by credit card. Do you refund the price to the customer?',
+                $pluginName);
+            $dictionary['Do you send e-mail notifications to customers or administrators?'] = __('Do you send e-mail notifications to customers or administrators?',
+                $pluginName);
+            $dictionary['Are you sure you want to delete this booking?'] = __('Are you sure you want to delete this booking?',
+                $pluginName);
+            $dictionary['Please upgrade your free plan to enable this feature.'] = __('Please upgrade your free plan to enable this feature.',
+                $pluginName);
+            $dictionary['Service is not registered. '] = __('Service is not registered. ', $pluginName);
+            $dictionary['Please create a service.'] = __('Please create a service.', $pluginName);
+            $dictionary['The user was not found.'] = __('The user was not found.', $pluginName);
+            $dictionary['Payment method'] = __('Payment method', $pluginName);
+            $dictionary['Payment ID'] = __('Payment ID', $pluginName);
+
+        } else {
+            if ($mode == 'schedule_page') {
+
+                $dictionary['Every %s'] = __('Every %s', $pluginName);
+                $dictionary['hour'] = __('hour', $pluginName);
+                $dictionary['hours'] = __('hours', $pluginName);
+                $dictionary['minutes'] = __('minutes', $pluginName);
+                $dictionary['deadline time'] = __('deadline time', $pluginName);
+                $dictionary['capacities'] = __('capacities', $pluginName);
+                $dictionary['Remaining'] = __('Remaining', $pluginName);
+                $dictionary['Deadline time'] = __('Deadline time', $pluginName);
+                $dictionary['%s min ago'] = __('%s min ago', $pluginName);
+                $dictionary['%s min'] = __('%s min', $pluginName);
+                $dictionary['Choose %s'] = __('Choose %s', $pluginName);
+                $dictionary['Select a type'] = __('Select a type', $pluginName);
+                $dictionary['Accommodation (Hotel)'] = __('Accommodation (Hotel)', $pluginName);
+                $dictionary['Do you delete the "%s"?'] = __('Do you delete the "%s"?', $pluginName);
+                $dictionary['Edit schedule'] = __('Edit schedule', $pluginName);
+                $dictionary['Status'] = __('Status', $pluginName);
+                $dictionary['Shortcode'] = __('Shortcode', $pluginName);
+                $dictionary['Name'] = __('Name', $pluginName);
+                $dictionary['Description'] = __('Description', $pluginName);
+                $dictionary['Active'] = __('Active', $pluginName);
+                $dictionary['Price'] = __('Price', $pluginName);
+                $dictionary['Duration time'] = __('Duration time', $pluginName);
+                $dictionary['Unique ID'] = __('Unique ID', $pluginName);
+                $dictionary['Value'] = __('Value', $pluginName);
+                $dictionary['Required'] = __('Required', $pluginName);
+                $dictionary['Is Name'] = __('Is Name', $pluginName);
+                $dictionary['Is a location in Google Calendar'] = __('Is a location in Google Calendar', $pluginName);
+                $dictionary['Is Email'] = __('Is Email', $pluginName);
+                $dictionary['Type'] = __('Type', $pluginName);
+                $dictionary['Options'] = __('Options', $pluginName);
+                $dictionary['Add service'] = __('Add service', $pluginName);
+                $dictionary['Change ranking'] = __('Change ranking', $pluginName);
+                $dictionary['Add field'] = __('Add field', $pluginName);
+                $dictionary['Do you copy the "%s"?'] = __('Do you copy the "%s"?', $pluginName);
+                $dictionary['Do you delete the "%s"?'] = __('Do you delete the "%s"?', $pluginName);
+                $dictionary['Disable'] = __('Disable', $pluginName);
+                $dictionary['Enable'] = __('Enable', $pluginName);
+                $dictionary['New'] = __('New', $pluginName);
+                $dictionary['Approved'] = __('Approved', $pluginName);
+                $dictionary['Pending'] = __('Pending', $pluginName);
+                $dictionary['Reminder'] = __('Reminder', $pluginName);
+                $dictionary['Canceled'] = __('Canceled', $pluginName);
+                $dictionary['Deleted'] = __('Deleted', $pluginName);
+                $dictionary['Subject'] = __('Subject', $pluginName);
+                $dictionary['Content'] = __('Content', $pluginName);
+                $dictionary['Date'] = __('Date', $pluginName);
+                $dictionary['Number of rooms available'] = __('Number of rooms available', $pluginName);
+                $dictionary['Cost per night'] = __('Cost per night', $pluginName);
+                $dictionary['Maximum number of people staying in one room'] = __('Maximum number of people staying in one room',
+                    $pluginName);
+                $dictionary['Include children in the maximum number of people in the room'] = __('Include children in the maximum number of people in the room',
+                    $pluginName);
+                $dictionary['Exclude'] = __('Exclude', $pluginName);
+                $dictionary['Include'] = __('Include', $pluginName);
+                $dictionary['Warning'] = __('Warning', $pluginName);
+                $dictionary['Number of people'] = __('Number of people', $pluginName);
+                $dictionary['Booking is completed within 24 hours (hair salon, hospital etc.)'] = __('Booking is completed within 24 hours (hair salon, hospital etc.)',
+                    $pluginName);
+                $dictionary['Accommodation (hotels, campgrounds, etc.)'] = __('Accommodation (hotels, campgrounds, etc.)',
+                    $pluginName);
+                $dictionary['[%s] is inserting "%s"'] = __('[%s] is inserting "%s"', $pluginName);
+                $dictionary['Fixed calendar'] = __('Fixed calendar', $pluginName);
+                $dictionary['Public days from today'] = __('Public days from today', $pluginName);
+                $dictionary['Unavailable days from today'] = __('Unavailable days from today', $pluginName);
+                $dictionary['Delete schedules'] = __('Delete schedules', $pluginName);
+                $dictionary['Refresh token'] = __('Refresh token', $pluginName);
+                $dictionary['The "%s" is only available to subscribed users.'] = __('The "%s" is only available to subscribed users.',
+                    $pluginName);
+                $dictionary['Cancellation URI'] = __('Cancellation URI', $pluginName);
+                $dictionary['Cancellation URL'] = __('Cancellation URL', $pluginName);
+                $dictionary['Received URI'] = __('Received URI', $pluginName);
+                $dictionary['Received URL'] = __('Received URL', $pluginName);
+                $dictionary['Customer details'] = __('Customer details', $pluginName);
+                $dictionary['URL of customer details for administrator'] = __('URL of customer details for administrator',
+                    $pluginName);
+                $dictionary['National holiday'] = __('National holiday', $pluginName);
+                $dictionary['Open'] = __('Open', $pluginName);
+                $dictionary['Taxes'] = __('Taxes', $pluginName);
+                $dictionary['Surcharges'] = __('Surcharges', $pluginName);
+                $dictionary['Add option'] = __('Add option', $pluginName);
+                $dictionary['Add surcharge or tax'] = __('Add surcharge or tax', $pluginName);
+                $dictionary['Payment method'] = __('Payment method', $pluginName);
+                $dictionary['Stop'] = __('Stop', $pluginName);
+                $dictionary['You can use following shortcodes in content editer.'] = __('You can use following shortcodes in content editer.',
+                    $pluginName);
+                $doctionary['This calendar shares the schedules of the "%s".'] = __('This calendar shares the schedules of the "%s".',
+                    $pluginName);
+                $dictionary['Weekly schedule templates'] = __('Weekly schedule templates', $pluginName);
+                $dictionary['Coupon name'] = __('Coupon name', $pluginName);
+                $dictionary['Add new item'] = __('Add new item', $pluginName);
+                $dictionary['Add Coupon'] = __('Add Coupon', $pluginName);
+                $dictionary['Add Guest'] = __('Add Guest', $pluginName);
+                $dictionary['Enable the guests function'] = __('Enable the guests function', $pluginName);
+                $dictionary['Enable the coupons function'] = __('Enable the coupons function', $pluginName);
+                $dictionary['Choose all the time'] = __('Choose all the time', $pluginName);
+                $dictionary['Select all time slots'] = __('Select all time slots', $pluginName);
+                $dictionary['Specify the time slots for each day of the week'] = __('Specify the time slots for each day of the week',
+                    $pluginName);
+                $dictionary['There are incompletely deleted schedules.'] = __('There are incompletely deleted schedules.',
+                    $pluginName);
+                $dictionary['Delete the schedules perfectly'] = __('Delete the schedules perfectly', $pluginName);
+                $dictionary['Discount value'] = __('Discount value', $pluginName);
+                $dictionary['Booking date and time'] = __('Booking date and time', $pluginName);
+                $dictionary['Booking date'] = __('Booking date', $pluginName);
+                $dictionary['Booking time'] = __('Booking time', $pluginName);
+                $dictionary['Booking title'] = __('Booking title', $pluginName);
+                $dictionary['Timezone'] = __('Timezone', $pluginName);
+                $dictionary['Schedules'] = __('Schedules', $pluginName);
+                $dictionary['Number of rooms available'] = __('Number of rooms available', $pluginName);
+                $dictionary['Hotel charges'] = __('Hotel charges', $pluginName);
+                $dictionary['Sync the past customers'] = __('Sync the past customers', $pluginName);
+                $dictionary['Last %s days'] = __('Last %s days', $pluginName);
+                $dictionary['Service function'] = __('Service function', $pluginName);
+                $dictionary['Guest function'] = __('Guest function', $pluginName);
+                $dictionary['Coupon function'] = __('Coupon function', $pluginName);
+                $dictionary['%s or %s'] = __('%s or %s', $pluginName);
+                $dictionary['You changed the value of "%s".'] = __('You changed the value of "%s".', $pluginName);
+                $dictionary['You changed to a value less than the current "%s".'] = __('You changed to a value less than the current "%s".',
+                    $pluginName);
+                $dictionary['Do you remake new booking schedules?'] = __('Do you remake new booking schedules?',
+                    $pluginName);
+
+            } else {
+                if ($mode == 'setting_page') {
+
+                    $dictionary['My billing'] = __('My billing', $pluginName);
+                    $dictionary['My billing and payment'] = __('My billing and payment', $pluginName);
+                    $dictionary['Cancel my subscription'] = __('Cancel my subscription', $pluginName);
+                    $dictionary['Update my subscription'] = __('Update my subscription', $pluginName);
+                    #$dictionary['Cancel subscription'] = __('Cancel subscription', $pluginName);
+                    #$dictionary['Register credit card'] = __("Register credit card", $pluginName);
+                    #$dictionary['Update subscription'] = __("Update subscription", $pluginName);
+                    $dictionary['Name'] = __('Name', $pluginName);
+                    $dictionary['Active'] = __('Active', $pluginName);
+                    $dictionary['Price'] = __('Price', $pluginName);
+                    $dictionary['Duration time'] = __('Duration time', $pluginName);
+                    $dictionary['Unique ID'] = __('Unique ID', $pluginName);
+                    $dictionary['Value'] = __('Value', $pluginName);
+                    $dictionary['Type'] = __('Type', $pluginName);
+                    $dictionary['Options'] = __('Options', $pluginName);
+                    $dictionary['Cancellation of booking'] = __('Cancellation of booking', $pluginName);
+                    $dictionary['The Service account must be in JSON format.'] = __('The Service account must be in JSON format.',
+                        $pluginName);
+                    $dictionary['Subscription ID'] = __('Subscription ID', $pluginName);
+                    $dictionary['Expiration date'] = __('Expiration date', $pluginName);
+                    $dictionary['Your email'] = __('Your email', $pluginName);
+                    $dictionary['Do you delete the "%s"?'] = __('Do you delete the "%s"?', $pluginName);
+                    $dictionary['Do you really cancel the subscription?'] = __('Do you really cancel the subscription?',
+                        $pluginName);
+                    $dictionary['General'] = __('General', $pluginName);
+                    $dictionary['Country'] = __('Country', $pluginName);
+                    $dictionary['Selected country'] = __('Selected country', $pluginName);
+                    $dictionary['Frequently used countries'] = __('Frequently used countries', $pluginName);
+                    $dictionary['Other countries'] = __('Other countries', $pluginName);
+                    $dictionary['There are blank fields.'] = __('There are blank fields.', $pluginName);
+                    $dictionary['Subject'] = __('Subject', $pluginName);
+                    $dictionary['Content'] = __('Content', $pluginName);
+                    $dictionary['General'] = __('General', $pluginName);
+                    $dictionary['Design'] = __('Design', $pluginName);
+                    $dictionary['Do you send e-mail notifications to customers or administrators?'] = __('Do you send e-mail notifications to customers or administrators?',
+                        $pluginName);
+                    $dictionary['Date'] = __('Date', $pluginName);
+                    $dictionary['Email'] = __('Email', $pluginName);
+
+                } else {
+                    if ($mode == 'Upgrade_js') {
+
+                        $dictionary['Upgrade'] = 'Upgrade';
+                        $dictionary['Credit card'] = 'Credit card';
+                        $dictionary['Submit Payment'] = 'Submit Payment';
+                        $dictionary['Please choose a plan.'] = 'Please choose a plan.';
+                        $dictionary['First Name'] = 'First Name';
+                        $dictionary['Last Name'] = 'Last Name';
+                        $dictionary['Email address'] = 'Email address';
+
+                    } else {
+                        if ($mode == 'bookingPageForVisitors') {
+
+                            $dictionary['Please fill in your details'] = __('Please fill in your details', $pluginName);
+                            $dictionary['Booking details'] = __('Booking details', $pluginName);
+                            $dictionary['Your Booking Details'] = __('Your Booking Details', $pluginName);
+                            $dictionary['Book now'] = __('Book now', $pluginName);
+                            $dictionary['Please confirm your details'] = __('Please confirm your details', $pluginName);
+                            $dictionary['Booking Completed'] = __('Booking Completed', $pluginName);
+                            $dictionary['Credit card'] = __('Credit card', $pluginName);
+                            $dictionary['Service is not registered. '] = __('Service is not registered. ', $pluginName);
+                            $dictionary['Submit Payment'] = __('Submit Payment', $pluginName);
+                            $dictionary['Sign in'] = __('Sign in', $pluginName);
+                            $dictionary['Cancel booking'] = __('Cancel booking', $pluginName);
+                            $dictionary['Next'] = __('Next', $pluginName);
+                            $dictionary['Next page'] = __('Next page', $pluginName);
+                            $dictionary['You have not selected anything'] = __('You have not selected anything',
+                                $pluginName);
+                            $dictionary['Select option'] = __('Select option', $pluginName);
+                            $dictionary['Choose a date'] = __('Choose a date', $pluginName);
+                            $dictionary['Select payment method'] = __('Select payment method', $pluginName);
+                            $dictionary['I will pay locally'] = __('I will pay locally', $pluginName);
+                            $dictionary['Pay with Credit Card'] = __('Pay with Credit Card', $pluginName);
+                            $dictionary['Pay with PayPal'] = __('Pay with PayPal', $pluginName);
+                            $dictionary['Pay at a convenience store'] = __('Pay at a convenience store', $pluginName);
+                            $dictionary['Do you really want to delete the license as a member?'] = __('Do you really want to delete the license as a member?',
+                                $pluginName);
+                            $dictionary['We sent a verification code to the following address.'] = __('We sent a verification code to the following address.',
+                                $pluginName);
+                            $dictionary['Lost your password?'] = __('Lost your password?', $pluginName);
+
+                        }
+                    }
+                }
+            }
+        }
+
+        return $dictionary;
+
+    }
+
     public function customersList($date, $unixTime, $calendarAccountList, $lists, $schedule)
     {
 
-        $dateFormat = get_option($this->prefix . "dateFormat", "0");
-        $clock = get_option($this->prefix . "clock", '24hours');
+        $dateFormat = get_option($this->prefix . 'dateFormat', '0');
+        $clock = get_option($this->prefix . 'clock', '24hours');
         $clock = $this->changeTimeFormat($clock);
-        $url = admin_url("admin.php?page=" . $this->plugin_name . "/index.php");
-        print "<div class='title'>" . $date . "</div>";
+        $url = admin_url('admin.php?page=' . $this->plugin_name . '/index.php');
+        print "<div class='title'>" . $date . '</div>';
         $i = 0;
         foreach ((array)$lists as $key => $value) {
 
@@ -1011,7 +1426,7 @@ class BOOKING_PACKAGE
 
                 date_default_timezone_set($calendarAccountList[$key]['timezone']);
                 $i++;
-                print "<div class='calendarName'>" . $calendarAccountList[$key]['name'] . "</div>";
+                print "<div class='calendarName'>" . $calendarAccountList[$key]['name'] . '</div>';
                 print "<ul class=''>";
                 for ($i = 0; $i < count($value); $i++) {
 
@@ -1020,7 +1435,7 @@ class BOOKING_PACKAGE
 
                 }
 
-                print "</ul>";
+                print '</ul>';
 
             }
 
@@ -1028,7 +1443,7 @@ class BOOKING_PACKAGE
 
         if ($i == 0) {
 
-            print "<div class='calendarName'>" . __('No visitors', $this->plugin_name) . "</div>";
+            print "<div class='calendarName'>" . __('No visitors', $this->plugin_name) . '</div>';
 
         }
 
@@ -1105,9 +1520,9 @@ class BOOKING_PACKAGE
             }
         }
 
-        $url .= "&key=" . intval($visitor['key']) . "&calendar=" . intval($visitor['accountKey']) . "&month=" . intval(date('n',
-                $visitor['scheduleUnixTime'])) . "&day=" . intval(date('j',
-                $visitor['scheduleUnixTime'])) . "&year=" . intval(date('Y', $visitor['scheduleUnixTime']));
+        $url .= '&key=' . intval($visitor['key']) . '&calendar=' . intval($visitor['accountKey']) . '&month=' . intval(date('n',
+                $visitor['scheduleUnixTime'])) . '&day=' . intval(date('j',
+                $visitor['scheduleUnixTime'])) . '&year=' . intval(date('Y', $visitor['scheduleUnixTime']));
         $praivateData = $visitor['praivateData'];
         $name = array();
         for ($i = 0; $i < count($praivateData); $i++) {
@@ -1140,7 +1555,7 @@ class BOOKING_PACKAGE
         $this->loaded_plugin = true;
         $load_start_time = microtime(true);
         $atts = extract(shortcode_atts(array('id' => 1, 'locale' => null, 'services' => null), $atts,
-            "booking_package"));
+            'booking_package'));
         $accountKey = $id;
         $this->upgrader_process();
         $pluginName = $this->plugin_name;
@@ -1152,13 +1567,13 @@ class BOOKING_PACKAGE
         }
 
 
-        $p_v = "?p_v=" . $this->plugin_version;
+        $p_v = '?p_v=' . $this->plugin_version;
         wp_enqueue_style('booking_app_js_css',
             plugin_dir_url(__FILE__) . 'css/Booking_app.css' . '?plugin_v=' . $this->plugin_version, array(),
             $this->plugin_version);
         wp_enqueue_style('Material_Icons', 'https://fonts.googleapis.com/css?family=Material+Icons');
         $fontFaceStyle = $this->getFontFaceStyle();
-        wp_add_inline_style("booking_app_js_css", $fontFaceStyle);
+        wp_add_inline_style('booking_app_js_css', $fontFaceStyle);
 
         $this->update_database();
 
@@ -1176,15 +1591,15 @@ class BOOKING_PACKAGE
         }
 
         $deleteKeys = array(
-            "googleCalendarID",
-            "idForGoogleWebhook",
-            "expirationForGoogleWebhook",
-            "ical",
-            "icalToken",
-            "email_from",
-            "email_from_title",
-            "email_to",
-            "email_to_title"
+            'googleCalendarID',
+            'idForGoogleWebhook',
+            'expirationForGoogleWebhook',
+            'ical',
+            'icalToken',
+            'email_from',
+            'email_from_title',
+            'email_to',
+            'email_to_title'
         );
         for ($i = 0; $i < count($deleteKeys); $i++) {
 
@@ -1207,14 +1622,16 @@ class BOOKING_PACKAGE
 
         $list = $setting->getList();
 
-        $setting->getCss("front_end.css", plugin_dir_path(__FILE__));
-        $front_end_url = $setting->getCssUrl("front_end.css");
-        wp_enqueue_style('front_end_url', $front_end_url['dirname'], array(), $front_end_url['v']);
+        $setting->getCss('front_end.css', plugin_dir_path(__FILE__));
+        $front_end_url = $setting->getCssUrl('front_end.css');
+        wp_enqueue_style('wp-booking-front-end', plugins_url('/css/wp-booking.css', __FILE__));
+
+        //wp_enqueue_style('wp-booking', $front_end_url['dirname'], array(), $front_end_url['v']);
 
         if ($isExtensionsValid === true) {
 
-            $setting->getJavaScript("front_end.js", plugin_dir_path(__FILE__));
-            $front_end_javascript_url = $setting->getJavaScriptUrl("front_end.js");
+            $setting->getJavaScript('front_end.js', plugin_dir_path(__FILE__));
+            $front_end_javascript_url = $setting->getJavaScriptUrl('front_end.js');
             wp_enqueue_script('front_end_javascript_url', $front_end_javascript_url['dirname'], array(),
                 $front_end_javascript_url['v']);
 
@@ -1480,7 +1897,7 @@ class BOOKING_PACKAGE
 
         if ($countServices == 0) {
 
-            $calendarAccount['flowOfBooking'] = "calendar";
+            $calendarAccount['flowOfBooking'] = 'calendar';
 
         }
 
@@ -1495,32 +1912,32 @@ class BOOKING_PACKAGE
 
         }
 
-        $dateFormat = get_option($this->prefix . "dateFormat", "0");
-        $positionOfWeek = get_option($this->prefix . "positionOfWeek", "before");
-        $courseBool = "false";
-        if (intval($calendarAccount["courseBool"]) == 1) {
+        $dateFormat = get_option($this->prefix . 'dateFormat', '0');
+        $positionOfWeek = get_option($this->prefix . 'positionOfWeek', 'before');
+        $courseBool = 'false';
+        if (intval($calendarAccount['courseBool']) == 1) {
 
-            $courseBool = "true";
+            $courseBool = 'true';
             if ($countServices == 0 || $calendarAccount['flowOfBooking'] == 'services') {
 
-                $courseBool = "false";
+                $courseBool = 'false';
 
             }
 
         } else {
 
-            $calendarAccount['flowOfBooking'] = "calendar";
+            $calendarAccount['flowOfBooking'] = 'calendar';
             $calendarAccount['hasMultipleServices'] = 0;
 
         }
 
         $locale = get_locale();
-        $dictionary = $this->getDictionary("bookingPageForVisitors", $this->plugin_name);
+        $dictionary = $this->getDictionary('bookingPageForVisitors', $this->plugin_name);
 
-        $localize_script = $this->localizeScript("visitor");
+        $localize_script = $this->localizeScript('visitor');
         $localize_script['uniqueID'] = $this->plugin_name . '-id-' . $accountKey;
         $localize_script['courseBool'] = $courseBool;
-        $localize_script['courseName'] = $calendarAccount["courseTitle"];
+        $localize_script['courseName'] = $calendarAccount['courseTitle'];
         $localize_script['hasMultipleServices'] = $calendarAccount['hasMultipleServices'];
         $localize_script['accountKey'] = $accountKey;
         $localize_script['calendarAccount'] = $calendarAccount;
@@ -1556,12 +1973,12 @@ class BOOKING_PACKAGE
         }
 
         $localize_script['googleReCAPTCHA'] = array('status' => false, 'locked' => false);
-        $googleReCAPTCHA_active = get_option($this->prefix . "googleReCAPTCHA_active", "0");
+        $googleReCAPTCHA_active = get_option($this->prefix . 'googleReCAPTCHA_active', '0');
         if (intval($googleReCAPTCHA_active) == 1) {
 
             $localize_script['googleReCAPTCHA'] = array(
-                'v' => get_option($this->prefix . "googleReCAPTCHA_version", "v2"),
-                'key' => get_option($this->prefix . "googleReCAPTCHA_site_key", "")
+                'v' => get_option($this->prefix . 'googleReCAPTCHA_version', 'v2'),
+                'key' => get_option($this->prefix . 'googleReCAPTCHA_site_key', '')
             );
 
             if (empty($localize_script['googleReCAPTCHA']['key'])) {
@@ -1579,13 +1996,13 @@ class BOOKING_PACKAGE
         }
 
         $localize_script['hCaptcha'] = array('status' => false, 'locked' => false);
-        $hCaptcha_active = get_option($this->prefix . "hCaptcha_active", "0");
+        $hCaptcha_active = get_option($this->prefix . 'hCaptcha_active', '0');
         if (intval($hCaptcha_active) == 1) {
 
             $localize_script['hCaptcha'] = array(
-                'key' => get_option($this->prefix . "hCaptcha_site_key", ""),
-                'theme' => get_option($this->prefix . "hCaptcha_Theme", "light"),
-                'size' => get_option($this->prefix . "hCaptcha_Size", "normal"),
+                'key' => get_option($this->prefix . 'hCaptcha_site_key', ''),
+                'theme' => get_option($this->prefix . 'hCaptcha_Theme', 'light'),
+                'size' => get_option($this->prefix . 'hCaptcha_Size', 'normal'),
             );
 
             if (empty($localize_script['hCaptcha']['key'])) {
@@ -1667,9 +2084,9 @@ class BOOKING_PACKAGE
             }
         }
 
-        $accountList = $schedule->getCalendarAccountListData("`key`, `name`, `expressionsCheck`, `type`, `courseTitle`, `includeChildrenInRoom`, `numberOfPeopleInRoom`");
+        $accountList = $schedule->getCalendarAccountListData('`key`, `name`, `expressionsCheck`, `type`, `courseTitle`, `includeChildrenInRoom`, `numberOfPeopleInRoom`');
         $localize_script['calendarAccountList'] = $accountList;
-        $paymentMethod = explode(",", $calendarAccount['paymentMethod']);
+        $paymentMethod = explode(',', $calendarAccount['paymentMethod']);
         if ((count($paymentMethod) == 1 && strlen($paymentMethod[0]) == 0) || $isExtensionsValid === false) {
 
             $paymentMethod = array('locally');
@@ -1681,7 +2098,7 @@ class BOOKING_PACKAGE
 
             if ($paymentMethod[$i] == 'stripe' || $paymentMethod[$i] == 'stripe_konbini') {
 
-                $stripe_public_key = get_option($this->prefix . "stripe_public_key", null);
+                $stripe_public_key = get_option($this->prefix . 'stripe_public_key', null);
                 if (!empty($stripe_public_key)) {
 
                     array_push($new_paymentMethod, $paymentMethod[$i]);
@@ -1698,7 +2115,7 @@ class BOOKING_PACKAGE
             } else {
                 if ($paymentMethod[$i] == 'paypal') {
 
-                    $paypal_public_key = get_option($this->prefix . "paypal_client_id", null);
+                    $paypal_public_key = get_option($this->prefix . 'paypal_client_id', null);
                     if (!empty($paypal_public_key)) {
 
                         $localePayPal = 'locale=en_US';
@@ -1718,7 +2135,7 @@ class BOOKING_PACKAGE
 
                         array_push($new_paymentMethod, $paymentMethod[$i]);
                         $localize_script['paypal_active'] = 1;
-                        $localize_script['paypal_mode'] = intval(get_option($this->prefix . "paypal_live", 0));
+                        $localize_script['paypal_mode'] = intval(get_option($this->prefix . 'paypal_live', 0));
                         $localize_script['paypal_client_id'] = $paypal_public_key;
                         #wp_enqueue_script('paypal_checkout_v3_js', 'https://www.paypalobjects.com/api/checkout.js');
                         wp_enqueue_script('paypal_checkout_v4_js',
@@ -1777,7 +2194,7 @@ class BOOKING_PACKAGE
          * wp_localize_script('booking_app_js', 'reservation_info', $localize_script);
          **/
 
-        $howdy = "";
+        $howdy = '';
         if (isset($memberSetting['user_login'])) {
 
             $howdy = sprintf(__('Hello, %s', $pluginName), $memberSetting['user_login']);
@@ -1797,17 +2214,17 @@ class BOOKING_PACKAGE
         $html .= '<div id="booking-package-memberActionPanel" class="hidden_panel">';
         if (isset($_GET[$this->prefix . 'login_error'])) {
 
-            $html .= "<div id='" . $this->prefix . "login_error' class='login_error'>" . esc_html($_GET[$this->prefix . 'login_error']) . "</div>";
+            $html .= "<div id='" . $this->prefix . "login_error' class='login_error'>" . esc_html($_GET[$this->prefix . 'login_error']) . '</div>';
 
         }
         $html .= '<div class="userTopButtonPanel">';
         $html .= '<label class="displayName">' . $howdy . '</label>';
-        $html .= '<div id="booking-package-register" class="register">' . __("Create account", $pluginName) . '</div>';
-        $html .= '<div id="booking-package-login" class="login">' . __("Sign in", $pluginName) . '</div>';
-        $html .= '<div id="booking-package-logout" class="logout hidden_panel">' . __("Sign out",
+        $html .= '<div id="booking-package-register" class="register">' . __('Create account', $pluginName) . '</div>';
+        $html .= '<div id="booking-package-login" class="login">' . __('Sign in', $pluginName) . '</div>';
+        $html .= '<div id="booking-package-logout" class="logout hidden_panel">' . __('Sign out',
                 $pluginName) . '</div>';
-        $html .= '<div id="booking-package-edit" class="edit">' . __("Edit My Profile", $pluginName) . '</div>';
-        $html .= '<div id="booking-package-bookedHistory" class="edit">' . __("Booking history",
+        $html .= '<div id="booking-package-edit" class="edit">' . __('Edit My Profile', $pluginName) . '</div>';
+        $html .= '<div id="booking-package-bookedHistory" class="edit">' . __('Booking history',
                 $pluginName) . '</div>';
         $html .= '<div id="booking-package-subscribed" class="edit">Subscribed items</div>';
         $html .= '</div>';
@@ -1827,10 +2244,10 @@ class BOOKING_PACKAGE
         $html .= '		<div id="' . $this->prefix . 'confirmPostPage" class="hidden_panel">' . $postPages['confirmPostPage']['page'] . '</div>';
         $html .= '		<div id="' . $this->prefix . 'thanksPostPage" class="hidden_panel">' . $postPages['thanksPostPage']['page'] . '</div>';
         $html .= '	</div>';
-        $html .= '<div id="booking-package_servicePage" class="hidden_panel"><div id="booking-package_serviceTitle" class="title borderColor">' . sprintf(__("Please select %s",
-                $pluginName), $calendarAccount["courseTitle"]) . '</div><div class="list borderColor"></div></div>';
-        $html .= '<div id="booking-package_serviceDetails" class="hidden_panel"><div class="title borderColor">' . sprintf(__("Your %s details",
-                $pluginName), $calendarAccount["courseTitle"]) . '</div><div class="list borderColor"></div></div>';
+        $html .= '<div id="booking-package_servicePage" class="hidden_panel"><div id="booking-package_serviceTitle" class="title borderColor">' . sprintf(__('Please select %s',
+                $pluginName), $calendarAccount['courseTitle']) . '</div><div class="list borderColor"></div></div>';
+        $html .= '<div id="booking-package_serviceDetails" class="hidden_panel"><div class="title borderColor">' . sprintf(__('Your %s details',
+                $pluginName), $calendarAccount['courseTitle']) . '</div><div class="list borderColor"></div></div>';
         #$html .= '<div id="bookingBlockPanel" class="hidden_panel"><img src="'.plugin_dir_url( __FILE__ ).'images/loading_0.gif"></img></div>';
         $html .= '<div id=""></div>';
 
@@ -1944,6 +2361,615 @@ class BOOKING_PACKAGE
 
     }
 
+    public function upgrader_process()
+    {
+
+        $key = $this->prefix . 'version';
+        $now_version = get_option($key, 0);
+        if ($now_version == 0) {
+
+            add_option($key, $this->plugin_version);
+
+        } else {
+
+            if ($this->plugin_version != $now_version) {
+
+                update_option($key, $this->plugin_version);
+                $setting = $this->setting;
+                $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, 'upgrader', $this->plugin_version);
+
+            }
+
+        }
+
+    }
+
+    public function update_database()
+    {
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+        $this->setHomePath();
+        $this->update_memberAccount();
+        $installed_ver = get_option($this->prefix . 'db_version');
+        if ($installed_ver != $this->db_version) {
+
+            #$this->create_database(true, false);
+            $database = new booking_package_database($this->prefix, $this->db_version);
+            $database->create();
+            update_option($this->prefix . 'db_version', $this->db_version);
+            if ($installed_ver < $this->db_version && $this->db_version == '0.1.7') {
+
+                $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
+                $schedule->changeMaxAccountScheduleDay();
+
+            }
+
+        }
+
+    }
+
+    public function setHomePath()
+    {
+
+        if (function_exists('get_home_path')) {
+
+            $key = $this->prefix . 'home_path';
+            if (get_option($key) === false) {
+
+                add_option($key, get_home_path());
+
+            } else {
+
+                update_option($key, get_home_path());
+
+            }
+
+        }
+
+    }
+
+    private function update_memberAccount()
+    {
+
+        if (is_null(get_role($this->userRoleName))) {
+
+            $roleArray = array('read' => true, 'level_0' => true, 'booking_package' => true);
+            $object = add_role($this->userRoleName, 'Booking Package User', $roleArray);
+
+        } else {
+
+            $object = get_role($this->userRoleName);
+
+        }
+
+    }
+
+    public function member_form($user = null, $member_login_error = 0)
+    {
+
+        $htmlElement = new booking_package_HTMLElement($this->prefix, $this->plugin_name);
+        $htmlElement->setVisitorSubscriptionForStripe($this->visitorSubscriptionForStripe);
+        $member_form = $htmlElement->member_form($user, $member_login_error);
+        return $member_form;
+
+    }
+
+    public function localizeScript($mode)
+    {
+
+        if (isset($_GET['debug']) && intval($_GET['debug']) == 1) {
+
+            $this->dubug_javascript = 1;
+
+        }
+
+        $siteToken = get_option('_' . $this->prefix . 'siteToken', false);
+        if ($siteToken === false) {
+
+            $siteToken = hash('ripemd160', date('U'));
+            add_option('_' . $this->prefix . 'siteToken', $siteToken);
+
+        }
+
+        $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
+        $setting = $this->setting;
+        $locale = get_locale();
+        $javascriptSyntaxErrorNotification = get_option($this->prefix . 'javascriptSyntaxErrorNotification', 1);
+
+        $dateFormat = get_option($this->prefix . 'dateFormat', '0');
+        $positionOfWeek = get_option($this->prefix . 'positionOfWeek', 'before');
+        $positionTimeDate = get_option($this->prefix . 'positionTimeDate', 'dateTime');
+
+        $javascriptFileslist = array();
+        $dir = plugin_dir_path(__FILE__) . 'js/';
+        if ($handle = opendir($dir)) {
+
+            while (($file = readdir($handle)) !== false) {
+
+                if (filetype($path = $dir . $file) == 'file') {
+
+                    array_push($javascriptFileslist, $file);
+
+                }
+
+            }
+
+        }
+
+        $startOfWeek = get_option('start_of_week', 0);
+
+        $localize_script = array();
+        if ($mode == 'adomin') {
+
+            $dashboardRequest = array('status' => 0);
+            if (isset($_GET['key']) && isset($_GET['calendar']) && isset($_GET['month']) && isset($_GET['day']) && isset($_GET['year'])) {
+
+                $dashboardRequest = array(
+                    'status' => 1,
+                    'key' => intval($_GET['key']),
+                    'calendar' => intval($_GET['calendar']),
+                    'month' => intval($_GET['month']),
+                    'day' => intval($_GET['day']),
+                    'year' => intval($_GET['year'])
+                );
+
+            }
+
+
+            $list = $setting->getList();
+            $courseList = $setting->getCourseList();
+            $emailMessageList = $setting->getEmailMessage(array('enable'));
+            //$formData = $setting->getForm();
+
+            $courseBool = get_option($this->prefix . 'courseBool', 'false');
+            $courseName = get_option($this->prefix . 'courseName', 'false');
+
+
+            $list['General'][$this->prefix . 'clock']['value'] = $this->changeTimeFormat($list['General'][$this->prefix . 'clock']['value']);
+
+            $localize_script = array(
+                'url' => admin_url('admin-ajax.php'),
+                'action' => $this->action_control,
+                'nonce' => wp_create_nonce($this->action_control . '_ajax'),
+                'nonce_download' => wp_create_nonce($this->action_control . '_download'),
+                'prefix' => $this->prefix,
+                'courseBool' => $courseBool,
+                'courseName' => $courseName,
+                'year' => date('Y'),
+                'month' => date('m'),
+                'day' => date('d'),
+                'locale' => $locale,
+                'courseList' => $courseList,
+                'country' => $list['General']['booking_package_country']['value'],
+                'currency' => $list['General']['booking_package_currency']['value'],
+                'clock' => $list['General']['booking_package_clock']['value'],
+                'dateFormat' => $dateFormat,
+                'positionOfWeek' => $positionOfWeek,
+                'positionTimeDate' => $positionTimeDate,
+                'formData' => array(),
+                'calendarAccountList' => $schedule->getCalendarAccountListData(),
+                'is_mobile' => $this->is_mobile,
+                'dashboardRequest' => $dashboardRequest,
+                'bookingBool' => 1,
+                'emailEnable' => $emailMessageList,
+                'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
+                'javascriptFileslist' => $javascriptFileslist,
+                'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
+                'startOfWeek' => $startOfWeek,
+                'debug' => $this->dubug_javascript,
+                'today' => date('Ymd'),
+                'guestForDayOfTheWeekRates' => $this->guestForDayOfTheWeekRates,
+            );
+
+
+        } else {
+            if ($mode == 'schedule_page') {
+
+                $this->setting->guestForDayOfTheWeekRates = $this->guestForDayOfTheWeekRates;
+                $courseData = $setting->getCourseData();
+                $subscriptionsData = $setting->getSubscriptionsData();
+                $formInputType = $setting->getFormInputType();
+                $guestsInputType = $setting->guestsInputType();
+                $couponsInputType = $setting->couponsInputType();
+                $emailMessageList = $setting->getEmailMessage();
+                $taxes = $setting->getTaxesData();
+
+                if ($this->stopService == 0) {
+
+                    unset($courseData['stopService']);
+
+                }
+
+                if ($this->groupOfInputField == 0) {
+
+                    unset($formInputType['groupId']);
+
+                }
+
+                if ($this->expirationDateForTax == 0) {
+
+                    unset($taxes['expirationDate']);
+
+                }
+
+                $schedule->deleteOldDaysInSchedules();
+                $timestamp = $schedule->getTimestamp();
+
+                $courseBool = get_option($this->prefix . 'courseBool', 'false');
+
+                $elementForCalendarAccount = $setting->getElementForCalendarAccount();
+                $country = get_option($this->prefix . 'country', 'US');
+                if (strtolower($country) != 'jp') {
+
+                    unset($elementForCalendarAccount['paymentMethod']['valueList']['stripe_konbini']);
+
+                }
+
+                if ($this->visitorSubscriptionForStripe == 0) {
+
+                    unset($elementForCalendarAccount['subscriptionIdForStripe']);
+                    unset($elementForCalendarAccount['subscriptionIdForPayPal']);
+                    unset($elementForCalendarAccount['termsOfServiceForSubscription']);
+                    #unset($elementForCalendarAccount['enableTermsOfServiceForSubscription']);
+                    unset($elementForCalendarAccount['privacyPolicyForSubscription']);
+                    #unset($elementForCalendarAccount['enablePrivacyPolicyForSubscription']);
+
+
+                }
+
+                if ($this->multipleRooms == 0) {
+
+                    unset($elementForCalendarAccount['multipleRooms']);
+
+                }
+
+                if ($this->maxAndMinNumberOfGuests == 0) {
+
+                    unset($elementForCalendarAccount['minimum_guests']);
+                    unset($elementForCalendarAccount['maximum_guests']);
+
+                }
+
+                $thanksPages = array('0' => __('Select', $this->plugin_name));
+                $pages = get_pages(array('meta_key' => 'booking-package', 'meta_value' => 'front-end'));
+                foreach ((array)$pages as $key => $value) {
+
+                    $thanksPages[$value->ID] = $value->post_title;
+
+                }
+                $elementForCalendarAccount['servicesPage']['valueList'] = $thanksPages;
+                $elementForCalendarAccount['calenarPage']['valueList'] = $thanksPages;
+                $elementForCalendarAccount['schedulesPage']['valueList'] = $thanksPages;
+                $elementForCalendarAccount['visitorDetailsPage']['valueList'] = $thanksPages;
+                $elementForCalendarAccount['confirmDetailsPage']['valueList'] = $thanksPages;
+                $elementForCalendarAccount['thanksPage']['valueList'] = $thanksPages;
+                //$elementForCalendarAccount['redirectPage']['valueList'] = $thanksPages;
+                $redirectPages = array();
+                foreach ((array)$thanksPages as $key => $value) {
+
+                    $redirectPages[$key] = array('key' => $key, 'name' => $value);
+
+                }
+                $elementForCalendarAccount['redirect_Page']['valueList'][1]['valueList'] = $redirectPages;
+
+                $defaultEmail = array(
+                    'email_to' => get_option($this->prefix . 'email_to', ''),
+                    'email_from' => get_option($this->prefix . 'email_from', ''),
+                    'email_from_title' => get_option($this->prefix . 'email_title_from', ''),
+                );
+
+                $localize_script = array(
+                    'url' => admin_url('admin-ajax.php'),
+                    'action' => $this->action_control,
+                    'nonce' => wp_create_nonce($this->action_control . '_ajax'),
+                    'prefix' => $this->prefix,
+                    'courseBool' => $courseBool,
+                    'year' => date('Y'),
+                    'month' => date('m'),
+                    'locale' => $locale,
+                    'dateFormat' => $dateFormat,
+                    'positionOfWeek' => $positionOfWeek,
+                    'positionTimeDate' => $positionTimeDate,
+                    'list' => array(),
+                    'formInputType' => $formInputType,
+                    'courseData' => $courseData,
+                    'subscriptionsData' => $subscriptionsData,
+                    'taxesData' => $taxes,
+                    'optionsForHotel' => $this->optionsForHotel,
+                    'optionsForHotelData' => $setting->getOptionsForHotelData(),
+                    'elementForCalendarAccount' => $elementForCalendarAccount,
+                    'guestsInputType' => $guestsInputType,
+                    'couponsInputType' => $couponsInputType,
+                    'is_mobile' => $this->is_mobile,
+                    'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
+                    'javascriptFileslist' => $javascriptFileslist,
+                    'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
+                    'timestamp' => $timestamp,
+                    'startOfWeek' => $startOfWeek,
+                    'currency' => get_option($this->prefix . 'currency', 'usd'),
+                    'timezone' => get_option($this->prefix . 'timezone', 'UTC'),
+                    'debug' => $this->dubug_javascript,
+                    'defaultEmail' => $defaultEmail,
+                    'siteToken' => $siteToken,
+                    'remakeBookingSchedules' => $this->remakeBookingSchedules,
+                );
+
+            } else {
+                if ($mode == 'setting_page') {
+
+                    $list = $setting->getList();
+                    $booking_sync = $setting->getBookingSyncList();
+                    $member_setting = $setting->getMemberSetting(true);
+                    $emailMessageList = $setting->getEmailMessage();
+                    #$courseList = $setting->getCourseList();
+                    #$courseData = $setting->getCourseData();
+                    #$formInputType = $setting->getFormInputType();
+                    $countries = json_decode(file_get_contents(plugin_dir_path(__FILE__) . 'lib/Countries_with_Regional_Codes.json'),
+                        true);
+                    $list['General'][$this->prefix . 'country']['valueList'] = $countries;
+                    ksort($list['General'][$this->prefix . 'currency']['valueList']);
+                    if (isset($booking_sync['Google_Calendar'])) {
+
+                        $booking_sync['Google_Calendar']['parse_url'] = parse_url(get_home_url());
+
+                    }
+
+                    $timezone = get_option($this->prefix . 'timezone', null);
+                    if (is_null($timezone)) {
+
+                        $timezone = get_option('timezone_string', 'UTC');
+                        $list['General'][$this->prefix . 'timezone']['value'] = $timezone;
+
+                    } else {
+
+                        $list['General'][$this->prefix . 'timezone']['value'] = $timezone;
+
+                    }
+
+                    $list['General'][$this->prefix . 'clock']['value'] = $this->changeTimeFormat($list['General'][$this->prefix . 'clock']['value']);
+                    $booking_sync['iCal']['booking_package_ical_token']['home'] = get_home_url();
+                    if (is_null($booking_sync['iCal']['booking_package_ical_token']['value']) === true || strlen($booking_sync['iCal']['booking_package_ical_token']['value']) == 0) {
+
+                        $tokenResponse = $setting->refreshToken('booking_package_ical_token');
+                        $booking_sync['iCal']['booking_package_ical_token']['value'] = $tokenResponse['token'];
+
+                    }
+
+                    $localize_script = array(
+                        'url' => admin_url('admin-ajax.php'),
+                        'action' => $this->action_control,
+                        'nonce' => wp_create_nonce($this->action_control . '_ajax'),
+                        'prefix' => $this->prefix,
+                        'locale' => $locale,
+                        'list' => $list,
+                        'bookingSyncList' => $booking_sync,
+                        'memberSetting' => $member_setting,
+                        'extension_url' => BOOKING_PACKAGE_EXTENSION_URL,
+                        'dateFormat' => $dateFormat,
+                        'positionOfWeek' => $positionOfWeek,
+                        'positionTimeDate' => $positionTimeDate,
+                        /**
+                         * 'courseData' => $courseData,
+                         * 'courseList' => $courseList,
+                         * 'formInputType' => $formInputType,
+                         * 'formData' => $formData,
+                         * 'emailMessageList' => $emailMessageList,
+                         **/
+                        'is_mobile' => $this->is_mobile,
+                        'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
+                        'javascriptFileslist' => $javascriptFileslist,
+                        'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
+                        'regularHolidays' => $schedule->getRegularHolidays(date('m'), date('Y'), 'share', $startOfWeek,
+                            false),
+                        'nationalHolidays' => $schedule->getRegularHolidays(date('m'), date('Y'), 'national',
+                            $startOfWeek, false),
+                        'startOfWeek' => $startOfWeek,
+                        'is_owner_site' => $this->is_owner_site,
+                        'siteToken' => $siteToken,
+                        'return_url' => admin_url(),
+                        'debug' => $this->dubug_javascript,
+                    );
+
+                } else {
+                    if ($mode == 'visitor') {
+
+                        $list = $setting->getList();
+                        $courseList = $setting->getCourseList();
+                        $emailMessageList = $setting->getEmailMessage(array('enable'));
+                        //$formData = $setting->getForm();
+
+                        $courseBool = get_option($this->prefix . 'courseBool', 'false');
+                        $courseName = get_option($this->prefix . 'courseName', 'false');
+                        $autoWindowScroll = get_option($this->prefix . 'autoWindowScroll', 1);
+                        $list['General'][$this->prefix . 'clock']['value'] = $this->changeTimeFormat($list['General'][$this->prefix . 'clock']['value']);
+
+                        $localize_script = array(
+                            'url' => admin_url('admin-ajax.php'),
+                            #'url' => plugin_dir_url( __FILE__ ).'ajax.php',
+                            'action' => $this->action_public,
+                            'nonce' => wp_create_nonce($this->action_public . '_ajax'),
+                            'prefix' => $this->prefix,
+                            'courseBool' => $courseBool,
+                            'year' => date('Y'),
+                            'month' => date('m'),
+                            'day' => date('d'),
+                            'courseList' => $courseList,
+                            'country' => $list['General']['booking_package_country']['value'],
+                            'currency' => $list['General']['booking_package_currency']['value'],
+                            'clock' => $list['General']['booking_package_clock']['value'],
+                            'headingPosition' => $list['Design']['booking_package_headingPosition']['value'],
+                            'googleAnalytics' => $list['General']['booking_package_googleAnalytics']['value'],
+                            'dateFormat' => $dateFormat,
+                            'positionOfWeek' => $positionOfWeek,
+                            'positionTimeDate' => $positionTimeDate,
+                            'formData' => array(),
+                            'locale' => $locale,
+                            'is_mobile' => $this->is_mobile,
+                            'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
+                            'javascriptFileslist' => $javascriptFileslist,
+                            'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
+                            'startOfWeek' => $startOfWeek,
+                            'bookedList' => 'userBookingDetails',
+                            'permalink' => get_permalink(),
+                            'debug' => $this->dubug_javascript,
+                            'plugin_v' => $this->plugin_version,
+                            'today' => date('Ymd'),
+                            'autoWindowScroll' => intval($autoWindowScroll),
+                            'pluginLocale' => $this->pluginLocale,
+                            'guestForDayOfTheWeekRates' => $this->guestForDayOfTheWeekRates,
+                        );
+
+                    } else {
+                        if ($mode == 'member') {
+
+                            $list = $setting->getList();
+                            $localize_script = array(
+                                'url' => admin_url('admin-ajax.php'),
+                                #'url' => plugin_dir_url( __FILE__ ).'ajax.php',
+                                'action' => $this->action_public,
+                                'nonce' => wp_create_nonce($this->action_public . '_ajax'),
+                                'prefix' => $this->prefix,
+                                'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
+                                'javascriptFileslist' => $javascriptFileslist,
+                                'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
+                                'currency' => $list['General']['booking_package_currency']['value'],
+                                'clock' => $list['General']['booking_package_clock']['value'],
+                                'startOfWeek' => $startOfWeek,
+                                'debug' => $this->dubug_javascript,
+                                'dateFormat' => $dateFormat,
+                                'positionOfWeek' => $positionOfWeek,
+                                'positionTimeDate' => $positionTimeDate,
+                                'bookedList' => 1,
+
+                            );
+
+                        } else {
+                            if ($mode == 'subscription_page') {
+
+                                $localize_script = array(
+                                    'url' => admin_url('admin-ajax.php'),
+                                    'action' => $this->action_control,
+                                    'nonce' => wp_create_nonce($this->action_control . '_ajax'),
+                                    'prefix' => $this->prefix,
+                                    'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
+                                    'javascriptFileslist' => $javascriptFileslist,
+                                    'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
+                                    'extension_url' => BOOKING_PACKAGE_EXTENSION_URL,
+                                    'is_owner_site' => $this->is_owner_site,
+                                    'locale' => $locale,
+                                    'site' => get_site_url(),
+                                    'debug' => $this->dubug_javascript,
+                                );
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        $localize_script['referer_field'] = esc_attr(wp_unslash($_SERVER['REQUEST_URI']));
+
+        return $localize_script;
+
+    }
+
+    public function subscription_form($calendarAccount, $subscription_form)
+    {
+
+        $htmlElement = new booking_package_HTMLElement($this->prefix, $this->plugin_name);
+        $html = $htmlElement->subscription_form($calendarAccount, $subscription_form);
+        return $html;
+
+    }
+
+    public function getStyle($list)
+    {
+
+        $style = '<style type="text/css">';
+        $style .= '#booking-package-memberActionPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . '; font-size: ' . $list['Design']['booking_package_fontSize']['value'] . "}\n";
+        $style .= '#booking-package_myBookingHistory, #booking-package_myBookingDetailsFroVisitor { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . '; font-size: ' . $list['Design']['booking_package_fontSize']['value'] . "}\n";
+        $style .= '#booking-package_myBookingHistoryTable th, #booking-package_myBookingHistoryTable td { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . '; font-size: ' . $list['Design']['booking_package_fontSize']['value'] . "}\n";
+        $style .= '#booking-package_myBookingDetails { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . '; font-size: ' . $list['Design']['booking_package_fontSize']['value'] . "}\n";
+        $style .= '#booking-package { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . '; font-size: ' . $list['Design']['booking_package_fontSize']['value'] . "}\n";
+        $style .= '#booking-package button { font-size: ' . $list['Design']['booking_package_fontSize']['value'] . "}\n";
+        $style .= '#booking-package_durationStay { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_durationStay .bookingDetailsTitle { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_calendarPage { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_scheduleMainPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_courseMainPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .topPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .topPanelNoAnimation { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .daysListPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .daysListPanelNoAnimation { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .bottomPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .bottomPanelForPositionInherit { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .selectedDate { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .courseListPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_inputFormPanel { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_inputFormPanel .selectedDate { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_myBookingDetails .selectedDate { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_calendarPage .dayPanel { background-color: ' . $list['Design']['booking_package_calendarBackgroundColorWithSchedule']['value'] . "; }\n";
+        $style .= '#booking-package_calendarPage .closeDay { background-color: ' . $list['Design']['booking_package_calendarBackgroundColorWithNoSchedule']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .selectPanel { background-color: ' . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .selectPanelError { background-color: ' . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .selectPanelActive { background-color: ' . $list['Design']['booking_package_backgroundColorOfSelectedLabel']['value'] . "; }\n";
+        $style .= '#booking-package_schedulePage .selectPanel:hover { background-color: ' . $list['Design']['booking_package_mouseHover']['value'] . "; }\n";
+
+        $style .= '#booking-package_servicePage { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_servicePage .title { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+
+        $style .= '#booking-package_servicePage .selectPanel { background-color: ' . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_servicePage .selectPanelError { background-color: ' . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
+        $style .= '#booking-package_servicePage .selectPanelActive { background-color: ' . $list['Design']['booking_package_backgroundColorOfSelectedLabel']['value'] . "; }\n";
+        $style .= '#booking-package_servicePage .selectPanel:hover { background-color: ' . $list['Design']['booking_package_mouseHover']['value'] . "; }\n";
+
+        $style .= '#booking-package_serviceDetails { background-color: ' . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
+
+        $style .= '#booking-package_calendarPage .pointer:hover { background-color: ' . $list['Design']['booking_package_mouseHover']['value'] . "; }\n";
+        $style .= '#booking-package_calendarPage .holidayPanel { background-color: ' . $list['Design']['booking_package_backgroundColorOfRegularHolidays']['value'] . " !important; }\n";
+        #$style .= "#booking-package_calendarPage .nationalHoliday { background-color: ".$list['Design']['booking_package_backgroundColorOfNationalHolidays']['value']."; }\n";
+
+        $styleList = array(
+            '#booking-package_calendarPage .dayPanel',
+            '#booking-package_schedulePage .selectPanel',
+            '#booking-package_schedulePage .selectPanelError',
+            '#booking-package_schedulePage .daysListPanel',
+            '#booking-package_schedulePage .topPanel',
+            '#booking-package_schedulePage .topPanelNoAnimation',
+            '#booking-package_schedulePage .bottomPanel',
+            '#booking-package_schedulePage .bottomPanelForPositionInherit',
+            '#booking-package_servicePage .selectPanel',
+            '#booking-package_servicePage .selectPanelError',
+            '#booking-package_servicePage .daysListPanel',
+            '#booking-package_servicePage .topPanel',
+            '#booking-package_servicePage .topPanelNoAnimation',
+            '#booking-package_servicePage .bottomPanel',
+            '#booking-package_inputFormPanel .selectedDate',
+            '#booking-package_myBookingDetails .selectedDate',
+            '#booking-package_inputFormPanel .row',
+            '#booking-package_myBookingDetails .row',
+            '#booking-package_durationStay .row',
+            '#booking-package_myBookingDetailsFroVisitor .row',
+            '#booking-package_durationStay .bookingDetailsTitle',
+            '#booking-package_serviceDetails .row',
+            '#booking-package_serviceDetails .borderColor',
+            '#booking-package_servicePage .borderColor',
+        );
+        for ($i = 0; $i < count($styleList); $i++) {
+
+            $style .= $styleList[$i] . ' { border-color: ' . $list['Design']['booking_package_borderColor']['value'] . "; }\n";
+
+        }
+
+        $style .= '</style>';
+
+        return $style;
+
+    }
+
     public function add_footer_scripts()
     {
 
@@ -2002,233 +3028,315 @@ class BOOKING_PACKAGE
 
     }
 
-    public function subscription_form($calendarAccount, $subscription_form)
-    {
-
-        $htmlElement = new booking_package_HTMLElement($this->prefix, $this->plugin_name);
-        $html = $htmlElement->subscription_form($calendarAccount, $subscription_form);
-        return $html;
-
-    }
-
-    public function member_form($user = null, $member_login_error = 0)
-    {
-
-        $htmlElement = new booking_package_HTMLElement($this->prefix, $this->plugin_name);
-        $htmlElement->setVisitorSubscriptionForStripe($this->visitorSubscriptionForStripe);
-        $member_form = $htmlElement->member_form($user, $member_login_error);
-        return $member_form;
-
-    }
-
     public function adomin()
     {
-
-        $load_start_time = microtime(true);
         global $wpdb;
+        $current_user = wp_get_current_user()->ID;
+        $user_groups = $wpdb->get_col("
+            SELECT g.group_id
+            FROM wp_groups_group g
+            INNER JOIN wp_groups_user_group ug ON g.group_id = ug.group_id 
+            WHERE ug.user_id = $current_user
+            AND g.name != 'Registered'
+            GROUP BY g.group_id
+        ");
 
-        $this->update_database();
-        $this->upgrader_process();
+        if (!empty($user_groups)) {
+            $load_start_time = microtime(true);
 
-        $setting = $this->setting;
-        #$timeMin = date('U') - (7 * 24 * 60 * 60);
+            $this->update_database();
+            $this->upgrader_process();
 
-        $webhook = new booking_package_webhook($this->prefix, $this->plugin_name);
-        $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
-        $schedule->deleteOldDaysInSchedules();
-        $isExtensionsValid = $this->getExtensionsValid();
-        $dictionary = $this->getDictionary("adomin", $this->plugin_name);
-        $localize_script = $this->localizeScript('adomin');
-        $localize_script['isExtensionsValid'] = 0;
+            $setting = $this->setting;
+            #$timeMin = date('U') - (7 * 24 * 60 * 60);
+
+            $webhook = new booking_package_webhook($this->prefix, $this->plugin_name);
+            $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
+            $schedule->deleteOldDaysInSchedules();
+            $isExtensionsValid = $this->getExtensionsValid();
+            $dictionary = $this->getDictionary('adomin', $this->plugin_name);
+            $localize_script = $this->localizeScript('adomin');
+            $localize_script['isExtensionsValid'] = 0;
+            if ($isExtensionsValid === true) {
+
+                $localize_script['isExtensionsValid'] = 1;
+
+            }
+            $p_v = '?p_v=' . $this->plugin_version;
+            wp_enqueue_style('Control.css', plugin_dir_url(__FILE__) . 'css/Control.css' . $p_v, array(),
+                $this->plugin_version);
+            wp_enqueue_style('Control_for_madia_css', plugin_dir_url(__FILE__) . 'css/Control_for_madia.css' . $p_v,
+                array(), $this->plugin_version);
+            wp_enqueue_style('Material_Icons', 'https://fonts.googleapis.com/css?family=Material+Icons');
+            $fontFaceStyle = $this->getFontFaceStyle();
+            wp_add_inline_style('Control.css', $fontFaceStyle);
+            wp_enqueue_script('Error_js', plugin_dir_url(__FILE__) . 'js/Error.js' . $p_v, array(), $this->plugin_version);
+            wp_enqueue_script('i18n_js', plugin_dir_url(__FILE__) . 'js/i18n.js' . $p_v, array(), $this->plugin_version);
+            wp_enqueue_script('XMLHttp_js', plugin_dir_url(__FILE__) . 'js/XMLHttp.js' . $p_v, array(),
+                $this->plugin_version);
+            wp_enqueue_script('Confirm_js', plugin_dir_url(__FILE__) . 'js/Confirm.js' . $p_v, array(),
+                $this->plugin_version);
+            wp_enqueue_script('Input_js', plugin_dir_url(__FILE__) . 'js/Input.js' . $p_v, array(), $this->plugin_version);
+            wp_enqueue_script('Calendar_js', plugin_dir_url(__FILE__) . 'js/Calendar.js' . $p_v, array(),
+                $this->plugin_version);
+            wp_enqueue_script('Hotel_js', plugin_dir_url(__FILE__) . 'js/Hotel.js' . $p_v, array(), $this->plugin_version);
+            wp_enqueue_script('Reservation_manage_js', plugin_dir_url(__FILE__) . 'js/Reservation_manage.js' . $p_v,
+                array(), $this->plugin_version);
+
+            wp_localize_script('Reservation_manage_js', $this->prefix . 'dictionary', $dictionary);
+            wp_localize_script('Reservation_manage_js', 'schedule_data', $localize_script);
+            wp_enqueue_script('Reservation_manage_js');
+
+
+            $updated_style = 'display: none;';
+            $control_panel_button_style = 'display: none;';
+            $user = wp_get_current_user();
+            if (!empty($_POST) && $user->allcaps['manage_options'] === true) {
+
+                if (check_admin_referer('booking_package_action', 'booking_package_nonce_field')) {
+
+
+                }
+
+            }
+
+            $active = get_option('booking_package_active', 0);
+            $booking_package_id = get_option('booking_package_id', '');
+            $booking_package_path = get_option('booking_package_path', '');
+            $booking_package_script_path = get_option('booking_package_script_path', '');
+            $booking_package_serial = get_option('booking_package_serial', '');
+
+            if (!empty($booking_package_script_path)) {
+
+                $control_panel_button_style = '';
+
+            }
+
+            $pluginName = $this->plugin_name;
+            $update_class = '';
+            ?>
+
+            <div id='booking_pacage_booked_customers'>
+
+                <div class="">
+                    <div class="top_bar">
+                        <?php
+                        $this->upgradeButton($isExtensionsValid);
+                        ?>
+                    </div>
+                    <div class="<?php print $update_class; ?>settings-error notice is-dismissible" id="res"
+                         style="<?php print $updated_style; ?>"></div>
+
+                    <div id="select_package" class="">
+                        <div id="calendarPage"></div>
+                    </div>
+
+                    <div id="editPanel" class="edit_modal hidden_panel">
+                        <button type="button" id="media_modal_close" class="media_modal_close">
+							<span class="">
+								<span class="material-icons">close</span>
+							</span>
+                        </button>
+                        <div class="edit_modal_content">
+                            <div id="menu_panel" class="media_frame_menu">
+                                <div id="media_menu" class="media_menu"></div>
+                            </div>
+                            <div id="media_title" class="media_frame_title"><h1 id="edit_title"></h1></div>
+                            <div id="media_router" class="media_frame_router">
+                                <div class="reservation_table_row">
+                                    <div id="reservation_users" class="media_menu_item active"><?php _e('Customers',
+                                            $pluginName); ?></div>
+                                    <div id="add_reservation" class="media_menu_item"><?php _e('Booking',
+                                            $pluginName); ?></div>
+                                </div>
+                            </div>
+                            <div id="media_frame_reservation_content"></div>
+                            <div id="frame_toolbar" class="media_frame_toolbar">
+                                <div class="media_toolbar">
+                                    <div id="buttonPanel" class="media_toolbar_primary" style="float: initial;">
+
+                                        <div id="leftButtonPanel"></div>
+                                        <div id="rightButtonPanel"></div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div id="blockPanel" class="edit_modal_backdrop hidden_panel"></div>
+
+                    <div id="dialogPanel" class="hidden_panel">
+                        <div class="blockPanel"></div>
+                        <div class="confirmPanel">
+                            <div class="subject"><?php _e('Title', $pluginName); ?></div>
+                            <div class="body"><?php _e('Message', $pluginName); ?></div>
+                            <div class="buttonPanel">
+                                <button id="dialogButtonYes" type="button"
+                                        class="yesButton button button-primary"><?php _e('Yes', $pluginName); ?></button>
+                                <button id="dialogButtonNo" type="button"
+                                        class="noButton button button-primary"><?php _e('No', $pluginName); ?></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="selectOptionsPanel" class="hidden_panel">
+                        <div class="blockPanel"></div>
+                        <div class="confirmPanel">
+                            <div class="subject"><?php _e('Title', $pluginName); ?></div>
+                            <div class="body"><?php _e('Message', $pluginName); ?></div>
+                            <div class="buttonPanel">
+                                <button type="button"
+                                        class="decisionButton button media-button button-primary button-large media-button-insert"><?php _e('Decision',
+                                        $pluginName); ?></button>
+                                <!--
+								<button id="dialogButtonYes" type="button" class="yesButton button button-primary"><?php _e('Yes',
+                                    $pluginName); ?></button>
+								<button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e('No',
+                                    $pluginName); ?></button>
+								-->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /.wrap -->
+                </div>
+
+                <div id="loadingPanel">
+                    <div class="loader">
+                        <svg viewBox="0 0 64 64" width="64" height="64">
+                            <circle id="spinner" cx="32" cy="32" r="28" fill="none"></circle>
+                        </svg>
+                    </div>
+                </div>
+
+                <div id="lookForUserPanel" class="hidden_panel">
+
+                    <div>
+                        <div class="titlePanel">
+                            <div class="title">
+                                <!-- Choose a schedule -->
+                                <?php _e('Looking for users', $pluginName); ?>
+                            </div>
+                            <div id="lookForUserPanel_return_button" class="material-icons closeButton"
+                                 style="font-family: 'Material Icons' !important">close
+                            </div>
+                        </div>
+                        <div class="inputPanel">
+
+                        </div>
+                        <div class="buttonPanel">
+                            <input id='search_users_text' class='serch_users_text' type='text'>
+                            <button id='search_user_button'
+                                    class='w3tc-button-save button-primary serch_user_button'><?php _e('Search',
+                                    $pluginName); ?></button>
+                            <!--
+                                <button id="selectionScheduleResetButton" class="media-button button-primary button-large media-button-insert deleteButton" style="margin-right: 1em;">Reset</button>
+                                <button id="selectionScheduleButton" class="media-button button-primary button-large media-button-insert">Apply</button>
+                                -->
+                        </div>
+                    </div>
+
+                </div>
+                <div id="load_blockPanel" style="z-index: 16000;" class="edit_modal_backdrop hidden_panel"></div>
+
+            </div>
+            <?php
+            $load_end_time = microtime(true) - $load_start_time;
+            echo '<!-- Load time: ' . $load_end_time . ' -->';
+        } else {
+            wp_enqueue_style('booking_app_js_css',
+                plugin_dir_url(__FILE__) . 'css/Booking_app.css' . '?plugin_v=' . $this->plugin_version, array(),
+                $this->plugin_version);
+            ?>
+            <div class="full-page-notice">
+                <p><?php _e('ACF is not necessary for this plugin, but it will make your experience better, install it now!', 'my-text-domain'); ?></p>
+            </div>
+            <?php
+        }
+    }
+
+    public function upgradeButton($isExtensionsValid = false)
+    {
+
         if ($isExtensionsValid === true) {
 
-            $localize_script['isExtensionsValid'] = 1;
+            return $isExtensionsValid;
 
         }
-        $p_v = "?p_v=" . $this->plugin_version;
-        wp_enqueue_style('Control.css', plugin_dir_url(__FILE__) . 'css/Control.css' . $p_v, array(),
-            $this->plugin_version);
-        wp_enqueue_style('Control_for_madia_css', plugin_dir_url(__FILE__) . 'css/Control_for_madia.css' . $p_v,
-            array(), $this->plugin_version);
-        wp_enqueue_style('Material_Icons', 'https://fonts.googleapis.com/css?family=Material+Icons');
-        $fontFaceStyle = $this->getFontFaceStyle();
-        wp_add_inline_style("Control.css", $fontFaceStyle);
-        wp_enqueue_script('Error_js', plugin_dir_url(__FILE__) . 'js/Error.js' . $p_v, array(), $this->plugin_version);
-        wp_enqueue_script('i18n_js', plugin_dir_url(__FILE__) . 'js/i18n.js' . $p_v, array(), $this->plugin_version);
-        wp_enqueue_script('XMLHttp_js', plugin_dir_url(__FILE__) . 'js/XMLHttp.js' . $p_v, array(),
-            $this->plugin_version);
-        wp_enqueue_script('Confirm_js', plugin_dir_url(__FILE__) . 'js/Confirm.js' . $p_v, array(),
-            $this->plugin_version);
-        wp_enqueue_script('Input_js', plugin_dir_url(__FILE__) . 'js/Input.js' . $p_v, array(), $this->plugin_version);
-        wp_enqueue_script('Calendar_js', plugin_dir_url(__FILE__) . 'js/Calendar.js' . $p_v, array(),
-            $this->plugin_version);
-        wp_enqueue_script('Hotel_js', plugin_dir_url(__FILE__) . 'js/Hotel.js' . $p_v, array(), $this->plugin_version);
-        wp_enqueue_script('Reservation_manage_js', plugin_dir_url(__FILE__) . 'js/Reservation_manage.js' . $p_v,
-            array(), $this->plugin_version);
 
-        wp_localize_script('Reservation_manage_js', $this->prefix . 'dictionary', $dictionary);
-        wp_localize_script('Reservation_manage_js', 'schedule_data', $localize_script);
-        wp_enqueue_script('Reservation_manage_js');
+        if ($this->is_owner_site == 0) {
 
+            return false;
 
-        $updated_style = "display: none;";
-        $control_panel_button_style = "display: none;";
-        $user = wp_get_current_user();
-        if (!empty($_POST) && $user->allcaps['manage_options'] === true) {
+        }
 
-            if (check_admin_referer('booking_package_action', 'booking_package_nonce_field')) {
+        $uri = plugin_dir_url(__FILE__);
+        $parse_url = parse_url($uri);
+        $locale = get_locale();
+        $dictionary = $this->getDictionary('Upgrade_js', $this->plugin_name);
 
+        $timezone = $this->timezone;
+        $upgradeDetail = array(
+            'timeZone' => $timezone,
+            'local' => get_locale(),
+            'site' => get_site_url(),
+            'locale' => $locale,
+            'plugin_v' => $this->plugin_version
+        );
+
+        $subscriptions = $this->getSubscriptions();
+        foreach ((array)$subscriptions as $key => $value) {
+
+            $upgradeDetail[$key] = $value;
+
+        }
+
+        $upgradeDetail['secure'] = 0;
+        if ($parse_url['scheme'] == 'https') {
+
+            $upgradeDetail['secure'] = 1;
+
+        }
+
+        #$pluginUrl = (empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+        #$upgradeDetail['pluginUrl'] = $pluginUrl;
+        $upgradeDetail['pluginUrl'] = site_url();
+        $pluginName = $this->plugin_name;
+
+        echo '<form action="https://saasproject.net/upgrade/" method="post" style="float: right;">';
+        $posts = array('extension_url', 'local', 'timeZone', 'site', 'pluginUrl', 'plugin_v');
+        for ($i = 0; $i < count($posts); $i++) {
+
+            $key = $posts[$i];
+            if (isset($upgradeDetail[$key])) {
+
+                echo '<input type="hidden" name="' . $key . '" value="' . $upgradeDetail[$key] . '">';
 
             }
 
         }
+        echo '</form>';
 
-        $active = get_option("booking_package_active", 0);
-        $booking_package_id = get_option("booking_package_id", "");
-        $booking_package_path = get_option("booking_package_path", "");
-        $booking_package_script_path = get_option("booking_package_script_path", "");
-        $booking_package_serial = get_option("booking_package_serial", "");
+    }
 
-        if (!empty($booking_package_script_path)) {
+    public function getSubscriptions()
+    {
 
-            $control_panel_button_style = "";
-
-        }
-
-        $pluginName = $this->plugin_name;
-        $update_class = "";
-        ?>
-
-        <div id='booking_pacage_booked_customers'>
-
-            <div class="">
-                <div class="top_bar">
-                    <?php
-                    $this->upgradeButton($isExtensionsValid);
-                    ?>
-                </div>
-                <div class="<?php print $update_class; ?>settings-error notice is-dismissible" id="res"
-                     style="<?php print $updated_style; ?>"></div>
-
-                <div id="select_package" class="">
-                    <div id="calendarPage"></div>
-                </div>
-
-                <div id="editPanel" class="edit_modal hidden_panel">
-                    <button type="button" id="media_modal_close" class="media_modal_close">
-							<span class="">
-								<span class="material-icons">close</span>
-							</span>
-                    </button>
-                    <div class="edit_modal_content">
-                        <div id="menu_panel" class="media_frame_menu">
-                            <div id="media_menu" class="media_menu"></div>
-                        </div>
-                        <div id="media_title" class="media_frame_title"><h1 id="edit_title"></h1></div>
-                        <div id="media_router" class="media_frame_router">
-                            <div class="reservation_table_row">
-                                <div id="reservation_users" class="media_menu_item active"><?php _e("Customers",
-                                        $pluginName); ?></div>
-                                <div id="add_reservation" class="media_menu_item"><?php _e("Booking",
-                                        $pluginName); ?></div>
-                            </div>
-                        </div>
-                        <div id="media_frame_reservation_content"></div>
-                        <div id="frame_toolbar" class="media_frame_toolbar">
-                            <div class="media_toolbar">
-                                <div id="buttonPanel" class="media_toolbar_primary" style="float: initial;">
-
-                                    <div id="leftButtonPanel"></div>
-                                    <div id="rightButtonPanel"></div>
-
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div id="blockPanel" class="edit_modal_backdrop hidden_panel"></div>
-
-                <div id="dialogPanel" class="hidden_panel">
-                    <div class="blockPanel"></div>
-                    <div class="confirmPanel">
-                        <div class="subject"><?php _e("Title", $pluginName); ?></div>
-                        <div class="body"><?php _e("Message", $pluginName); ?></div>
-                        <div class="buttonPanel">
-                            <button id="dialogButtonYes" type="button"
-                                    class="yesButton button button-primary"><?php _e("Yes", $pluginName); ?></button>
-                            <button id="dialogButtonNo" type="button"
-                                    class="noButton button button-primary"><?php _e("No", $pluginName); ?></button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="selectOptionsPanel" class="hidden_panel">
-                    <div class="blockPanel"></div>
-                    <div class="confirmPanel">
-                        <div class="subject"><?php _e("Title", $pluginName); ?></div>
-                        <div class="body"><?php _e("Message", $pluginName); ?></div>
-                        <div class="buttonPanel">
-                            <button type="button"
-                                    class="decisionButton button media-button button-primary button-large media-button-insert"><?php _e("Decision",
-                                    $pluginName); ?></button>
-                            <!--
-								<button id="dialogButtonYes" type="button" class="yesButton button button-primary"><?php _e("Yes",
-                                $pluginName); ?></button>
-								<button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e("No",
-                                $pluginName); ?></button>
-								-->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- /.wrap -->
-            </div>
-
-            <div id="loadingPanel">
-                <div class="loader">
-                    <svg viewBox="0 0 64 64" width="64" height="64">
-                        <circle id="spinner" cx="32" cy="32" r="28" fill="none"></circle>
-                    </svg>
-                </div>
-            </div>
-
-            <div id="lookForUserPanel" class="hidden_panel">
-
-                <div>
-                    <div class="titlePanel">
-                        <div class="title">
-                            <!-- Choose a schedule -->
-                            <?php _e('Looking for users', $pluginName); ?>
-                        </div>
-                        <div id="lookForUserPanel_return_button" class="material-icons closeButton"
-                             style="font-family: 'Material Icons' !important">close
-                        </div>
-                    </div>
-                    <div class="inputPanel">
-
-                    </div>
-                    <div class="buttonPanel">
-                        <input id='search_users_text' class='serch_users_text' type='text'>
-                        <button id='search_user_button'
-                                class='w3tc-button-save button-primary serch_user_button'><?php _e('Search',
-                                $pluginName); ?></button>
-                        <!--
-							<button id="selectionScheduleResetButton" class="media-button button-primary button-large media-button-insert deleteButton" style="margin-right: 1em;">Reset</button>
-							<button id="selectionScheduleButton" class="media-button button-primary button-large media-button-insert">Apply</button>
-							-->
-                    </div>
-                </div>
-
-            </div>
-            <div id="load_blockPanel" style="z-index: 16000;" class="edit_modal_backdrop hidden_panel"></div>
-
-        </div>
-        <?php
-        $load_end_time = microtime(true) - $load_start_time;
-        echo '<!-- Load time: ' . $load_end_time . ' -->';
+        $setting = $this->setting;
+        $subscriptions = $setting->upgradePlan('get');
+        unset($subscriptions['status']);
+        /**
+         * var_dump($subscriptions);
+         * foreach((array) $subscriptions as $key => $value){
+         *
+         * $subscriptions[$key] = 0;
+         *
+         * }
+         **/
+        return $subscriptions;
 
     }
 
@@ -2240,16 +3348,16 @@ class BOOKING_PACKAGE
         $this->update_database();
         $this->upgrader_process();
 
-        $p_v = "?p_v=" . $this->plugin_version;
+        $p_v = '?p_v=' . $this->plugin_version;
         $pluginName = $this->plugin_name;
         $setting = $this->setting;
         $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
-        $limit = get_option($this->prefix . "read_member_limit", 10);
+        $limit = get_option($this->prefix . 'read_member_limit', 10);
         #$limit = 1;
         $users = $schedule->get_users('users', 0, $limit, null);
-        $localize_script = $this->localizeScript("member");
+        $localize_script = $this->localizeScript('member');
         $localize_script['action'] = $this->action_control;
-        $localize_script['nonce'] = wp_create_nonce($this->action_control . "_ajax");
+        $localize_script['nonce'] = wp_create_nonce($this->action_control . '_ajax');
         $localize_script['limit'] = $limit;
 
         $isExtensionsValid = $this->getExtensionsValid();
@@ -2264,7 +3372,7 @@ class BOOKING_PACKAGE
 
         }
 
-        $accountList = $schedule->getCalendarAccountListData("`key`, `name`, `expressionsCheck`, `type`, `courseTitle`, `includeChildrenInRoom`, `numberOfPeopleInRoom`");
+        $accountList = $schedule->getCalendarAccountListData('`key`, `name`, `expressionsCheck`, `type`, `courseTitle`, `includeChildrenInRoom`, `numberOfPeopleInRoom`');
         $localize_script['calendarAccountList'] = $accountList;
         $emailEnableList = array();
         foreach ((array)$accountList as $key => $value) {
@@ -2276,14 +3384,14 @@ class BOOKING_PACKAGE
         #$emailEnableList = $setting->getEmailMessageList($_POST['accountKey']);
 
         $memberSetting = $setting->getMemberSetting($isExtensionsValid);
-        $swich_authority_by_hidden = "";
+        $swich_authority_by_hidden = '';
         if (intval($memberSetting['accept_subscribers_as_users']['value']) == 0 && intval($memberSetting['accept_contributors_as_users']['value']) == 0) {
 
-            $swich_authority_by_hidden = " hidden_panel";
+            $swich_authority_by_hidden = ' hidden_panel';
 
         }
 
-        $dictionary = $this->getDictionary("setting_page", $this->plugin_name);
+        $dictionary = $this->getDictionary('setting_page', $this->plugin_name);
         wp_enqueue_script('i18n_js', plugin_dir_url(__FILE__) . 'js/i18n.js' . $p_v);
         wp_enqueue_script('XMLHttp_js', plugin_dir_url(__FILE__) . 'js/XMLHttp.js' . $p_v);
         wp_enqueue_script('Error_js', plugin_dir_url(__FILE__) . 'js/Error.js' . $p_v);
@@ -2299,7 +3407,7 @@ class BOOKING_PACKAGE
         wp_enqueue_style('Control_for_madia_css', plugin_dir_url(__FILE__) . 'css/Control_for_madia.css', array(),
             $this->plugin_version);
         wp_enqueue_style('Material_Icons', 'https://fonts.googleapis.com/css?family=Material+Icons');
-        wp_add_inline_style("Control.css", $this->getFontFaceStyle());
+        wp_add_inline_style('Control.css', $this->getFontFaceStyle());
 
         ?>
         <div id="booking_pacage_users" class="wrap">
@@ -2311,15 +3419,15 @@ class BOOKING_PACKAGE
                     <div class="actionButtonPanelLeft">
                         <input type="text" id="search_users_text" class="serch_users_text" placeholder="Keywords"/>
                         <button id="search_user_button" type="button"
-                                class="w3tc-button-save button-primary serch_user_button"><?php _e("Search",
+                                class="w3tc-button-save button-primary serch_user_button"><?php _e('Search',
                                 $pluginName); ?></button>
                         <button id="clear_user_button" type="button"
-                                class="w3tc-button-save button-primary clear_user_button"><?php _e("Clear",
+                                class="w3tc-button-save button-primary clear_user_button"><?php _e('Clear',
                                 $pluginName); ?></button>
                     </div>
                     <div class="actionButtonPanelRight">
                         <button id="add_member" type="button" class="w3tc-button-save button-primary"
-                                style="margin-right: 10px;"><?php _e("Add user", $pluginName); ?></button>
+                                style="margin-right: 10px;"><?php _e('Add user', $pluginName); ?></button>
                         <?php
                         $this->upgradeButton($isExtensionsValid);
                         ?>
@@ -2329,19 +3437,19 @@ class BOOKING_PACKAGE
                 <table id="member_list_table" class="wp-list-table widefat fixed striped">
                     <tbody id="member_list_tbody">
                     <?php
-                    print "<tr><td>ID</td><td>" . __("Username", $pluginName) . "</td><td>" . __("Email",
-                            $pluginName) . "</td><td>" . __("Registered", $pluginName) . "</td></tr>\n";
+                    print '<tr><td>ID</td><td>' . __('Username', $pluginName) . '</td><td>' . __('Email',
+                            $pluginName) . '</td><td>' . __('Registered', $pluginName) . "</td></tr>\n";
                     $users_data = array();
                     foreach ((array)$users as $key => $user) {
 
-                        $priority_high = "";
+                        $priority_high = '';
                         if (empty($user->status) || intval($user->status) == 0) {
 
                             $priority_high = '<span class="material-icons priority_high">priority_high</span>';
 
                         }
                         $users_data['user_id_' . $user->ID] = $user;
-                        print "<tr id='user_id_" . $user->ID . "' class='tr_user'><td><span class='userId'>" . $user->ID . "</span>" . $priority_high . "</td><td>" . $user->user_login . "</td><td>" . $user->user_email . "</td><td>" . $user->user_registered . "</td></tr>\n";
+                        print "<tr id='user_id_" . $user->ID . "' class='tr_user'><td><span class='userId'>" . $user->ID . '</span>' . $priority_high . '</td><td>' . $user->user_login . '</td><td>' . $user->user_email . '</td><td>' . $user->user_registered . "</td></tr>\n";
 
                     }
 
@@ -2350,17 +3458,17 @@ class BOOKING_PACKAGE
                 </table>
                 <div class="page_action_panel">
                     <select id="swich_authority" class="select_limit<?php echo $swich_authority_by_hidden; ?>">
-                        <option value="user"><?php echo __("Booking Package", $pluginName); ?></option>
+                        <option value="user"><?php echo __('Booking Package', $pluginName); ?></option>
                         <?php
                         if (intval($memberSetting['accept_subscribers_as_users']['value']) == 1) {
 
-                            print '<option value="subscriber">' . __("Subscriber", $pluginName) . '</option>';
+                            print '<option value="subscriber">' . __('Subscriber', $pluginName) . '</option>';
 
                         }
 
                         if (intval($memberSetting['accept_contributors_as_users']['value']) == 1) {
 
-                            print '<option value="contributor">' . __("Contributor", $pluginName) . '</option>';
+                            print '<option value="contributor">' . __('Contributor', $pluginName) . '</option>';
 
                         }
 
@@ -2398,9 +3506,9 @@ class BOOKING_PACKAGE
                     <div id="media_title" class="media_left_zero"><h1 id="edit_title"></h1></div>
                     <div id="media_router" class="media_left_zero">
                         <div class="reservation_table_row">
-                            <div id="booked_list" class="media_menu_item active"><?php _e("Booking history",
+                            <div id="booked_list" class="media_menu_item active"><?php _e('Booking history',
                                     $pluginName); ?></div>
-                            <div id="edit_user" class="media_menu_item"><?php _e("User", $pluginName); ?></div>
+                            <div id="edit_user" class="media_menu_item"><?php _e('User', $pluginName); ?></div>
                         </div>
                     </div>
                     <div id="media_frame_reservation_content" class="media_left_zero">
@@ -2409,32 +3517,32 @@ class BOOKING_PACKAGE
                             <table class="wp-list-table widefat fixed">
                                 <tbody>
                                 <tr>
-                                    <th><?php _e("Username", $pluginName); ?></th>
+                                    <th><?php _e('Username', $pluginName); ?></th>
                                     <td>
                                         <div id="user_edit_login"></div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php _e("Email", $pluginName); ?></th>
+                                    <th><?php _e('Email', $pluginName); ?></th>
                                     <td><input type="text" name="user_edit_email" id="user_edit_email" class="input">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php _e("Status", $pluginName); ?></th>
+                                    <th><?php _e('Status', $pluginName); ?></th>
                                     <td>
                                         <label>
                                             <input type="checkbox" name="user_edit_status" id="user_edit_status"
                                                    class="" value="1">
-                                            <?php _e("Approved", $pluginName); ?>
+                                            <?php _e('Approved', $pluginName); ?>
                                         </label>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th><?php _e("Password", $pluginName); ?></th>
+                                    <th><?php _e('Password', $pluginName); ?></th>
                                     <td>
                                         <div>
                                             <button id="user_edit_change_password_button"
-                                                    class="w3tc-button-save button-primary"><?php _e("Change password",
+                                                    class="w3tc-button-save button-primary"><?php _e('Change password',
                                                     $pluginName); ?></button>
                                             <input type="password" name="user_edit_pass" id="user_edit_pass"
                                                    class="input hidden_panel">
@@ -2465,10 +3573,10 @@ class BOOKING_PACKAGE
                             </div>
                             <div id="rightButtonPanel" style="float: none !important;">
                                 <button id="edit_user_button"
-                                        class="w3tc-button-save button-primary"><?php _e("Update Profile",
+                                        class="w3tc-button-save button-primary"><?php _e('Update Profile',
                                         $pluginName); ?></button>
                                 <button id="edit_user_delete_button"
-                                        class="w3tc-button-save button-primary deleteButton"><?php _e("Delete",
+                                        class="w3tc-button-save button-primary deleteButton"><?php _e('Delete',
                                         $pluginName); ?></button>
                             </div>
 
@@ -2484,12 +3592,12 @@ class BOOKING_PACKAGE
         <div id="dialogPanel" class="hidden_panel">
             <div class="blockPanel"></div>
             <div class="confirmPanel">
-                <div class="subject"><?php _e("Title", $pluginName); ?></div>
-                <div class="body"><?php _e("Message", $pluginName); ?></div>
+                <div class="subject"><?php _e('Title', $pluginName); ?></div>
+                <div class="body"><?php _e('Message', $pluginName); ?></div>
                 <div class="buttonPanel">
-                    <button id="dialogButtonYes" type="button" class="yesButton button button-primary"><?php _e("Yes",
+                    <button id="dialogButtonYes" type="button" class="yesButton button button-primary"><?php _e('Yes',
                             $pluginName); ?></button>
-                    <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e("No",
+                    <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e('No',
                             $pluginName); ?></button>
                 </div>
             </div>
@@ -2522,6 +3630,27 @@ class BOOKING_PACKAGE
 
     }
 
+    public function getTimeZone()
+    {
+
+        $timezone = get_option($this->prefix . 'timezone', null);
+        if (is_null($timezone)) {
+
+            $timezone = get_option('timezone_string', 'UTC');
+            if (is_null($timezone) || strlen($timezone) == 0) {
+
+                $timezone = 'UTC';
+
+            }
+
+            add_option($this->prefix . 'timezone', sanitize_text_field($timezone));
+
+        }
+        $this->timezone = $timezone;
+        return $timezone;
+
+    }
+
     public function schedule_page()
     {
 
@@ -2533,7 +3662,7 @@ class BOOKING_PACKAGE
         $setting = $this->setting;
         $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
         $schedule->deleteOldDaysInSchedules();
-        $dictionary = $this->getDictionary("schedule_page", $this->plugin_name);
+        $dictionary = $this->getDictionary('schedule_page', $this->plugin_name);
         $localize_script = $this->localizeScript('schedule_page');
         $isExtensionsValid = $this->getExtensionsValid();
         if ($isExtensionsValid == true) {
@@ -2551,7 +3680,7 @@ class BOOKING_PACKAGE
 
         }
 
-        $p_v = "?p_v=" . $this->plugin_version;
+        $p_v = '?p_v=' . $this->plugin_version;
         #wp_print_scripts(array('jquery-ui-sortable'.$p_v));
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_style('Control.css', plugin_dir_url(__FILE__) . 'css/Control.css' . $p_v, array(),
@@ -2560,7 +3689,7 @@ class BOOKING_PACKAGE
             array(), $this->plugin_version);
         wp_enqueue_style('Material_Icons', 'https://fonts.googleapis.com/css?family=Material+Icons');
         $fontFaceStyle = $this->getFontFaceStyle();
-        wp_add_inline_style("Control.css", $fontFaceStyle);
+        wp_add_inline_style('Control.css', $fontFaceStyle);
         wp_enqueue_script('Error_js', plugin_dir_url(__FILE__) . 'js/Error.js' . $p_v, array(), $this->plugin_version);
         wp_enqueue_script('i18n_js', plugin_dir_url(__FILE__) . 'js/i18n.js' . $p_v, array(), $this->plugin_version);
         wp_enqueue_script('XMLHttp_js', plugin_dir_url(__FILE__) . 'js/XMLHttp.js' . $p_v, array(),
@@ -2594,9 +3723,9 @@ class BOOKING_PACKAGE
                 <div id="calendarAccountList">
                     <div class="actionButtonPanel">
                         <button id="add_new_calendar" type="button" class="w3tc-button-save button-primary"
-                                style="margin-right: 10px;"><?php _e("Add new calendar", $pluginName); ?></button>
+                                style="margin-right: 10px;"><?php _e('Add new calendar', $pluginName); ?></button>
                         <button id="create_clone" type="button" class="w3tc-button-save button-primary"
-                                style="margin-right: 10px;"><?php _e("Create a clone", $pluginName); ?></button>
+                                style="margin-right: 10px;"><?php _e('Create a clone', $pluginName); ?></button>
                         <?php
                         $this->upgradeButton($isExtensionsValid);
                         ?>
@@ -2607,20 +3736,20 @@ class BOOKING_PACKAGE
                 <div id="tabFrame" class="hidden_panel">
                     <div class="actionButtonPanel">
                         <button id="return_to_calendar_list" type="button" class="w3tc-button-save button-primary"
-                                style="margin-right: 10px;"><?php _e("Return", $pluginName); ?></button>
+                                style="margin-right: 10px;"><?php _e('Return', $pluginName); ?></button>
 
                     </div>
 
                     <div style="overflow-x: auto;">
                         <div class="menuList">
-                            <div id="calendarLink" class="menuItem active"><?php _e("Schedules", $pluginName); ?></div>
-                            <div id="closedDaysLink" class="menuItem hidden_panel"><?php _e("Closed days",
+                            <div id="calendarLink" class="menuItem active"><?php _e('Schedules', $pluginName); ?></div>
+                            <div id="closedDaysLink" class="menuItem hidden_panel"><?php _e('Closed days',
                                     $pluginName); ?></div>
-                            <div id="formLink" class="menuItem hidden_panel"><?php _e("Form fields",
+                            <div id="formLink" class="menuItem hidden_panel"><?php _e('Form fields',
                                     $pluginName); ?></div>
-                            <div id="courseLink" class="menuItem hidden_panel"><?php _e("Services",
+                            <div id="courseLink" class="menuItem hidden_panel"><?php _e('Services',
                                     $pluginName); ?></div>
-                            <div id="guestsLink" class="menuItem hidden_panel"><?php _e("Guests", $pluginName); ?></div>
+                            <div id="guestsLink" class="menuItem hidden_panel"><?php _e('Guests', $pluginName); ?></div>
                             <div id="subscriptionsLink" class="menuItem hidden_panel"><?php _e('Subscriptions',
                                     $pluginName); ?></div>
                             <div id="optionsForHotelLink" class="menuItem hidden_panel"><?php _e('Options',
@@ -2629,10 +3758,10 @@ class BOOKING_PACKAGE
                                     $pluginName); ?></div>
                             <div id="taxLink" class="menuItem hidden_panel"><?php _e('Surcharge | Tax',
                                     $pluginName); ?></div>
-                            <div id="emailLink" class="menuItem hidden_panel"><?php _e("Notifications",
+                            <div id="emailLink" class="menuItem hidden_panel"><?php _e('Notifications',
                                     $pluginName); ?></div>
-                            <div id="syncLink" class="menuItem hidden_panel"><?php _e("Sync", $pluginName); ?></div>
-                            <div id="settingLink" class="menuItem hidden_panel"><?php _e("Setting",
+                            <div id="syncLink" class="menuItem hidden_panel"><?php _e('Sync', $pluginName); ?></div>
+                            <div id="settingLink" class="menuItem hidden_panel"><?php _e('Setting',
                                     $pluginName); ?></div>
                         </div>
                     </div>
@@ -2682,18 +3811,18 @@ class BOOKING_PACKAGE
 
                             <tr>
                                 <th>No</th>
-                                <td class="timeTd"><?php _e("Time", $pluginName); ?></td>
-                                <td id="deadlineTime" class="td_width_100_px"><?php _e("Deadline time",
+                                <td class="timeTd"><?php _e('Time', $pluginName); ?></td>
+                                <td id="deadlineTime" class="td_width_100_px"><?php _e('Deadline time',
                                         $pluginName); ?></td>
-                                <td><?php _e("Title", $pluginName); ?></td>
-                                <td class="td_width_50_px"><?php _e("Capacities", $pluginName); ?></td>
-                                <td id="remainder" class="td_width_100_px hidden_panel"><?php _e("Remaining",
+                                <td><?php _e('Title', $pluginName); ?></td>
+                                <td class="td_width_50_px"><?php _e('Capacities', $pluginName); ?></td>
+                                <td id="remainder" class="td_width_100_px hidden_panel"><?php _e('Remaining',
                                         $pluginName); ?></td>
                                 <td id="stop" class="td_width_50_px">
-                                    <div class="deletePanel"><?php _e("Stop", $pluginName); ?></div>
+                                    <div class="deletePanel"><?php _e('Stop', $pluginName); ?></div>
                                 </td>
                                 <td id="allScheduleDelete" class="td_width_50_px">
-                                    <div class="deletePanel"><?php _e("Delete", $pluginName); ?></div>
+                                    <div class="deletePanel"><?php _e('Delete', $pluginName); ?></div>
                                 </td>
                             </tr>
 
@@ -2701,7 +3830,7 @@ class BOOKING_PACKAGE
 
                     </div>
                     <div id='incompletelyDeletedScheduleAlertPanel' class='hidden_panel'>
-                        <?php _e("There are incompletely deleted schedules.", $pluginName); ?>
+                        <?php _e('There are incompletely deleted schedules.', $pluginName); ?>
                         <?php _e('But if you delete it perfectly, the schedules rebuilt based in "Weekly schedule templates".',
                             $pluginName); ?>
                     </div>
@@ -2725,19 +3854,19 @@ class BOOKING_PACKAGE
 
                         <div id="edit_email_message" class="mail_message_area_left">
                             <div class="enablePanel">
-                                <!-- <div class="enableLabel"><?php _e("Enable / Disable", $pluginName); ?></div> -->
-                                <div class="enableLabel"><?php _e("Notifications", $pluginName); ?></div>
+                                <!-- <div class="enableLabel"><?php _e('Enable / Disable', $pluginName); ?></div> -->
+                                <div class="enableLabel"><?php _e('Notifications', $pluginName); ?></div>
                                 <div class="enableValuePanel">
                                     <label style="margin-right: 10px;"><input type="checkbox"
-                                                                              id="mailEnable"/><?php _e("Email",
+                                                                              id="mailEnable"/><?php _e('Email',
                                             $pluginName); ?></label>
-                                    <label><input type="checkbox" id="smsEnable"/><?php _e("SMS", $pluginName); ?>
+                                    <label><input type="checkbox" id="smsEnable"/><?php _e('SMS', $pluginName); ?>
                                     </label>
 
                                 </div>
                             </div>
                             <div class="emailFormatPanel">
-                                <div class="emailFormatLabel"><?php _e("Format", $pluginName); ?></div>
+                                <div class="emailFormatLabel"><?php _e('Format', $pluginName); ?></div>
                                 <div class="emailFormatValuePanel">
                                     <label style="margin-right: 10px;"><input type="radio" id="emailFormatHtml"
                                                                               name="emailFormat"/> HTML</label>
@@ -2748,9 +3877,9 @@ class BOOKING_PACKAGE
                             <div>
                                 <div class="menuTags">
                                     <div id="menuList" class="menuList">
-                                        <div id="for_visitor" class="menuItem active"><?php _e("For customer",
+                                        <div id="for_visitor" class="menuItem active"><?php _e('For customer',
                                                 $pluginName); ?></div>
-                                        <div id="for_administrator" class="menuItem"><?php _e("For administrator",
+                                        <div id="for_administrator" class="menuItem"><?php _e('For administrator',
                                                 $pluginName); ?></div>
                                     </div>
 
@@ -2796,7 +3925,7 @@ class BOOKING_PACKAGE
 
                 <div>
                     <div class="titlePanel">
-                        <div class="title"><?php echo __("Delete schedules", $pluginName); ?></div>
+                        <div class="title"><?php echo __('Delete schedules', $pluginName); ?></div>
                         <div id="deletePublishedSchedulesPanel_return_button" class="material-icons closeButton"
                              style="font-family: 'Material Icons' !important">close
                         </div>
@@ -2805,51 +3934,51 @@ class BOOKING_PACKAGE
                     <div class="inputPanel" style="border-width: 0; margin-bottom: 0;">
                         <table>
                             <tr>
-                                <th><label><?php echo __("Period", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Period', $pluginName); ?></label></th>
                                 <td>
                                     <label>
                                         <input id="period_all" name="period" type="radio"
-                                               value="period_all"><?php echo __("All", $pluginName); ?>
+                                               value="period_all"><?php echo __('All', $pluginName); ?>
                                     </label>
                                     <label>
                                         <input id="period_after" name="period" type="radio" value="period_after"
-                                               checked="checked"><?php echo __("After the specified date",
+                                               checked="checked"><?php echo __('After the specified date',
                                             $pluginName); ?>
                                     </label>
                                     <label>
                                         <input id="period_within" name="period" type="radio"
-                                               value="period_within"><?php echo __("Within the specified date",
+                                               value="period_within"><?php echo __('Within the specified date',
                                             $pluginName); ?>
                                     </label>
                                 </td>
                             </tr>
                             <tr>
-                                <th><label><?php echo __("Date", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Date', $pluginName); ?></label></th>
                                 <td>
                                     <label id="period_after_date">
                                         <?php
 
                                         if ($this->locale != 'ja') {
 
-                                            print '<span class="from">' . __("From:", $pluginName) . '</span>';
+                                            print '<span class="from">' . __('From:', $pluginName) . '</span>';
 
                                         }
 
                                         ?>
-                                        <!-- <span class="from"><?php echo __("From:", $pluginName); ?></span> -->
+                                        <!-- <span class="from"><?php echo __('From:', $pluginName); ?></span> -->
                                         <select id="deletePublishedSchedules_from_month">
-                                            <option value="1"><?php echo __("January", $pluginName); ?></option>
-                                            <option value="2"><?php echo __("February", $pluginName); ?></option>
-                                            <option value="3"><?php echo __("March", $pluginName); ?></option>
-                                            <option value="4"><?php echo __("April", $pluginName); ?></option>
-                                            <option value="5"><?php echo __("May", $pluginName); ?></option>
-                                            <option value="6"><?php echo __("June", $pluginName); ?></option>
-                                            <option value="7"><?php echo __("July", $pluginName); ?></option>
-                                            <option value="8"><?php echo __("August", $pluginName); ?></option>
-                                            <option value="9"><?php echo __("September", $pluginName); ?></option>
-                                            <option value="10"><?php echo __("October", $pluginName); ?></option>
-                                            <option value="11"><?php echo __("November", $pluginName); ?></option>
-                                            <option value="12"><?php echo __("December", $pluginName); ?></option>
+                                            <option value="1"><?php echo __('January', $pluginName); ?></option>
+                                            <option value="2"><?php echo __('February', $pluginName); ?></option>
+                                            <option value="3"><?php echo __('March', $pluginName); ?></option>
+                                            <option value="4"><?php echo __('April', $pluginName); ?></option>
+                                            <option value="5"><?php echo __('May', $pluginName); ?></option>
+                                            <option value="6"><?php echo __('June', $pluginName); ?></option>
+                                            <option value="7"><?php echo __('July', $pluginName); ?></option>
+                                            <option value="8"><?php echo __('August', $pluginName); ?></option>
+                                            <option value="9"><?php echo __('September', $pluginName); ?></option>
+                                            <option value="10"><?php echo __('October', $pluginName); ?></option>
+                                            <option value="11"><?php echo __('November', $pluginName); ?></option>
+                                            <option value="12"><?php echo __('December', $pluginName); ?></option>
                                         </select>
                                         <select id="deletePublishedSchedules_from_day">
                                             <?php
@@ -2879,7 +4008,7 @@ class BOOKING_PACKAGE
 
                                         if ($this->locale == 'ja') {
 
-                                            print '<span class="from">' . __("From:", $pluginName) . '</span>';
+                                            print '<span class="from">' . __('From:', $pluginName) . '</span>';
 
                                         }
 
@@ -2890,25 +4019,25 @@ class BOOKING_PACKAGE
 
                                         if ($this->locale != 'ja') {
 
-                                            print '<span class="to">' . __("To:", $pluginName) . '</span>';
+                                            print '<span class="to">' . __('To:', $pluginName) . '</span>';
 
                                         }
 
                                         ?>
-                                        <!-- <span class="to"><?php echo __("To:", $pluginName); ?></span> -->
+                                        <!-- <span class="to"><?php echo __('To:', $pluginName); ?></span> -->
                                         <select id="deletePublishedSchedules_to_month">
-                                            <option value="1"><?php echo __("January", $pluginName); ?></option>
-                                            <option value="2"><?php echo __("February", $pluginName); ?></option>
-                                            <option value="3"><?php echo __("March", $pluginName); ?></option>
-                                            <option value="4"><?php echo __("April", $pluginName); ?></option>
-                                            <option value="5"><?php echo __("May", $pluginName); ?></option>
-                                            <option value="6"><?php echo __("June", $pluginName); ?></option>
-                                            <option value="7"><?php echo __("July", $pluginName); ?></option>
-                                            <option value="8"><?php echo __("August", $pluginName); ?></option>
-                                            <option value="9"><?php echo __("September", $pluginName); ?></option>
-                                            <option value="10"><?php echo __("October", $pluginName); ?></option>
-                                            <option value="11"><?php echo __("November", $pluginName); ?></option>
-                                            <option value="12"><?php echo __("December", $pluginName); ?></option>
+                                            <option value="1"><?php echo __('January', $pluginName); ?></option>
+                                            <option value="2"><?php echo __('February', $pluginName); ?></option>
+                                            <option value="3"><?php echo __('March', $pluginName); ?></option>
+                                            <option value="4"><?php echo __('April', $pluginName); ?></option>
+                                            <option value="5"><?php echo __('May', $pluginName); ?></option>
+                                            <option value="6"><?php echo __('June', $pluginName); ?></option>
+                                            <option value="7"><?php echo __('July', $pluginName); ?></option>
+                                            <option value="8"><?php echo __('August', $pluginName); ?></option>
+                                            <option value="9"><?php echo __('September', $pluginName); ?></option>
+                                            <option value="10"><?php echo __('October', $pluginName); ?></option>
+                                            <option value="11"><?php echo __('November', $pluginName); ?></option>
+                                            <option value="12"><?php echo __('December', $pluginName); ?></option>
                                         </select>
                                         <select id="deletePublishedSchedules_to_day">
                                             <?php
@@ -2938,35 +4067,35 @@ class BOOKING_PACKAGE
 
                                         if ($this->locale == 'ja') {
 
-                                            print '<span class="to">' . __("To:", $pluginName) . '</span>';
+                                            print '<span class="to">' . __('To:', $pluginName) . '</span>';
 
                                         }
 
                                         ?>
                                     </label>
                                     <p id="deletePublishedSchedules_freePlan" class="hidden_panel freePlan">
-                                        <?php echo __("The selection of the date can not be done with the free plan.",
+                                        <?php echo __('The selection of the date can not be done with the free plan.',
                                             $pluginName); ?>
                                     </p>
                                 </td>
                             </tr>
                             <tr>
-                                <th><label><?php echo __("Action", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Action', $pluginName); ?></label></th>
                                 <td>
                                     <label><input id="action_delete" type="radio" name="type" value="delete"
-                                                  checked="checked"><?php echo __("Delete", $pluginName); ?></label>
+                                                  checked="checked"><?php echo __('Delete', $pluginName); ?></label>
                                     <label><input id="action_stop" type="radio" name="type"
-                                                  value="stop"><?php echo __("Stop", $pluginName); ?></label>
+                                                  value="stop"><?php echo __('Stop', $pluginName); ?></label>
                                 </td>
                             </tr>
                             <tr>
-                                <th><label><?php echo __("Deletion type", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Deletion type', $pluginName); ?></label></th>
                                 <td>
                                     <label><input id="delete_incomplete" type="radio" name="deletionType"
-                                                  value="incomplete" checked="checked"><?php echo __("Incomplete",
+                                                  value="incomplete" checked="checked"><?php echo __('Incomplete',
                                             $pluginName); ?></label>
                                     <label><input id="delete_perfect" type="radio" name="deletionType"
-                                                  value="perfect"><?php echo __("Perfect", $pluginName); ?></label>
+                                                  value="perfect"><?php echo __('Perfect', $pluginName); ?></label>
                                 </td>
                             </tr>
                         </table>
@@ -2977,7 +4106,7 @@ class BOOKING_PACKAGE
                     </div>
                     <div class="buttonPanel">
                         <button id="deletePublishedSchedulesButton"
-                                class="media-button button-primary button-large media-button-insert deleteButton"><?php echo __("Delete",
+                                class="media-button button-primary button-large media-button-insert deleteButton"><?php echo __('Delete',
                                 $pluginName); ?></button>
                     </div>
                 </div>
@@ -2988,7 +4117,7 @@ class BOOKING_PACKAGE
 
                 <div>
                     <div class="titlePanel">
-                        <div class="title"><?php echo __("Set up schedules", $pluginName); ?></div>
+                        <div class="title"><?php echo __('Set up schedules', $pluginName); ?></div>
                         <div id="loadSchedulesPanel_return_button" class="material-icons closeButton"
                              style="font-family: 'Material Icons' !important">close
                         </div>
@@ -2997,13 +4126,13 @@ class BOOKING_PACKAGE
                     <div class="inputPanel" style="border-width: 0; margin-bottom: 0;">
                         <table>
                             <tr>
-                                <th><label><?php echo __("Time", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Time', $pluginName); ?></label></th>
                                 <td>
 			                			<span class="fromPanel">
 			                				<?php
                                             if ($this->locale != 'ja') {
 
-                                                print '<span class="from">' . __("From:", $pluginName) . '</span>';
+                                                print '<span class="from">' . __('From:', $pluginName) . '</span>';
 
                                             }
                                             ?>
@@ -3029,7 +4158,7 @@ class BOOKING_PACKAGE
 	                						<?php
                                             if ($this->locale == 'ja') {
 
-                                                print '<span class="from">' . __("From:", $pluginName) . '</span>';
+                                                print '<span class="from">' . __('From:', $pluginName) . '</span>';
 
                                             }
                                             ?>
@@ -3038,7 +4167,7 @@ class BOOKING_PACKAGE
 		                					<?php
                                             if ($this->locale != 'ja') {
 
-                                                print '<span class="to">' . __("To:", $pluginName) . '</span>';
+                                                print '<span class="to">' . __('To:', $pluginName) . '</span>';
 
                                             }
                                             ?>
@@ -3064,7 +4193,7 @@ class BOOKING_PACKAGE
 	                						<?php
                                             if ($this->locale == 'ja') {
 
-                                                print '<span class="to">' . __("To:", $pluginName) . '</span>';
+                                                print '<span class="to">' . __('To:', $pluginName) . '</span>';
 
                                             }
                                             ?>
@@ -3072,7 +4201,7 @@ class BOOKING_PACKAGE
                                 </td>
                             </tr>
                             <tr>
-                                <th><label><?php echo __("Interval", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Interval', $pluginName); ?></label></th>
                                 <td>
                                     <select id="interval_min_on_time" data-interval="5">
                                         <?php
@@ -3087,7 +4216,7 @@ class BOOKING_PACKAGE
                                 </td>
                             </tr>
                             <tr>
-                                <th><label><?php echo __("Deadline time", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Deadline time', $pluginName); ?></label></th>
                                 <td>
                                     <select id="load_deadline_time_on_time">
                                         <?php
@@ -3102,7 +4231,7 @@ class BOOKING_PACKAGE
                                 </td>
                             </tr>
                             <tr>
-                                <th><label><?php echo __("Capacities", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Capacities', $pluginName); ?></label></th>
                                 <td>
                                     <select id="load_capacity">
                                         <?php
@@ -3119,7 +4248,7 @@ class BOOKING_PACKAGE
                     </div>
                     <div class="buttonPanel">
                         <button id="readSchedulesButton"
-                                class="media-button button-primary button-large media-button-insert"><?php echo __("Apply",
+                                class="media-button button-primary button-large media-button-insert"><?php echo __('Apply',
                                 $pluginName); ?></button>
                     </div>
                 </div>
@@ -3129,7 +4258,7 @@ class BOOKING_PACKAGE
             <div id="createClonePanel" class="hidden_panel">
                 <div>
                     <div class="titlePanel">
-                        <div class="title"><?php echo __("Select a calendar", $pluginName); ?></div>
+                        <div class="title"><?php echo __('Select a calendar', $pluginName); ?></div>
                         <div id="createClonePanel_return_button" class="material-icons closeButton"
                              style="font-family: 'Material Icons' !important">close
                         </div>
@@ -3137,7 +4266,7 @@ class BOOKING_PACKAGE
                     <div class="inputPanel" style="border-width: 0; margin-bottom: 0;">
                         <table>
                             <tr>
-                                <th><label><?php echo __("Calendar", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Calendar', $pluginName); ?></label></th>
                                 <td>
                                     <select id="selectedClone">
                                         <?php
@@ -3148,24 +4277,24 @@ class BOOKING_PACKAGE
                                 </td>
                             </tr>
                             <tr>
-                                <th><label><?php echo __("Target", $pluginName); ?></label></th>
+                                <th><label><?php echo __('Target', $pluginName); ?></label></th>
                                 <td>
                                     <label><input type="checkbox" name="target" class="target" value="schedules"
-                                                  checked="checked"> <?php echo __("Schedules", $pluginName); ?></label>
+                                                  checked="checked"> <?php echo __('Schedules', $pluginName); ?></label>
                                     <label><input type="checkbox" name="target" class="target" value="form"
-                                                  checked="checked"> <?php echo __("Form fields", $pluginName); ?>
+                                                  checked="checked"> <?php echo __('Form fields', $pluginName); ?>
                                     </label>
                                     <label><input type="checkbox" name="target" class="target" value="services"
-                                                  checked="checked"> <?php echo __("Services", $pluginName); ?></label>
+                                                  checked="checked"> <?php echo __('Services', $pluginName); ?></label>
                                     <label><input type="checkbox" name="target" class="target" value="guests"
-                                                  checked="checked"> <?php echo __("Guests", $pluginName); ?></label>
+                                                  checked="checked"> <?php echo __('Guests', $pluginName); ?></label>
                                     <?php
 
                                     if ($this->visitorSubscriptionForStripe == 1) {
 
                                         ?>
                                         <label><input type="checkbox" name="target" class="target" value="subscriptions"
-                                                      checked="checked"> <?php echo __("Subscriptions", $pluginName); ?>
+                                                      checked="checked"> <?php echo __('Subscriptions', $pluginName); ?>
                                         </label>
                                         <?php
 
@@ -3173,17 +4302,17 @@ class BOOKING_PACKAGE
 
                                     ?>
                                     <label><input type="checkbox" name="target" class="target" value="taxes"
-                                                  checked="checked"> <?php echo __("Surcharge and Tax", $pluginName); ?>
+                                                  checked="checked"> <?php echo __('Surcharge and Tax', $pluginName); ?>
                                     </label>
                                     <label><input type="checkbox" name="target" class="target" value="emails"
-                                                  checked="checked"> <?php echo __("Emails", $pluginName); ?></label>
+                                                  checked="checked"> <?php echo __('Emails', $pluginName); ?></label>
                                 </td>
                             </tr>
                         </table>
                     </div>
                     <div class="buttonPanel">
                         <button id="createCloneButton"
-                                class="media-button button-primary button-large media-button-insert"><?php echo __("Create",
+                                class="media-button button-primary button-large media-button-insert"><?php echo __('Create',
                                 $pluginName); ?></button>
                     </div>
                 </div>
@@ -3193,14 +4322,14 @@ class BOOKING_PACKAGE
 
                 <div>
                     <div class="titlePanel">
-                        <div class="title"><?php echo __("Choose a schedule", $pluginName); ?></div>
+                        <div class="title"><?php echo __('Choose a schedule', $pluginName); ?></div>
                         <div id="selectionSchedule_return_button" class="material-icons closeButton"
                              style="font-family: 'Material Icons' !important">close
                         </div>
                     </div>
                     <div class="inputPanel" style="border-width: 0; margin-bottom: 0;">
                         <div id="selectionSchedule_hours" class="selectBlock">
-                            <div data-key="hours" class="items"><?php echo __("Hours", $pluginName); ?>: <span>7</span>
+                            <div data-key="hours" class="items"><?php echo __('Hours', $pluginName); ?>: <span>7</span>
                             </div>
                             <div data-key="hours" class="selectPanel closed">
 
@@ -3216,7 +4345,7 @@ class BOOKING_PACKAGE
                             </div>
                         </div>
                         <div id="selectionSchedule_minutes" class="selectBlock">
-                            <div data-key="minutes" class="items"><?php echo __("Minutes", $pluginName); ?>:
+                            <div data-key="minutes" class="items"><?php echo __('Minutes', $pluginName); ?>:
                                 <span>7</span></div>
                             <div data-key="minutes" class="selectPanel closed">
 
@@ -3232,7 +4361,7 @@ class BOOKING_PACKAGE
                             </div>
                         </div>
                         <div id="selectionSchedule_deadline" class="selectBlock">
-                            <div data-key="deadline" class="items"><?php echo __("Deadline time", $pluginName); ?>:
+                            <div data-key="deadline" class="items"><?php echo __('Deadline time', $pluginName); ?>:
                                 <span>7</span></div>
                             <div data-key="deadline" class="selectPanel closed">
 
@@ -3248,7 +4377,7 @@ class BOOKING_PACKAGE
                             </div>
                         </div>
                         <div id="selectionSchedule_capacitys" class="selectBlock">
-                            <div data-key="capacitys" class="items"><?php echo __("Capacities", $pluginName); ?>: <span>7</span>
+                            <div data-key="capacitys" class="items"><?php echo __('Capacities', $pluginName); ?>: <span>7</span>
                             </div>
                             <div data-key="capacitys" class="selectPanel closed">
 
@@ -3264,7 +4393,7 @@ class BOOKING_PACKAGE
                             </div>
                         </div>
                         <div id="selectionSchedule_remainders" class="selectBlock">
-                            <div data-key="remainders" class="items"><?php echo __("Remaining", $pluginName); ?>: <span>7</span>
+                            <div data-key="remainders" class="items"><?php echo __('Remaining', $pluginName); ?>: <span>7</span>
                             </div>
                             <div data-key="remainders" class="selectPanel closed">
 
@@ -3283,9 +4412,9 @@ class BOOKING_PACKAGE
                     <div class="buttonPanel">
                         <button id="selectionScheduleResetButton"
                                 class="media-button button-primary button-large media-button-insert deleteButton"
-                                style="margin-right: 1em;"><?php echo __("Reset", $pluginName); ?></button>
+                                style="margin-right: 1em;"><?php echo __('Reset', $pluginName); ?></button>
                         <button id="selectionScheduleButton"
-                                class="media-button button-primary button-large media-button-insert"><?php echo __("Apply",
+                                class="media-button button-primary button-large media-button-insert"><?php echo __('Apply',
                                 $pluginName); ?></button>
                     </div>
                 </div>
@@ -3299,13 +4428,13 @@ class BOOKING_PACKAGE
 
                 <div id="selectPanelForConfirm" class="selectPanel">
                     <div id="arror"></div>
-                    <div class="subject"><?php _e("Title", $pluginName); ?></div>
+                    <div class="subject"><?php _e('Title', $pluginName); ?></div>
                     <div id="confirm_body" class="body"></div>
                     <div class="buttonPanel scheduleButtonPanel">
                         <button id="dialogButtonReset" type="button" class="yesButton button button-primary"
-                                style="width: 70px; margin: 0;"><?php _e("Reset", $pluginName); ?></button>
+                                style="width: 70px; margin: 0;"><?php _e('Reset', $pluginName); ?></button>
                         <button id="dialogButtonDone" type="button" class="noButton button button-primary"
-                                style="width: 70px; margin: 0;"><?php _e("Close", $pluginName); ?></button>
+                                style="width: 70px; margin: 0;"><?php _e('Close', $pluginName); ?></button>
                     </div>
                 </div>
 
@@ -3314,12 +4443,12 @@ class BOOKING_PACKAGE
             <div id="dialogPanel" class="hidden_panel">
                 <div class="blockPanel"></div>
                 <div class="confirmPanel">
-                    <div class="subject"><?php _e("Title", $pluginName); ?></div>
-                    <div class="body"><?php _e("Message", $pluginName); ?></div>
+                    <div class="subject"><?php _e('Title', $pluginName); ?></div>
+                    <div class="body"><?php _e('Message', $pluginName); ?></div>
                     <div class="buttonPanel">
                         <button id="dialogButtonYes" type="button"
-                                class="yesButton button button-primary"><?php _e("Yes", $pluginName); ?></button>
-                        <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e("No",
+                                class="yesButton button button-primary"><?php _e('Yes', $pluginName); ?></button>
+                        <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e('No',
                                 $pluginName); ?></button>
                     </div>
                 </div>
@@ -3367,9 +4496,9 @@ class BOOKING_PACKAGE
         $booking_sync = $setting->getBookingSyncList();
         $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
 
-        $dictionary = $this->getDictionary("setting_page", $this->plugin_name);
-        $localize_script = $this->localizeScript("setting_page");
-        $p_v = "?p_v=" . $this->plugin_version;
+        $dictionary = $this->getDictionary('setting_page', $this->plugin_name);
+        $localize_script = $this->localizeScript('setting_page');
+        $p_v = '?p_v=' . $this->plugin_version;
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_style('setting_page', plugin_dir_url(__FILE__) . 'css/Control.css' . $p_v, array(),
             $this->plugin_version);
@@ -3377,7 +4506,7 @@ class BOOKING_PACKAGE
             array(), $this->plugin_version);
         wp_enqueue_style('Material_Icons', 'https://fonts.googleapis.com/css?family=Material+Icons');
         $fontFaceStyle = $this->getFontFaceStyle();
-        wp_add_inline_style("Control.css", $fontFaceStyle);
+        wp_add_inline_style('Control.css', $fontFaceStyle);
 
         $dateFormat = $localize_script['list']['General'][$this->prefix . 'dateFormat']['value'];
         $positionOfWeek = $localize_script['list']['General'][$this->prefix . 'positionOfWeek']['value'];
@@ -3430,9 +4559,9 @@ class BOOKING_PACKAGE
 
         }
 
-        $front_end_css = $setting->getCss("front_end.css", plugin_dir_path(__FILE__));
-        $front_end_javascript = "";
-        $front_end_javascript = $setting->getJavaScript("front_end.js", plugin_dir_path(__FILE__));
+        $front_end_css = $setting->getCss('front_end.css', plugin_dir_path(__FILE__));
+        $front_end_javascript = '';
+        $front_end_javascript = $setting->getJavaScript('front_end.js', plugin_dir_path(__FILE__));
         $localize_script['javascriptForUser'] = 1;
 
         #wp_enqueue_script( array( 'jquery-ui-sortable' ));
@@ -3472,19 +4601,19 @@ class BOOKING_PACKAGE
             <div id="tabFrame">
                 <div style="overflow-x: auto;">
                     <div id="menuList" class="menuList">
-                        <div id="settingLink" class="menuItem active hidden_panel"><?php _e("Setting",
+                        <div id="settingLink" class="menuItem active hidden_panel"><?php _e('Setting',
                                 $pluginName); ?></div>
-                        <div id="holidayLink" class="menuItem hidden_panel"><?php _e("Closed days",
+                        <div id="holidayLink" class="menuItem hidden_panel"><?php _e('Closed days',
                                 $pluginName); ?></div>
-                        <div id="nationalHolidayLink" class="menuItem hidden_panel"><?php _e("National holiday",
+                        <div id="nationalHolidayLink" class="menuItem hidden_panel"><?php _e('National holiday',
                                 $pluginName); ?></div>
-                        <div id="blockEmailListsLink" class="menuItem hidden_panel"><?php _e("Blocks list",
+                        <div id="blockEmailListsLink" class="menuItem hidden_panel"><?php _e('Blocks list',
                                 $pluginName); ?></div>
-                        <div id="memberLink" class="menuItem hidden_panel"><?php _e("Users", $pluginName); ?></div>
-                        <div id="syncLink" class="menuItem hidden_panel"><?php _e("Sync", $pluginName); ?></div>
+                        <div id="memberLink" class="menuItem hidden_panel"><?php _e('Users', $pluginName); ?></div>
+                        <div id="syncLink" class="menuItem hidden_panel"><?php _e('Sync', $pluginName); ?></div>
                         <div id="cssLink" class="menuItem hidden_panel">CSS</div>
                         <div id="javascriptLink" class="menuItem hidden_panel">JavaScript</div>
-                        <div id="subscriptionLink" class="menuItem hidden_panel"><?php _e("Subscription details",
+                        <div id="subscriptionLink" class="menuItem hidden_panel"><?php _e('Subscription details',
                                 $pluginName); ?></div>
                     </div>
                 </div>
@@ -3493,20 +4622,20 @@ class BOOKING_PACKAGE
                         <div id="setting_table"></div>
                         <div class="bottomButtonPanel">
                             <button id="save_setting" type="button"
-                                    class="w3tc-button-save button-primary"><?php _e("Save Changes",
+                                    class="w3tc-button-save button-primary"><?php _e('Save Changes',
                                     $pluginName); ?></button>
                         </div>
                     </div>
                     <div id="holidayPanel" class="hidden_panel">
-                        <div class="title"><?php _e("Closed days", $pluginName); ?></div>
+                        <div class="title"><?php _e('Closed days', $pluginName); ?></div>
                         <div id="holidaysCalendarPanel"></div>
                     </div>
                     <div id="nationalHolidayPanel" class="hidden_panel">
-                        <div class="title"><?php _e("National holiday", $pluginName); ?></div>
+                        <div class="title"><?php _e('National holiday', $pluginName); ?></div>
                         <div id="nationalHolidaysCalendarPanel"></div>
                     </div>
                     <div id="blockEmailListsPanel" class="hidden_panel">
-                        <div class="title"><?php _e("Blocks list", $pluginName); ?></div>
+                        <div class="title"><?php _e('Blocks list', $pluginName); ?></div>
                         <?php
                         if ($isExtensionsValid === false) {
 
@@ -3516,9 +4645,9 @@ class BOOKING_PACKAGE
                         ?>
                         <div class="addValuePanel">
                             <input id="<?php print $this->prefix; ?>newEmail" type="text" class="regular-text"
-                                   placeholder="<?php _e("Block an email address", $pluginName); ?>">
+                                   placeholder="<?php _e('Block an email address', $pluginName); ?>">
                             <button id="<?php print $this->prefix; ?>addBlockEmail"
-                                    class="w3tc-button-save button-primary"><?php _e("Add", $pluginName); ?></button>
+                                    class="w3tc-button-save button-primary"><?php _e('Add', $pluginName); ?></button>
                         </div>
                         <table class="wp-list-table widefat fixed striped">
                             <tbody id="blockEmailListsTable"></tbody>
@@ -3526,93 +4655,93 @@ class BOOKING_PACKAGE
                     </div>
                     <div id="memberPanel" class="hidden_panel">
                         <div id="member_table">
-                            <div class="title"><?php _e("Users", $pluginName); ?></div>
+                            <div class="title"><?php _e('Users', $pluginName); ?></div>
                             <table class="form-table">
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("User account", $pluginName); ?></th>
+                                    <th scope="row"><?php _e('User account', $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="function_for_member" type="checkbox"
                                                        value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
                                 </tr>
 
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("Reject non-user account bookings", $pluginName); ?></th>
+                                    <th scope="row"><?php _e('Reject non-user account bookings', $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="reject_non_membder" type="checkbox" value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
                                 </tr>
 
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("User registration from visitors", $pluginName); ?></th>
+                                    <th scope="row"><?php _e('User registration from visitors', $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="visitors_registration_for_member"
                                                        type="checkbox" value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
                                 </tr>
 
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("Send the verification code by email when registering and editing",
+                                    <th scope="row"><?php _e('Send the verification code by email when registering and editing',
                                             $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="check_email_for_member" type="checkbox"
                                                        value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
                                 </tr>
 
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("Accept subscribers as users", $pluginName); ?></th>
+                                    <th scope="row"><?php _e('Accept subscribers as users', $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="accept_subscribers_as_users" type="checkbox"
                                                        value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
                                 </tr>
 
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("Accept contributors as users", $pluginName); ?></th>
+                                    <th scope="row"><?php _e('Accept contributors as users', $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="accept_contributors_as_users" type="checkbox"
                                                        value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
@@ -3632,14 +4761,14 @@ class BOOKING_PACKAGE
 										</tr>
 										-->
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("Toolbar", $pluginName); ?></th>
+                                    <th scope="row"><?php _e('Toolbar', $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="user_toolbar" type="checkbox" value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
@@ -3647,14 +4776,14 @@ class BOOKING_PACKAGE
 
 
                                 <tr valign="top">
-                                    <th scope="row"><?php _e("Lost password", $pluginName); ?></th>
+                                    <th scope="row"><?php _e('Lost password', $pluginName); ?></th>
                                     <td>
                                         <div class="valuePanel">
-                                            <div class="extensionsValid"><?php _e("Subscribed users only",
+                                            <div class="extensionsValid"><?php _e('Subscribed users only',
                                                     $pluginName); ?></div>
                                             <label>
                                                 <input data-value="1" id="lost_password" type="checkbox" value="1">
-                                                <span class="radio_title"><?php _e("Enabled", $pluginName); ?></span>
+                                                <span class="radio_title"><?php _e('Enabled', $pluginName); ?></span>
                                             </label>
                                         </div>
                                     </td>
@@ -3664,7 +4793,7 @@ class BOOKING_PACKAGE
 
                             <div class="bottomButtonPanel">
                                 <button id="save_member_setting_button" type="button"
-                                        class="w3tc-button-save button-primary"><?php _e("Save Changes",
+                                        class="w3tc-button-save button-primary"><?php _e('Save Changes',
                                         $pluginName); ?></button>
                             </div>
 
@@ -3677,19 +4806,19 @@ class BOOKING_PACKAGE
                         <div id="bookingSync_table"></div>
                         <div>
                             <button id="save_bookingSync" type="button"
-                                    class="w3tc-button-save button-primary"><?php _e("Save Changes",
+                                    class="w3tc-button-save button-primary"><?php _e('Save Changes',
                                     $pluginName); ?></button>
                         </div>
                     </div>
                     <div id="cssPanel" class="hidden_panel">
 
                         <div class="title">CSS</div>
-                        <div style="padding-bottom: 1em;"><?php _e("Change the front-end page design by defining CSS.",
+                        <div style="padding-bottom: 1em;"><?php _e('Change the front-end page design by defining CSS.',
                                 $pluginName); ?></div>
                         <textarea id="css" rows="50"><?php print $front_end_css; ?></textarea>
                         <div class="bottomButtonPanel">
                             <button id="save_css" type="button"
-                                    class="w3tc-button-save button-primary"><?php _e("Save Changes",
+                                    class="w3tc-button-save button-primary"><?php _e('Save Changes',
                                     $pluginName); ?></button>
                         </div>
 
@@ -3709,7 +4838,7 @@ class BOOKING_PACKAGE
                                   rows="50"><?php print $front_end_javascript; ?></textarea>
                         <div class="bottomButtonPanel">
                             <button id="save_javascript" type="button"
-                                    class="w3tc-button-save button-primary"><?php _e("Save Changes",
+                                    class="w3tc-button-save button-primary"><?php _e('Save Changes',
                                     $pluginName); ?></button>
                         </div>
 
@@ -3740,7 +4869,7 @@ class BOOKING_PACKAGE
                         <div class="media_toolbar">
                             <div class="media_toolbar_primary">
                                 <button id="mail_message_save_button" type="button"
-                                        class="button media-button button-primary button-large media-button-insert"><?php _e("Save",
+                                        class="button media-button button-primary button-large media-button-insert"><?php _e('Save',
                                         $pluginName); ?></button>
                             </div>
                         </div>
@@ -3755,12 +4884,12 @@ class BOOKING_PACKAGE
             <div id="dialogPanel" class="hidden_panel">
                 <div class="blockPanel"></div>
                 <div class="confirmPanel">
-                    <div class="subject"><?php _e("Title", $pluginName); ?></div>
-                    <div class="body"><?php _e("Message", $pluginName); ?></div>
+                    <div class="subject"><?php _e('Title', $pluginName); ?></div>
+                    <div class="body"><?php _e('Message', $pluginName); ?></div>
                     <div class="buttonPanel">
                         <button id="dialogButtonYes" type="button"
-                                class="yesButton button button-primary"><?php _e("Yes", $pluginName); ?></button>
-                        <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e("No",
+                                class="yesButton button button-primary"><?php _e('Yes', $pluginName); ?></button>
+                        <button id="dialogButtonNo" type="button" class="noButton button button-primary"><?php _e('No',
                                 $pluginName); ?></button>
                     </div>
                 </div>
@@ -3806,8 +4935,8 @@ class BOOKING_PACKAGE
         $this->upgrader_process();
         $pluginName = $this->plugin_name;
         $setting = $this->setting;
-        $dictionary = $this->getDictionary("subscription_page", $this->plugin_name);
-        $localize_script = $this->localizeScript("subscription_page");
+        $dictionary = $this->getDictionary('subscription_page', $this->plugin_name);
+        $localize_script = $this->localizeScript('subscription_page');
         $subscriptions = $this->getSubscriptions();
         $subscriptions['expiration_date'] = 0;
         $localize_script['subscriptions'] = $subscriptions;
@@ -3875,7 +5004,7 @@ class BOOKING_PACKAGE
 
         }
 
-        $p_v = "?p_v=" . $this->plugin_version;
+        $p_v = '?p_v=' . $this->plugin_version;
         wp_enqueue_style('control_css', plugin_dir_url(__FILE__) . 'css/Control.css', array(), $this->plugin_version);
         wp_enqueue_style('control_for_madia_css', plugin_dir_url(__FILE__) . 'css/Control_for_madia.css', array(),
             $this->plugin_version);
@@ -3891,18 +5020,18 @@ class BOOKING_PACKAGE
 
         ?>
         <div id="subscription_page" class="wrap">
-            <div class="title"><?php _e("Subscription", $pluginName); ?></div>
+            <div class="title"><?php _e('Subscription', $pluginName); ?></div>
             <table id="subscriptionDetailsTable" class="emails_table table_option wp-list-table widefat fixed striped">
                 <tr>
-                    <th><?php _e("ID", $pluginName); ?></th>
+                    <th><?php _e('ID', $pluginName); ?></th>
                     <td><?php print $subscriptions['customer_id_for_subscriptions']; ?></td>
                 </tr>
                 <tr>
-                    <th><?php _e("Subscription ID", $pluginName); ?></th>
+                    <th><?php _e('Subscription ID', $pluginName); ?></th>
                     <td><?php print $subscriptions['id_for_subscriptions']; ?></td>
                 </tr>
                 <tr>
-                    <th><?php _e("Expiration date", $pluginName); ?></th>
+                    <th><?php _e('Expiration date', $pluginName); ?></th>
                     <td><?php print $subscriptions['expiration_date']; ?></td>
                 </tr>
             </table>
@@ -3910,13 +5039,13 @@ class BOOKING_PACKAGE
             <table id="subscriptionInputTable"
                    class="emails_table table_option wp-list-table widefat fixed striped hidden_panel">
                 <tr>
-                    <th><?php _e("ID", $pluginName); ?></th>
+                    <th><?php _e('ID', $pluginName); ?></th>
                     <td>
                         <div id="customer_id"></div>
                     </td>
                 </tr>
                 <tr>
-                    <th><?php _e("Your email", $pluginName); ?></th>
+                    <th><?php _e('Your email', $pluginName); ?></th>
                     <td>
                         <div id="email"></div>
                     </td>
@@ -3966,7 +5095,7 @@ class BOOKING_PACKAGE
     public function wp_ajax_booking_package_for_public()
     {
 
-        if (isset($_POST['nonce']) && check_ajax_referer($this->action_public . "_ajax", 'nonce', false)) {
+        if (isset($_POST['nonce']) && check_ajax_referer($this->action_public . '_ajax', 'nonce', false)) {
 
             $setting = $this->setting;
             $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
@@ -4130,10 +5259,10 @@ class BOOKING_PACKAGE
 
             }
 
-            $response['verify_nonce'] = wp_verify_nonce($_POST['nonce'], $this->action_public . "_ajax");
+            $response['verify_nonce'] = wp_verify_nonce($_POST['nonce'], $this->action_public . '_ajax');
             if ($response['verify_nonce'] == 2) {
 
-                $response['new_nonce'] = wp_create_nonce($this->action_public . "_ajax");
+                $response['new_nonce'] = wp_create_nonce($this->action_public . '_ajax');
 
             }
 
@@ -4156,7 +5285,7 @@ class BOOKING_PACKAGE
             print json_encode(array(
                 'status' => 'error',
                 'mode' => $_POST['mode'],
-                "message" => "The nonce has been invalidated. Please reload the page."
+                'message' => 'The nonce has been invalidated. Please reload the page.'
             ));
 
         }
@@ -4165,10 +5294,19 @@ class BOOKING_PACKAGE
 
     }
 
+    public function getPhpVersion()
+    {
+
+        $v = explode('.', phpversion());
+        $phpV = $v[0] . '.' . $v[1];
+        return floatval($phpV);
+
+    }
+
     public function wp_ajax_booking_package()
     {
 
-        if (isset($_POST['nonce']) && check_ajax_referer($this->action_control . "_ajax", 'nonce')) {
+        if (isset($_POST['nonce']) && check_ajax_referer($this->action_control . '_ajax', 'nonce')) {
 
             $response = $this->selectedMode();
             if ($this->getPhpVersion() <= 5.4) {
@@ -4779,13 +5917,13 @@ class BOOKING_PACKAGE
     public function getDownloadCSV()
     {
         $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
-/*
-        $calendar_data = $schedule->getDownloadCSV();
-        echo '<pre>';
-        var_dump($calendar_data);
-        echo '</pre>';
-        die();
-*/
+        /*
+                $calendar_data = $schedule->getDownloadCSV();
+                echo '<pre>';
+                var_dump($calendar_data);
+                echo '</pre>';
+                die();
+        */
         $download = false;
         if (current_user_can('manage_options') && current_user_can('edit_pages')) {
 
@@ -4809,7 +5947,7 @@ class BOOKING_PACKAGE
         } else {
 
             $nonce = $_POST['nonce'];
-            if (!wp_verify_nonce($nonce, $this->action_control . "_download")) {
+            if (!wp_verify_nonce($nonce, $this->action_control . '_download')) {
 
                 die('Security check');
 
@@ -4818,9 +5956,9 @@ class BOOKING_PACKAGE
                 global $wpdb;
                 $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
                 $calendar_data = $schedule->getDownloadCSV();
-                $calendar_name =  str_replace(' ', '_', $calendar_data['calendarAccount']['name'] . '-' . $calendar_data['period']);
-                $characterCodeOfDownloadFile = get_option($this->prefix . "characterCodeOfDownloadFile", "UTF-8");
-                header("Content-Type: application/octet-stream");
+                $calendar_name = str_replace(' ', '_', $calendar_data['calendarAccount']['name'] . '-' . $calendar_data['period']);
+                $characterCodeOfDownloadFile = get_option($this->prefix . 'characterCodeOfDownloadFile', 'UTF-8');
+                header('Content-Type: application/octet-stream');
                 header("Content-Disposition: attachment; filename=\"$calendar_name.csv\"");
                 $str = $calendar_data['csv'];
                 if ($characterCodeOfDownloadFile != 'UTF-8' && function_exists('mb_convert_encoding')) {
@@ -4844,122 +5982,8 @@ class BOOKING_PACKAGE
         $setting = $this->setting;
         $setting->lookingForSubscription($_POST['customer_id_for_subscriptions'],
             $_POST['subscriptions_id_for_subscriptions'], $_POST['customer_email_for_subscriptions']);
-        header('Location: ' . admin_url("admin.php?page=" . $this->plugin_name . "_setting_page" . "&tab=subscriptionLink"));
+        header('Location: ' . admin_url('admin.php?page=' . $this->plugin_name . '_setting_page' . '&tab=subscriptionLink'));
         die();
-
-    }
-
-    private function getExtensionsValid($loadScript = false)
-    {
-
-        if (is_null($this->isExtensionsValid)) {
-
-            $setting = $this->setting;
-            $this->isExtensionsValid = $setting->getSiteStatus($loadScript);
-            if (get_option($this->prefix . 'blocksEmail') === false) {
-
-                add_option($this->prefix . 'blocksEmail', 0);
-
-            }
-
-            if ($this->isExtensionsValid === true) {
-
-                $setting->updateRolesOfPlugin();
-                update_option($this->prefix . 'blocksEmail', 1);
-
-
-            } else {
-
-                $setting->deleteRolesOfPlugin();
-                update_option($this->prefix . 'blocksEmail', 0);
-
-            }
-
-        }
-
-        return $this->isExtensionsValid;
-
-    }
-
-    public function getSubscriptions()
-    {
-
-        $setting = $this->setting;
-        $subscriptions = $setting->upgradePlan('get');
-        unset($subscriptions["status"]);
-        /**
-         * var_dump($subscriptions);
-         * foreach((array) $subscriptions as $key => $value){
-         *
-         * $subscriptions[$key] = 0;
-         *
-         * }
-         **/
-        return $subscriptions;
-
-    }
-
-    public function upgradeButton($isExtensionsValid = false)
-    {
-
-        if ($isExtensionsValid === true) {
-
-            return $isExtensionsValid;
-
-        }
-
-        if ($this->is_owner_site == 0) {
-
-            return false;
-
-        }
-
-        $uri = plugin_dir_url(__FILE__);
-        $parse_url = parse_url($uri);
-        $locale = get_locale();
-        $dictionary = $this->getDictionary("Upgrade_js", $this->plugin_name);
-
-        $timezone = $this->timezone;
-        $upgradeDetail = array(
-            "timeZone" => $timezone,
-            "local" => get_locale(),
-            "site" => get_site_url(),
-            "locale" => $locale,
-            "plugin_v" => $this->plugin_version
-        );
-
-        $subscriptions = $this->getSubscriptions();
-        foreach ((array)$subscriptions as $key => $value) {
-
-            $upgradeDetail[$key] = $value;
-
-        }
-
-        $upgradeDetail['secure'] = 0;
-        if ($parse_url['scheme'] == 'https') {
-
-            $upgradeDetail['secure'] = 1;
-
-        }
-
-        #$pluginUrl = (empty($_SERVER["HTTPS"]) ? "http://" : "https://") . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-        #$upgradeDetail['pluginUrl'] = $pluginUrl;
-        $upgradeDetail['pluginUrl'] = site_url();
-        $pluginName = $this->plugin_name;
-
-        echo '<form action="https://saasproject.net/upgrade/" method="post" style="float: right;">';
-        $posts = array("extension_url", "local", "timeZone", "site", "pluginUrl", "plugin_v");
-        for ($i = 0; $i < count($posts); $i++) {
-
-            $key = $posts[$i];
-            if (isset($upgradeDetail[$key])) {
-
-                echo '<input type="hidden" name="' . $key . '" value="' . $upgradeDetail[$key] . '">';
-
-            }
-
-        }
-        echo '</form>';
 
     }
 
@@ -4992,7 +6016,7 @@ class BOOKING_PACKAGE
     public function webhook()
     {
 
-        $target = sanitize_text_field($_GET["weebhook"]);
+        $target = sanitize_text_field($_GET['weebhook']);
         $HTTP_X_GOOG_CHANNEL_ID = sanitize_text_field($_SERVER['HTTP_X_GOOG_CHANNEL_ID']);
         $HTTP_X_GOOG_CHANNEL_TOKEN = sanitize_text_field($_SERVER['HTTP_X_GOOG_CHANNEL_TOKEN']);
 
@@ -5012,426 +6036,6 @@ class BOOKING_PACKAGE
 
     }
 
-    public function localizeScript($mode)
-    {
-
-        if (isset($_GET['debug']) && intval($_GET['debug']) == 1) {
-
-            $this->dubug_javascript = 1;
-
-        }
-
-        $siteToken = get_option('_' . $this->prefix . 'siteToken', false);
-        if ($siteToken === false) {
-
-            $siteToken = hash('ripemd160', date('U'));
-            add_option('_' . $this->prefix . 'siteToken', $siteToken);
-
-        }
-
-        $schedule = new booking_package_schedule($this->prefix, $this->plugin_name, $this->userRoleName);
-        $setting = $this->setting;
-        $locale = get_locale();
-        $javascriptSyntaxErrorNotification = get_option($this->prefix . "javascriptSyntaxErrorNotification", 1);
-
-        $dateFormat = get_option($this->prefix . "dateFormat", "0");
-        $positionOfWeek = get_option($this->prefix . "positionOfWeek", "before");
-        $positionTimeDate = get_option($this->prefix . "positionTimeDate", "dateTime");
-
-        $javascriptFileslist = array();
-        $dir = plugin_dir_path(__FILE__) . 'js/';
-        if ($handle = opendir($dir)) {
-
-            while (($file = readdir($handle)) !== false) {
-
-                if (filetype($path = $dir . $file) == "file") {
-
-                    array_push($javascriptFileslist, $file);
-
-                }
-
-            }
-
-        }
-
-        $startOfWeek = get_option('start_of_week', 0);
-
-        $localize_script = array();
-        if ($mode == 'adomin') {
-
-            $dashboardRequest = array('status' => 0);
-            if (isset($_GET['key']) && isset($_GET['calendar']) && isset($_GET['month']) && isset($_GET['day']) && isset($_GET['year'])) {
-
-                $dashboardRequest = array(
-                    'status' => 1,
-                    'key' => intval($_GET['key']),
-                    'calendar' => intval($_GET['calendar']),
-                    'month' => intval($_GET['month']),
-                    'day' => intval($_GET['day']),
-                    'year' => intval($_GET['year'])
-                );
-
-            }
-
-
-            $list = $setting->getList();
-            $courseList = $setting->getCourseList();
-            $emailMessageList = $setting->getEmailMessage(array('enable'));
-            //$formData = $setting->getForm();
-
-            $courseBool = get_option($this->prefix . "courseBool", "false");
-            $courseName = get_option($this->prefix . "courseName", "false");
-
-
-            $list['General'][$this->prefix . 'clock']['value'] = $this->changeTimeFormat($list['General'][$this->prefix . 'clock']['value']);
-
-            $localize_script = array(
-                'url' => admin_url('admin-ajax.php'),
-                'action' => $this->action_control,
-                'nonce' => wp_create_nonce($this->action_control . "_ajax"),
-                'nonce_download' => wp_create_nonce($this->action_control . "_download"),
-                'prefix' => $this->prefix,
-                'courseBool' => $courseBool,
-                'courseName' => $courseName,
-                'year' => date('Y'),
-                'month' => date('m'),
-                'day' => date('d'),
-                'locale' => $locale,
-                'courseList' => $courseList,
-                'country' => $list['General']['booking_package_country']['value'],
-                'currency' => $list['General']['booking_package_currency']['value'],
-                'clock' => $list['General']['booking_package_clock']['value'],
-                'dateFormat' => $dateFormat,
-                'positionOfWeek' => $positionOfWeek,
-                'positionTimeDate' => $positionTimeDate,
-                'formData' => array(),
-                'calendarAccountList' => $schedule->getCalendarAccountListData(),
-                'is_mobile' => $this->is_mobile,
-                'dashboardRequest' => $dashboardRequest,
-                'bookingBool' => 1,
-                'emailEnable' => $emailMessageList,
-                'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
-                'javascriptFileslist' => $javascriptFileslist,
-                'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
-                'startOfWeek' => $startOfWeek,
-                'debug' => $this->dubug_javascript,
-                'today' => date('Ymd'),
-                'guestForDayOfTheWeekRates' => $this->guestForDayOfTheWeekRates,
-            );
-
-
-        } else {
-            if ($mode == 'schedule_page') {
-
-                $this->setting->guestForDayOfTheWeekRates = $this->guestForDayOfTheWeekRates;
-                $courseData = $setting->getCourseData();
-                $subscriptionsData = $setting->getSubscriptionsData();
-                $formInputType = $setting->getFormInputType();
-                $guestsInputType = $setting->guestsInputType();
-                $couponsInputType = $setting->couponsInputType();
-                $emailMessageList = $setting->getEmailMessage();
-                $taxes = $setting->getTaxesData();
-
-                if ($this->stopService == 0) {
-
-                    unset($courseData['stopService']);
-
-                }
-
-                if ($this->groupOfInputField == 0) {
-
-                    unset($formInputType['groupId']);
-
-                }
-
-                if ($this->expirationDateForTax == 0) {
-
-                    unset($taxes['expirationDate']);
-
-                }
-
-                $schedule->deleteOldDaysInSchedules();
-                $timestamp = $schedule->getTimestamp();
-
-                $courseBool = get_option($this->prefix . "courseBool", "false");
-
-                $elementForCalendarAccount = $setting->getElementForCalendarAccount();
-                $country = get_option($this->prefix . 'country', 'US');
-                if (strtolower($country) != 'jp') {
-
-                    unset($elementForCalendarAccount['paymentMethod']['valueList']['stripe_konbini']);
-
-                }
-
-                if ($this->visitorSubscriptionForStripe == 0) {
-
-                    unset($elementForCalendarAccount['subscriptionIdForStripe']);
-                    unset($elementForCalendarAccount['subscriptionIdForPayPal']);
-                    unset($elementForCalendarAccount['termsOfServiceForSubscription']);
-                    #unset($elementForCalendarAccount['enableTermsOfServiceForSubscription']);
-                    unset($elementForCalendarAccount['privacyPolicyForSubscription']);
-                    #unset($elementForCalendarAccount['enablePrivacyPolicyForSubscription']);
-
-
-                }
-
-                if ($this->multipleRooms == 0) {
-
-                    unset($elementForCalendarAccount['multipleRooms']);
-
-                }
-
-                if ($this->maxAndMinNumberOfGuests == 0) {
-
-                    unset($elementForCalendarAccount['minimum_guests']);
-                    unset($elementForCalendarAccount['maximum_guests']);
-
-                }
-
-                $thanksPages = array('0' => __('Select', $this->plugin_name));
-                $pages = get_pages(array('meta_key' => 'booking-package', 'meta_value' => 'front-end'));
-                foreach ((array)$pages as $key => $value) {
-
-                    $thanksPages[$value->ID] = $value->post_title;
-
-                }
-                $elementForCalendarAccount['servicesPage']['valueList'] = $thanksPages;
-                $elementForCalendarAccount['calenarPage']['valueList'] = $thanksPages;
-                $elementForCalendarAccount['schedulesPage']['valueList'] = $thanksPages;
-                $elementForCalendarAccount['visitorDetailsPage']['valueList'] = $thanksPages;
-                $elementForCalendarAccount['confirmDetailsPage']['valueList'] = $thanksPages;
-                $elementForCalendarAccount['thanksPage']['valueList'] = $thanksPages;
-                //$elementForCalendarAccount['redirectPage']['valueList'] = $thanksPages;
-                $redirectPages = array();
-                foreach ((array)$thanksPages as $key => $value) {
-
-                    $redirectPages[$key] = array('key' => $key, 'name' => $value);
-
-                }
-                $elementForCalendarAccount['redirect_Page']['valueList'][1]['valueList'] = $redirectPages;
-
-                $defaultEmail = array(
-                    'email_to' => get_option($this->prefix . "email_to", ''),
-                    'email_from' => get_option($this->prefix . "email_from", ''),
-                    'email_from_title' => get_option($this->prefix . "email_title_from", ''),
-                );
-
-                $localize_script = array(
-                    'url' => admin_url('admin-ajax.php'),
-                    'action' => $this->action_control,
-                    'nonce' => wp_create_nonce($this->action_control . "_ajax"),
-                    'prefix' => $this->prefix,
-                    'courseBool' => $courseBool,
-                    'year' => date('Y'),
-                    'month' => date('m'),
-                    'locale' => $locale,
-                    'dateFormat' => $dateFormat,
-                    'positionOfWeek' => $positionOfWeek,
-                    'positionTimeDate' => $positionTimeDate,
-                    'list' => array(),
-                    'formInputType' => $formInputType,
-                    'courseData' => $courseData,
-                    'subscriptionsData' => $subscriptionsData,
-                    'taxesData' => $taxes,
-                    'optionsForHotel' => $this->optionsForHotel,
-                    'optionsForHotelData' => $setting->getOptionsForHotelData(),
-                    'elementForCalendarAccount' => $elementForCalendarAccount,
-                    'guestsInputType' => $guestsInputType,
-                    'couponsInputType' => $couponsInputType,
-                    'is_mobile' => $this->is_mobile,
-                    'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
-                    'javascriptFileslist' => $javascriptFileslist,
-                    'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
-                    'timestamp' => $timestamp,
-                    'startOfWeek' => $startOfWeek,
-                    'currency' => get_option($this->prefix . "currency", "usd"),
-                    'timezone' => get_option($this->prefix . "timezone", "UTC"),
-                    'debug' => $this->dubug_javascript,
-                    'defaultEmail' => $defaultEmail,
-                    'siteToken' => $siteToken,
-                    'remakeBookingSchedules' => $this->remakeBookingSchedules,
-                );
-
-            } else {
-                if ($mode == 'setting_page') {
-
-                    $list = $setting->getList();
-                    $booking_sync = $setting->getBookingSyncList();
-                    $member_setting = $setting->getMemberSetting(true);
-                    $emailMessageList = $setting->getEmailMessage();
-                    #$courseList = $setting->getCourseList();
-                    #$courseData = $setting->getCourseData();
-                    #$formInputType = $setting->getFormInputType();
-                    $countries = json_decode(file_get_contents(plugin_dir_path(__FILE__) . 'lib/Countries_with_Regional_Codes.json'),
-                        true);
-                    $list['General'][$this->prefix . 'country']['valueList'] = $countries;
-                    ksort($list["General"][$this->prefix . "currency"]["valueList"]);
-                    if (isset($booking_sync['Google_Calendar'])) {
-
-                        $booking_sync['Google_Calendar']['parse_url'] = parse_url(get_home_url());
-
-                    }
-
-                    $timezone = get_option($this->prefix . "timezone", null);
-                    if (is_null($timezone)) {
-
-                        $timezone = get_option('timezone_string', 'UTC');
-                        $list['General'][$this->prefix . 'timezone']['value'] = $timezone;
-
-                    } else {
-
-                        $list['General'][$this->prefix . 'timezone']['value'] = $timezone;
-
-                    }
-
-                    $list['General'][$this->prefix . 'clock']['value'] = $this->changeTimeFormat($list['General'][$this->prefix . 'clock']['value']);
-                    $booking_sync['iCal']['booking_package_ical_token']['home'] = get_home_url();
-                    if (is_null($booking_sync['iCal']['booking_package_ical_token']['value']) === true || strlen($booking_sync['iCal']['booking_package_ical_token']['value']) == 0) {
-
-                        $tokenResponse = $setting->refreshToken("booking_package_ical_token");
-                        $booking_sync['iCal']['booking_package_ical_token']['value'] = $tokenResponse['token'];
-
-                    }
-
-                    $localize_script = array(
-                        'url' => admin_url('admin-ajax.php'),
-                        'action' => $this->action_control,
-                        'nonce' => wp_create_nonce($this->action_control . "_ajax"),
-                        'prefix' => $this->prefix,
-                        'locale' => $locale,
-                        'list' => $list,
-                        'bookingSyncList' => $booking_sync,
-                        'memberSetting' => $member_setting,
-                        "extension_url" => BOOKING_PACKAGE_EXTENSION_URL,
-                        'dateFormat' => $dateFormat,
-                        'positionOfWeek' => $positionOfWeek,
-                        'positionTimeDate' => $positionTimeDate,
-                        /**
-                         * 'courseData' => $courseData,
-                         * 'courseList' => $courseList,
-                         * 'formInputType' => $formInputType,
-                         * 'formData' => $formData,
-                         * 'emailMessageList' => $emailMessageList,
-                         **/
-                        'is_mobile' => $this->is_mobile,
-                        'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
-                        'javascriptFileslist' => $javascriptFileslist,
-                        'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
-                        'regularHolidays' => $schedule->getRegularHolidays(date('m'), date('Y'), 'share', $startOfWeek,
-                            false),
-                        'nationalHolidays' => $schedule->getRegularHolidays(date('m'), date('Y'), 'national',
-                            $startOfWeek, false),
-                        'startOfWeek' => $startOfWeek,
-                        'is_owner_site' => $this->is_owner_site,
-                        'siteToken' => $siteToken,
-                        'return_url' => admin_url(),
-                        'debug' => $this->dubug_javascript,
-                    );
-
-                } else {
-                    if ($mode == 'visitor') {
-
-                        $list = $setting->getList();
-                        $courseList = $setting->getCourseList();
-                        $emailMessageList = $setting->getEmailMessage(array('enable'));
-                        //$formData = $setting->getForm();
-
-                        $courseBool = get_option($this->prefix . "courseBool", "false");
-                        $courseName = get_option($this->prefix . "courseName", "false");
-                        $autoWindowScroll = get_option($this->prefix . "autoWindowScroll", 1);
-                        $list['General'][$this->prefix . 'clock']['value'] = $this->changeTimeFormat($list['General'][$this->prefix . 'clock']['value']);
-
-                        $localize_script = array(
-                            'url' => admin_url('admin-ajax.php'),
-                            #'url' => plugin_dir_url( __FILE__ ).'ajax.php',
-                            'action' => $this->action_public,
-                            'nonce' => wp_create_nonce($this->action_public . "_ajax"),
-                            'prefix' => $this->prefix,
-                            'courseBool' => $courseBool,
-                            'year' => date('Y'),
-                            'month' => date('m'),
-                            'day' => date('d'),
-                            'courseList' => $courseList,
-                            'country' => $list['General']['booking_package_country']['value'],
-                            'currency' => $list['General']['booking_package_currency']['value'],
-                            'clock' => $list['General']['booking_package_clock']['value'],
-                            'headingPosition' => $list['Design']['booking_package_headingPosition']['value'],
-                            'googleAnalytics' => $list['General']['booking_package_googleAnalytics']['value'],
-                            'dateFormat' => $dateFormat,
-                            'positionOfWeek' => $positionOfWeek,
-                            'positionTimeDate' => $positionTimeDate,
-                            'formData' => array(),
-                            'locale' => $locale,
-                            'is_mobile' => $this->is_mobile,
-                            'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
-                            'javascriptFileslist' => $javascriptFileslist,
-                            'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
-                            'startOfWeek' => $startOfWeek,
-                            'bookedList' => 'userBookingDetails',
-                            'permalink' => get_permalink(),
-                            'debug' => $this->dubug_javascript,
-                            'plugin_v' => $this->plugin_version,
-                            'today' => date('Ymd'),
-                            'autoWindowScroll' => intval($autoWindowScroll),
-                            'pluginLocale' => $this->pluginLocale,
-                            'guestForDayOfTheWeekRates' => $this->guestForDayOfTheWeekRates,
-                        );
-
-                    } else {
-                        if ($mode == 'member') {
-
-                            $list = $setting->getList();
-                            $localize_script = array(
-                                'url' => admin_url('admin-ajax.php'),
-                                #'url' => plugin_dir_url( __FILE__ ).'ajax.php',
-                                'action' => $this->action_public,
-                                'nonce' => wp_create_nonce($this->action_public . "_ajax"),
-                                'prefix' => $this->prefix,
-                                'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
-                                'javascriptFileslist' => $javascriptFileslist,
-                                'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
-                                'currency' => $list['General']['booking_package_currency']['value'],
-                                'clock' => $list['General']['booking_package_clock']['value'],
-                                'startOfWeek' => $startOfWeek,
-                                'debug' => $this->dubug_javascript,
-                                'dateFormat' => $dateFormat,
-                                'positionOfWeek' => $positionOfWeek,
-                                'positionTimeDate' => $positionTimeDate,
-                                'bookedList' => 1,
-
-                            );
-
-                        } else {
-                            if ($mode == 'subscription_page') {
-
-                                $localize_script = array(
-                                    'url' => admin_url('admin-ajax.php'),
-                                    'action' => $this->action_control,
-                                    'nonce' => wp_create_nonce($this->action_control . "_ajax"),
-                                    'prefix' => $this->prefix,
-                                    'javascriptSyntaxErrorNotification' => $javascriptSyntaxErrorNotification,
-                                    'javascriptFileslist' => $javascriptFileslist,
-                                    'visitorSubscriptionForStripe' => $this->visitorSubscriptionForStripe,
-                                    'extension_url' => BOOKING_PACKAGE_EXTENSION_URL,
-                                    'is_owner_site' => $this->is_owner_site,
-                                    'locale' => $locale,
-                                    'site' => get_site_url(),
-                                    'debug' => $this->dubug_javascript,
-                                );
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        $localize_script['referer_field'] = esc_attr(wp_unslash($_SERVER['REQUEST_URI']));
-
-        return $localize_script;
-
-    }
-
     public function deactivation_event()
     {
 
@@ -5441,7 +6045,7 @@ class BOOKING_PACKAGE
         wp_clear_scheduled_hook('booking_package_notification');
 
         $setting = $this->setting;
-        $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, "deactivation");
+        $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, 'deactivation');
         $setting->updatePluginSubscription('deactivation');
 
         $database = new booking_package_database($this->prefix, $this->db_version);
@@ -5487,22 +6091,6 @@ class BOOKING_PACKAGE
 
     }
 
-    private function update_memberAccount()
-    {
-
-        if (is_null(get_role($this->userRoleName))) {
-
-            $roleArray = array('read' => true, 'level_0' => true, 'booking_package' => true);
-            $object = add_role($this->userRoleName, 'Booking Package User', $roleArray);
-
-        } else {
-
-            $object = get_role($this->userRoleName);
-
-        }
-
-    }
-
     public function createFirstCalendar()
     {
 
@@ -5538,143 +6126,6 @@ class BOOKING_PACKAGE
 
     }
 
-    public function setHomePath()
-    {
-
-        if (function_exists('get_home_path')) {
-
-            $key = $this->prefix . "home_path";
-            if (get_option($key) === false) {
-
-                add_option($key, get_home_path());
-
-            } else {
-
-                update_option($key, get_home_path());
-
-            }
-
-        }
-
-    }
-
-    public function getFontFaceStyle()
-    {
-
-        $url = plugin_dir_url(__FILE__);
-
-        #$style = "<style>\n";
-        $style = "	@font-face {\n";
-        $style .= "		font-family: 'Material Icons';\n";
-        $style .= "		font-style: normal;\n";
-        $style .= "		font-weight: 400;\n";
-        $style .= "		src: url(" . $url . "iconfont/MaterialIcons-Regular.eot);\n";
-        $style .= "		src: local('Material Icons'),\n";
-        $style .= "			local('MaterialIcons-Regular'),\n";
-        $style .= "			url(" . $url . "iconfont/MaterialIcons-Regular.woff2) format('woff2'),\n";
-        $style .= "			url(" . $url . "iconfont/MaterialIcons-Regular.woff) format('woff'),\n";
-        $style .= "			url(" . $url . "iconfont/MaterialIcons-Regular.ttf) format('truetype');\n";
-        $style .= "	}\n";
-        #$style .= "</style>\n";
-        return $style;
-
-    }
-
-    public function getStyle($list)
-    {
-
-        $style = '<style type="text/css">';
-        $style .= "#booking-package-memberActionPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; font-size: " . $list['Design']['booking_package_fontSize']['value'] . "}\n";
-        $style .= "#booking-package_myBookingHistory, #booking-package_myBookingDetailsFroVisitor { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; font-size: " . $list['Design']['booking_package_fontSize']['value'] . "}\n";
-        $style .= "#booking-package_myBookingHistoryTable th, #booking-package_myBookingHistoryTable td { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; font-size: " . $list['Design']['booking_package_fontSize']['value'] . "}\n";
-        $style .= "#booking-package_myBookingDetails { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; font-size: " . $list['Design']['booking_package_fontSize']['value'] . "}\n";
-        $style .= "#booking-package { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; font-size: " . $list['Design']['booking_package_fontSize']['value'] . "}\n";
-        $style .= "#booking-package button { font-size: " . $list['Design']['booking_package_fontSize']['value'] . "}\n";
-        $style .= "#booking-package_durationStay { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_durationStay .bookingDetailsTitle { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_calendarPage { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_scheduleMainPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_courseMainPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .topPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .topPanelNoAnimation { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .daysListPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .daysListPanelNoAnimation { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .bottomPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .bottomPanelForPositionInherit { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .selectedDate { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .courseListPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_inputFormPanel { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_inputFormPanel .selectedDate { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_myBookingDetails .selectedDate { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_calendarPage .dayPanel { background-color: " . $list['Design']['booking_package_calendarBackgroundColorWithSchedule']['value'] . "; }\n";
-        $style .= "#booking-package_calendarPage .closeDay { background-color: " . $list['Design']['booking_package_calendarBackgroundColorWithNoSchedule']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .selectPanel { background-color: " . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .selectPanelError { background-color: " . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .selectPanelActive { background-color: " . $list['Design']['booking_package_backgroundColorOfSelectedLabel']['value'] . "; }\n";
-        $style .= "#booking-package_schedulePage .selectPanel:hover { background-color: " . $list['Design']['booking_package_mouseHover']['value'] . "; }\n";
-
-        $style .= "#booking-package_servicePage { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_servicePage .title { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-
-        $style .= "#booking-package_servicePage .selectPanel { background-color: " . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_servicePage .selectPanelError { background-color: " . $list['Design']['booking_package_scheduleAndServiceBackgroundColor']['value'] . "; }\n";
-        $style .= "#booking-package_servicePage .selectPanelActive { background-color: " . $list['Design']['booking_package_backgroundColorOfSelectedLabel']['value'] . "; }\n";
-        $style .= "#booking-package_servicePage .selectPanel:hover { background-color: " . $list['Design']['booking_package_mouseHover']['value'] . "; }\n";
-
-        $style .= "#booking-package_serviceDetails { background-color: " . $list['Design']['booking_package_backgroundColor']['value'] . "; }\n";
-
-        $style .= "#booking-package_calendarPage .pointer:hover { background-color: " . $list['Design']['booking_package_mouseHover']['value'] . "; }\n";
-        $style .= "#booking-package_calendarPage .holidayPanel { background-color: " . $list['Design']['booking_package_backgroundColorOfRegularHolidays']['value'] . " !important; }\n";
-        #$style .= "#booking-package_calendarPage .nationalHoliday { background-color: ".$list['Design']['booking_package_backgroundColorOfNationalHolidays']['value']."; }\n";
-
-        $styleList = array(
-            "#booking-package_calendarPage .dayPanel",
-            "#booking-package_schedulePage .selectPanel",
-            "#booking-package_schedulePage .selectPanelError",
-            "#booking-package_schedulePage .daysListPanel",
-            "#booking-package_schedulePage .topPanel",
-            "#booking-package_schedulePage .topPanelNoAnimation",
-            "#booking-package_schedulePage .bottomPanel",
-            "#booking-package_schedulePage .bottomPanelForPositionInherit",
-            "#booking-package_servicePage .selectPanel",
-            "#booking-package_servicePage .selectPanelError",
-            "#booking-package_servicePage .daysListPanel",
-            "#booking-package_servicePage .topPanel",
-            "#booking-package_servicePage .topPanelNoAnimation",
-            "#booking-package_servicePage .bottomPanel",
-            "#booking-package_inputFormPanel .selectedDate",
-            "#booking-package_myBookingDetails .selectedDate",
-            "#booking-package_inputFormPanel .row",
-            "#booking-package_myBookingDetails .row",
-            "#booking-package_durationStay .row",
-            "#booking-package_myBookingDetailsFroVisitor .row",
-            "#booking-package_durationStay .bookingDetailsTitle",
-            "#booking-package_serviceDetails .row",
-            "#booking-package_serviceDetails .borderColor",
-            "#booking-package_servicePage .borderColor",
-        );
-        for ($i = 0; $i < count($styleList); $i++) {
-
-            $style .= $styleList[$i] . " { border-color: " . $list['Design']['booking_package_borderColor']['value'] . "; }\n";
-
-        }
-
-        $style .= "</style>";
-
-        return $style;
-
-    }
-
-    public function getPhpVersion()
-    {
-
-        $v = explode('.', phpversion());
-        $phpV = $v[0] . "." . $v[1];
-        return floatval($phpV);
-
-    }
-
     public function create_dir()
     {
 
@@ -5700,16 +6151,16 @@ class BOOKING_PACKAGE
 
                 switch_to_blog($data->id);
                 $this->create_database(false);
-                $site = "http://" . $data->domain . $data->path;
+                $site = 'http://' . $data->domain . $data->path;
                 if (is_ssl()) {
 
-                    $site = "https://" . $data->domain . $data->path;
+                    $site = 'https://' . $data->domain . $data->path;
 
                 }
 
                 $timezone = $this->getTimeZone();
                 $setting = $this->setting;
-                $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, "activation", $this->plugin_version, $timezone,
+                $setting->activation(BOOKING_PACKAGE_EXTENSION_URL, 'activation', $this->plugin_version, $timezone,
                     $site);
                 restore_current_blog();
 
@@ -5776,27 +6227,6 @@ class BOOKING_PACKAGE
             }
 
         }
-
-    }
-
-    public function getTimeZone()
-    {
-
-        $timezone = get_option($this->prefix . "timezone", null);
-        if (is_null($timezone)) {
-
-            $timezone = get_option('timezone_string', 'UTC');
-            if (is_null($timezone) || strlen($timezone) == 0) {
-
-                $timezone = 'UTC';
-
-            }
-
-            add_option($this->prefix . "timezone", sanitize_text_field($timezone));
-
-        }
-        $this->timezone = $timezone;
-        return $timezone;
 
     }
 
@@ -5873,417 +6303,6 @@ class BOOKING_PACKAGE
 
     }
 
-    public function changeTimeFormat($timeFormat)
-    {
-
-        if (!is_numeric($timeFormat)) {
-
-            return $timeFormat;
-
-        }
-
-        if (intval($timeFormat) == 12) {
-
-            $timeFormat = '12a.m.p.m';
-
-        } else {
-            if (intval($timeFormat) == 24) {
-
-                $timeFormat = '24hours';
-
-            }
-        }
-
-        return $timeFormat;
-
-    }
-
-    public function getDictionary($mode, $pluginName)
-    {
-
-        $dictionary = array(
-            'Error' => __('Error', $pluginName),
-            'Add' => __('Add', $pluginName),
-            'Delete' => __('Delete', $pluginName),
-            'Edit' => __('Edit', $pluginName),
-            'Change' => __('Change', $pluginName),
-            'Copy' => __('Copy', $pluginName),
-            'Return' => __('Return', $pluginName),
-            'Save' => __('Save', $pluginName),
-            'Cancel' => __('Cancel', $pluginName),
-            'Close' => __('Close', $pluginName),
-            'Update' => __('Update', $pluginName),
-            'Help' => __('Help', $pluginName),
-            'Price' => __('Price', $pluginName),
-            'Attention' => __('Attention', $pluginName),
-            'Warning' => __('Warning', $pluginName),
-            'Booking' => __('Booking', $pluginName),
-            'January' => __('January', $pluginName),
-            'February' => __('February', $pluginName),
-            'March' => __('March', $pluginName),
-            'April' => __('April', $pluginName),
-            'May' => __('May', $pluginName),
-            'June' => __('June', $pluginName),
-            'July' => __('July', $pluginName),
-            'August' => __('August', $pluginName),
-            'September' => __('September', $pluginName),
-            'October' => __('October', $pluginName),
-            'November' => __('November', $pluginName),
-            'December' => __('December', $pluginName),
-            'Jan' => __('Jan', $pluginName),
-            'Feb' => __('Feb', $pluginName),
-            'Mar' => __('Mar', $pluginName),
-            'Apr' => __('Apr', $pluginName),
-            'May' => __('May', $pluginName),
-            'Jun' => __('Jun', $pluginName),
-            'Jul' => __('Jul', $pluginName),
-            'Aug' => __('Aug', $pluginName),
-            'Sep' => __('Sep', $pluginName),
-            'Oct' => __('Oct', $pluginName),
-            'Nov' => __('Nov', $pluginName),
-            'Dec' => __('Dec', $pluginName),
-            'Sunday' => __('Sunday', $pluginName),
-            'Monday' => __('Monday', $pluginName),
-            'Tuesday' => __('Tuesday', $pluginName),
-            'Wednesday' => __('Wednesday', $pluginName),
-            'Thursday' => __('Thursday', $pluginName),
-            'Friday' => __('Friday', $pluginName),
-            'Saturday' => __('Saturday', $pluginName),
-            'Sun' => __('Sun', $pluginName),
-            'Mon' => __('Mon', $pluginName),
-            'Tue' => __('Tue', $pluginName),
-            'Wed' => __('Wed', $pluginName),
-            'Thu' => __('Thu', $pluginName),
-            'Fri' => __('Fri', $pluginName),
-            'Sat' => __('Sat', $pluginName),
-            'Booking Date' => __('Booking Date', $pluginName),
-            'Booking date' => __('Booking Date', $pluginName),
-            'Arrival (Check-in)' => __('Arrival (Check-in)', $pluginName),
-            'Departure (Check-out)' => __('Departure (Check-out)', $pluginName),
-            'Arrival' => __('Arrival', $pluginName),
-            'Departure' => __('Departure', $pluginName),
-            'Check-in' => __('Check-in', $pluginName),
-            'Check-out' => __('Check-out', $pluginName),
-            'Total number of guests' => __('Total number of guests', $pluginName),
-            'Total length of stay' => __('Total length of stay', $pluginName),
-            'Additional fees' => __('Additional fees', $pluginName),
-            'Accommodation fees' => __('Accommodation fees', $pluginName),
-            'Total amount' => __('Total amount', $pluginName),
-            'Summary' => __('Summary', $pluginName),
-            '%s night %s days' => __('%s night %s days', $pluginName),
-            '%s nights %s days' => __('%s nights %s days', $pluginName),
-            'night' => __('night', $pluginName),
-            'nights' => __('nights', $pluginName),
-            'Night' => __('Night', $pluginName),
-            'Nights' => __('Nights', $pluginName),
-            'room' => __('room', $pluginName),
-            'rooms' => __('rooms', $pluginName),
-            'Title' => __('Title', $pluginName),
-            'Booking details' => __('Booking details', $pluginName),
-            'Submission date' => __('Submission date', $pluginName),
-            'Clear' => __('Clear', $pluginName),
-            'person' => __('person', $pluginName),
-            'people' => __('people', $pluginName),
-            'Please choose %s' => __('Please choose %s', $pluginName),
-            'Subscribed users only' => __('Subscribed users only', $pluginName),
-            '%s remaining' => __('%s remaining', $pluginName),
-            'An unknown cause of error occurred' => __('An unknown cause of error occurred', $pluginName),
-            'Status' => __('Status', $pluginName),
-            'approved' => __("approved", $pluginName),
-            'pending' => __('pending', $pluginName),
-            'canceled' => __('canceled', $pluginName),
-            'Can we really cancel your booking?' => __('Can we really cancel your booking?', $pluginName),
-            'We have canceled your booking.' => __('We have canceled your booking.', $pluginName),
-            'Your personal details do not displayed on this page.' => __('Your personal details do not displayed on this page.',
-                $pluginName),
-            'Surcharge and Tax' => __('Surcharge and Tax', $pluginName),
-            'Surcharge' => __('Surcharge', $pluginName),
-            'Tax' => __('Tax', $pluginName),
-            'Select' => __('Select', $pluginName),
-            '%s:%s a.m.' => __('%s:%s a.m.', $pluginName),
-            '%s:%s p.m.' => __('%s:%s p.m.', $pluginName),
-            '%s:%s am' => __('%s:%s am', $pluginName),
-            '%s:%s pm' => __('%s:%s pm', $pluginName),
-            '%s:%s AM' => __('%s:%s AM', $pluginName),
-            '%s:%s PM' => __('%s:%s PM', $pluginName),
-            'Change status' => __('Change status', $pluginName),
-            'Add another room' => __('Add another room', $pluginName),
-            'Enabled' => __('Enabled', $pluginName),
-            'Disabled' => __('Disabled', $pluginName),
-            'Remaining' => __('Remaining', $pluginName),
-            'The required total number of people must be %s or less.' => __('The required total number of people must be %s or less.',
-                $pluginName),
-            'The required total number of people must be %s or more.' => __('The required total number of people must be %s or more.',
-                $pluginName),
-            'The total number of people must be %s or less.' => __('The total number of people must be %s or less.',
-                $pluginName),
-            'The total number of people must be %s or more.' => __('The total number of people must be %s or more.',
-                $pluginName),
-            'Total number of people' => __('Total number of people', $pluginName),
-            '%s to %s' => __('%s to %s', $pluginName),
-            'Coupons' => __('Coupons', $pluginName),
-            'Coupon code' => __('Coupon code', $pluginName),
-            'Coupon' => __('Coupon', $pluginName),
-            'Discount' => __('Discount', $pluginName),
-            'Add a coupon code' => __('Add a coupon code', $pluginName),
-            'Added a coupon' => __('Added a coupon', $pluginName),
-            'Apply' => __('Apply', $pluginName),
-            ' to ' => __(' to ', $pluginName),
-            'I will pay locally' => __('I will pay locally', $pluginName),
-            'Pay locally' => __('Pay locally', $pluginName),
-            'Pay with Credit Card' => __('Pay with Credit Card', $pluginName),
-            'Pay with Stripe' => __('Pay with Stripe', $pluginName),
-            'Pay with PayPal' => __('PayPal', $pluginName),
-            'Pay at a convenience store' => __('Pay at a convenience store', $pluginName),
-            'Pay at a convenience store with Stripe' => __('Pay at a convenience store with Stripe', $pluginName),
-            'Usernames can only contain lowercase letters (a-z) and numbers.' => __('Usernames can only contain lowercase letters (a-z) and numbers.',
-                $pluginName),
-            'Please enter a valid email address.' => __('Please enter a valid email address.', $pluginName),
-            'Please enter a valid password.' => __('Please enter a valid password.', $pluginName),
-            'Deprecated' => __('Deprecated', $pluginName),
-        );
-
-
-        if ($mode == "adomin") {
-
-            $dictionary['Download CSV'] = __("Download CSV", $pluginName);
-            $dictionary['Timezone'] = __("Timezone", $pluginName);
-            $dictionary['Booking'] = __("Booking", $pluginName);
-            $dictionary['No schedules'] = __('No schedules', $pluginName);
-            $dictionary['No visitors'] = __('No visitors', $pluginName);
-            $dictionary['This booking has been paid by credit card. Do you refund the price to the customer?'] = __('This booking has been paid by credit card. Do you refund the price to the customer?',
-                $pluginName);
-            $dictionary['Do you send e-mail notifications to customers or administrators?'] = __('Do you send e-mail notifications to customers or administrators?',
-                $pluginName);
-            $dictionary['Are you sure you want to delete this booking?'] = __('Are you sure you want to delete this booking?',
-                $pluginName);
-            $dictionary['Please upgrade your free plan to enable this feature.'] = __('Please upgrade your free plan to enable this feature.',
-                $pluginName);
-            $dictionary['Service is not registered. '] = __('Service is not registered. ', $pluginName);
-            $dictionary['Please create a service.'] = __('Please create a service.', $pluginName);
-            $dictionary['The user was not found.'] = __('The user was not found.', $pluginName);
-            $dictionary['Payment method'] = __('Payment method', $pluginName);
-            $dictionary['Payment ID'] = __('Payment ID', $pluginName);
-
-        } else {
-            if ($mode == "schedule_page") {
-
-                $dictionary['Every %s'] = __('Every %s', $pluginName);
-                $dictionary['hour'] = __('hour', $pluginName);
-                $dictionary['hours'] = __('hours', $pluginName);
-                $dictionary['minutes'] = __('minutes', $pluginName);
-                $dictionary['deadline time'] = __('deadline time', $pluginName);
-                $dictionary['capacities'] = __('capacities', $pluginName);
-                $dictionary['Remaining'] = __('Remaining', $pluginName);
-                $dictionary['Deadline time'] = __('Deadline time', $pluginName);
-                $dictionary['%s min ago'] = __('%s min ago', $pluginName);
-                $dictionary['%s min'] = __('%s min', $pluginName);
-                $dictionary['Choose %s'] = __('Choose %s', $pluginName);
-                $dictionary['Select a type'] = __('Select a type', $pluginName);
-                $dictionary['Accommodation (Hotel)'] = __('Accommodation (Hotel)', $pluginName);
-                $dictionary['Do you delete the "%s"?'] = __('Do you delete the "%s"?', $pluginName);
-                $dictionary['Edit schedule'] = __('Edit schedule', $pluginName);
-                $dictionary['Status'] = __('Status', $pluginName);
-                $dictionary['Shortcode'] = __('Shortcode', $pluginName);
-                $dictionary['Name'] = __('Name', $pluginName);
-                $dictionary['Description'] = __('Description', $pluginName);
-                $dictionary['Active'] = __('Active', $pluginName);
-                $dictionary['Price'] = __('Price', $pluginName);
-                $dictionary['Duration time'] = __('Duration time', $pluginName);
-                $dictionary['Unique ID'] = __('Unique ID', $pluginName);
-                $dictionary['Value'] = __('Value', $pluginName);
-                $dictionary['Required'] = __('Required', $pluginName);
-                $dictionary['Is Name'] = __('Is Name', $pluginName);
-                $dictionary['Is a location in Google Calendar'] = __('Is a location in Google Calendar', $pluginName);
-                $dictionary['Is Email'] = __('Is Email', $pluginName);
-                $dictionary['Type'] = __('Type', $pluginName);
-                $dictionary['Options'] = __('Options', $pluginName);
-                $dictionary['Add service'] = __('Add service', $pluginName);
-                $dictionary['Change ranking'] = __('Change ranking', $pluginName);
-                $dictionary['Add field'] = __('Add field', $pluginName);
-                $dictionary['Do you copy the "%s"?'] = __('Do you copy the "%s"?', $pluginName);
-                $dictionary['Do you delete the "%s"?'] = __('Do you delete the "%s"?', $pluginName);
-                $dictionary['Disable'] = __('Disable', $pluginName);
-                $dictionary['Enable'] = __('Enable', $pluginName);
-                $dictionary['New'] = __('New', $pluginName);
-                $dictionary['Approved'] = __('Approved', $pluginName);
-                $dictionary['Pending'] = __('Pending', $pluginName);
-                $dictionary['Reminder'] = __('Reminder', $pluginName);
-                $dictionary['Canceled'] = __('Canceled', $pluginName);
-                $dictionary['Deleted'] = __('Deleted', $pluginName);
-                $dictionary['Subject'] = __('Subject', $pluginName);
-                $dictionary['Content'] = __('Content', $pluginName);
-                $dictionary['Date'] = __('Date', $pluginName);
-                $dictionary['Number of rooms available'] = __('Number of rooms available', $pluginName);
-                $dictionary['Cost per night'] = __('Cost per night', $pluginName);
-                $dictionary['Maximum number of people staying in one room'] = __('Maximum number of people staying in one room',
-                    $pluginName);
-                $dictionary['Include children in the maximum number of people in the room'] = __('Include children in the maximum number of people in the room',
-                    $pluginName);
-                $dictionary['Exclude'] = __('Exclude', $pluginName);
-                $dictionary['Include'] = __('Include', $pluginName);
-                $dictionary['Warning'] = __('Warning', $pluginName);
-                $dictionary['Number of people'] = __('Number of people', $pluginName);
-                $dictionary['Booking is completed within 24 hours (hair salon, hospital etc.)'] = __('Booking is completed within 24 hours (hair salon, hospital etc.)',
-                    $pluginName);
-                $dictionary['Accommodation (hotels, campgrounds, etc.)'] = __('Accommodation (hotels, campgrounds, etc.)',
-                    $pluginName);
-                $dictionary['[%s] is inserting "%s"'] = __('[%s] is inserting "%s"', $pluginName);
-                $dictionary['Fixed calendar'] = __('Fixed calendar', $pluginName);
-                $dictionary['Public days from today'] = __('Public days from today', $pluginName);
-                $dictionary['Unavailable days from today'] = __('Unavailable days from today', $pluginName);
-                $dictionary['Delete schedules'] = __('Delete schedules', $pluginName);
-                $dictionary['Refresh token'] = __('Refresh token', $pluginName);
-                $dictionary['The "%s" is only available to subscribed users.'] = __('The "%s" is only available to subscribed users.',
-                    $pluginName);
-                $dictionary['Cancellation URI'] = __('Cancellation URI', $pluginName);
-                $dictionary['Cancellation URL'] = __('Cancellation URL', $pluginName);
-                $dictionary['Received URI'] = __('Received URI', $pluginName);
-                $dictionary['Received URL'] = __('Received URL', $pluginName);
-                $dictionary['Customer details'] = __('Customer details', $pluginName);
-                $dictionary['URL of customer details for administrator'] = __('URL of customer details for administrator',
-                    $pluginName);
-                $dictionary['National holiday'] = __('National holiday', $pluginName);
-                $dictionary['Open'] = __('Open', $pluginName);
-                $dictionary['Taxes'] = __('Taxes', $pluginName);
-                $dictionary['Surcharges'] = __('Surcharges', $pluginName);
-                $dictionary['Add option'] = __('Add option', $pluginName);
-                $dictionary['Add surcharge or tax'] = __('Add surcharge or tax', $pluginName);
-                $dictionary['Payment method'] = __('Payment method', $pluginName);
-                $dictionary['Stop'] = __('Stop', $pluginName);
-                $dictionary['You can use following shortcodes in content editer.'] = __('You can use following shortcodes in content editer.',
-                    $pluginName);
-                $doctionary['This calendar shares the schedules of the "%s".'] = __('This calendar shares the schedules of the "%s".',
-                    $pluginName);
-                $dictionary['Weekly schedule templates'] = __('Weekly schedule templates', $pluginName);
-                $dictionary['Coupon name'] = __('Coupon name', $pluginName);
-                $dictionary['Add new item'] = __('Add new item', $pluginName);
-                $dictionary['Add Coupon'] = __('Add Coupon', $pluginName);
-                $dictionary['Add Guest'] = __('Add Guest', $pluginName);
-                $dictionary['Enable the guests function'] = __('Enable the guests function', $pluginName);
-                $dictionary['Enable the coupons function'] = __('Enable the coupons function', $pluginName);
-                $dictionary['Choose all the time'] = __('Choose all the time', $pluginName);
-                $dictionary['Select all time slots'] = __('Select all time slots', $pluginName);
-                $dictionary['Specify the time slots for each day of the week'] = __('Specify the time slots for each day of the week',
-                    $pluginName);
-                $dictionary['There are incompletely deleted schedules.'] = __('There are incompletely deleted schedules.',
-                    $pluginName);
-                $dictionary['Delete the schedules perfectly'] = __('Delete the schedules perfectly', $pluginName);
-                $dictionary['Discount value'] = __('Discount value', $pluginName);
-                $dictionary['Booking date and time'] = __('Booking date and time', $pluginName);
-                $dictionary['Booking date'] = __('Booking date', $pluginName);
-                $dictionary['Booking time'] = __('Booking time', $pluginName);
-                $dictionary['Booking title'] = __('Booking title', $pluginName);
-                $dictionary['Timezone'] = __("Timezone", $pluginName);
-                $dictionary['Schedules'] = __("Schedules", $pluginName);
-                $dictionary['Number of rooms available'] = __("Number of rooms available", $pluginName);
-                $dictionary['Hotel charges'] = __("Hotel charges", $pluginName);
-                $dictionary['Sync the past customers'] = __("Sync the past customers", $pluginName);
-                $dictionary['Last %s days'] = __("Last %s days", $pluginName);
-                $dictionary['Service function'] = __("Service function", $pluginName);
-                $dictionary['Guest function'] = __("Guest function", $pluginName);
-                $dictionary['Coupon function'] = __("Coupon function", $pluginName);
-                $dictionary['%s or %s'] = __("%s or %s", $pluginName);
-                $dictionary['You changed the value of "%s".'] = __('You changed the value of "%s".', $pluginName);
-                $dictionary['You changed to a value less than the current "%s".'] = __('You changed to a value less than the current "%s".',
-                    $pluginName);
-                $dictionary['Do you remake new booking schedules?'] = __('Do you remake new booking schedules?',
-                    $pluginName);
-
-            } else {
-                if ($mode == "setting_page") {
-
-                    $dictionary['My billing'] = __('My billing', $pluginName);
-                    $dictionary['My billing and payment'] = __('My billing and payment', $pluginName);
-                    $dictionary['Cancel my subscription'] = __('Cancel my subscription', $pluginName);
-                    $dictionary['Update my subscription'] = __("Update my subscription", $pluginName);
-                    #$dictionary['Cancel subscription'] = __('Cancel subscription', $pluginName);
-                    #$dictionary['Register credit card'] = __("Register credit card", $pluginName);
-                    #$dictionary['Update subscription'] = __("Update subscription", $pluginName);
-                    $dictionary['Name'] = __('Name', $pluginName);
-                    $dictionary['Active'] = __('Active', $pluginName);
-                    $dictionary['Price'] = __('Price', $pluginName);
-                    $dictionary['Duration time'] = __('Duration time', $pluginName);
-                    $dictionary['Unique ID'] = __('Unique ID', $pluginName);
-                    $dictionary['Value'] = __('Value', $pluginName);
-                    $dictionary['Type'] = __('Type', $pluginName);
-                    $dictionary['Options'] = __('Options', $pluginName);
-                    $dictionary['Cancellation of booking'] = __('Cancellation of booking', $pluginName);
-                    $dictionary['The Service account must be in JSON format.'] = __('The Service account must be in JSON format.',
-                        $pluginName);
-                    $dictionary['Subscription ID'] = __('Subscription ID', $pluginName);
-                    $dictionary['Expiration date'] = __('Expiration date', $pluginName);
-                    $dictionary['Your email'] = __('Your email', $pluginName);
-                    $dictionary['Do you delete the "%s"?'] = __('Do you delete the "%s"?', $pluginName);
-                    $dictionary['Do you really cancel the subscription?'] = __('Do you really cancel the subscription?',
-                        $pluginName);
-                    $dictionary['General'] = __('General', $pluginName);
-                    $dictionary['Country'] = __('Country', $pluginName);
-                    $dictionary['Selected country'] = __('Selected country', $pluginName);
-                    $dictionary['Frequently used countries'] = __('Frequently used countries', $pluginName);
-                    $dictionary['Other countries'] = __('Other countries', $pluginName);
-                    $dictionary['There are blank fields.'] = __('There are blank fields.', $pluginName);
-                    $dictionary['Subject'] = __('Subject', $pluginName);
-                    $dictionary['Content'] = __('Content', $pluginName);
-                    $dictionary['General'] = __('General', $pluginName);
-                    $dictionary['Design'] = __('Design', $pluginName);
-                    $dictionary['Do you send e-mail notifications to customers or administrators?'] = __('Do you send e-mail notifications to customers or administrators?',
-                        $pluginName);
-                    $dictionary['Date'] = __('Date', $pluginName);
-                    $dictionary['Email'] = __('Email', $pluginName);
-
-                } else {
-                    if ($mode == "Upgrade_js") {
-
-                        $dictionary['Upgrade'] = 'Upgrade';
-                        $dictionary['Credit card'] = 'Credit card';
-                        $dictionary['Submit Payment'] = 'Submit Payment';
-                        $dictionary['Please choose a plan.'] = 'Please choose a plan.';
-                        $dictionary['First Name'] = 'First Name';
-                        $dictionary['Last Name'] = 'Last Name';
-                        $dictionary['Email address'] = 'Email address';
-
-                    } else {
-                        if ($mode == "bookingPageForVisitors") {
-
-                            $dictionary['Please fill in your details'] = __('Please fill in your details', $pluginName);
-                            $dictionary['Booking details'] = __('Booking details', $pluginName);
-                            $dictionary['Your Booking Details'] = __('Your Booking Details', $pluginName);
-                            $dictionary['Book now'] = __('Book now', $pluginName);
-                            $dictionary['Please confirm your details'] = __('Please confirm your details', $pluginName);
-                            $dictionary['Booking Completed'] = __('Booking Completed', $pluginName);
-                            $dictionary['Credit card'] = __('Credit card', $pluginName);
-                            $dictionary['Service is not registered. '] = __('Service is not registered. ', $pluginName);
-                            $dictionary['Submit Payment'] = __('Submit Payment', $pluginName);
-                            $dictionary['Sign in'] = __('Sign in', $pluginName);
-                            $dictionary['Cancel booking'] = __('Cancel booking', $pluginName);
-                            $dictionary['Next'] = __('Next', $pluginName);
-                            $dictionary['Next page'] = __('Next page', $pluginName);
-                            $dictionary['You have not selected anything'] = __('You have not selected anything',
-                                $pluginName);
-                            $dictionary['Select option'] = __("Select option", $pluginName);
-                            $dictionary['Choose a date'] = __('Choose a date', $pluginName);
-                            $dictionary['Select payment method'] = __('Select payment method', $pluginName);
-                            $dictionary['I will pay locally'] = __('I will pay locally', $pluginName);
-                            $dictionary['Pay with Credit Card'] = __('Pay with Credit Card', $pluginName);
-                            $dictionary['Pay with PayPal'] = __('Pay with PayPal', $pluginName);
-                            $dictionary['Pay at a convenience store'] = __('Pay at a convenience store', $pluginName);
-                            $dictionary['Do you really want to delete the license as a member?'] = __('Do you really want to delete the license as a member?',
-                                $pluginName);
-                            $dictionary['We sent a verification code to the following address.'] = __('We sent a verification code to the following address.',
-                                $pluginName);
-                            $dictionary['Lost your password?'] = __('Lost your password?', $pluginName);
-
-                        }
-                    }
-                }
-            }
-        }
-
-        return $dictionary;
-
-    }
-
 
 }
 
@@ -6316,7 +6335,7 @@ class booking_package_widget extends WP_Widget
 
         if (is_active_widget(false, false, $this->id_base, true)) {
 
-            $defaults = array("calendarKey" => null);
+            $defaults = array('calendarKey' => null);
             $instance = wp_parse_args((array)$instance, $defaults);
             #var_dump($instance);
             $shortcodes = 0;
@@ -6356,7 +6375,7 @@ class booking_package_widget extends WP_Widget
     {
 
 
-        $defaults = array("calendarKey" => null);
+        $defaults = array('calendarKey' => null);
         $instance = wp_parse_args((array)$instance, $defaults);
         $calendarKey = 0;
         if (!is_null($instance['calendarKey'])) {
@@ -6391,7 +6410,7 @@ class booking_package_widget extends WP_Widget
     public function update($new_instance, $old_instance)
     {
 
-        echo "update";
+        echo 'update';
         $instance = $old_instance;
         $instance['calendarKey'] = sanitize_text_field($new_instance['calendarKey']);
         return $instance;

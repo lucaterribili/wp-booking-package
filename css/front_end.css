@@ -1,59 +1,63 @@
+body {
+    'display': none
+}
+
 input[type="text"] {
-    
+
 }
 
 button {
-    
+    text-transform: uppercase;
 }
 
 #booking-package .sun {
-    
+
 }
 
 #booking-package .mon {
-    
+
 }
 
 #booking-package .tue {
-    
+
 }
 
 #booking-package .wed {
-    
+
 }
 
 #booking-package .thu {
-    
+
 }
 
 #booking-package .fri {
-    
+
 }
 
 #booking-package .sat {
-    
+
 }
 
 #booking-package .nationalHoliday {
-    
+
 }
 
 #booking-package .goToBookingFormButton {
-    
+
 }
 
 #booking-package .bookingButton {
-    
+
 }
 
 #booking-package_calendarPage .startShutdownForHotel {
-    
+
 }
 
 #booking-package_calendarPage .shutdownForHotel {
-    
+
 }
 
 #booking-package_calendarPage .endShutdownForHotel {
-    
+
 }

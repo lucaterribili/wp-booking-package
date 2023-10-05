@@ -1,0 +1,313 @@
+.start_booking_package {
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075) !important;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid rgb(233, 230, 242);
+}
+.start_booking_package div {
+    background-color: transparent!important;
+ }
+/* Header */
+.start_booking_package .calendarPanel,
+.start_booking_package .topPanel {
+    display: flex!important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px!important;
+    background-color: #06c!important;
+    height: auto!important;
+}
+.start_booking_package #booking-package_inputFormPanel #reservationHeader {
+    padding: calc(16px + 0.5rem) 16px!important;
+    background-color: #06c!important;
+    height: auto!important;
+}
+.start_booking_package .calendarPanel .calendarData,
+.start_booking_package .topPanel .selectedDate,
+.start_booking_package #booking-package_inputFormPanel #reservationHeader {
+    font-size: 1.33em;
+    color: #fff;
+    font-weight: 700;
+    padding: .5rem 0;
+    text-align: center;
+}
+/* STEP 1 */
+.start_booking_package .calendarPanel .calendarChangeButton {
+    width: 44px;
+}
+.start_booking_package .calendarPanel .calendarChangeButton label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px
+}
+.start_booking_package .calendarPanel .calendarChangeButton .arrowFont {
+    color: #fff;
+}
+.start_booking_package .calendarPanel .arrowRight span,
+.start_booking_package .calendarPanel .arrowLeft span {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+.start_booking_package .calendar {
+    margin: 0;
+    padding: 24px!important;
+}
+/* Calendario */
+.start_booking_package div.dayPanel {
+    text-transform: uppercase;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #5d7083;
+    padding: 6px!important;
+}
+.start_booking_package a.dayPanel.dayPanelHeight {
+    position: relative;
+    height: auto!important;
+    padding: 0!important;
+    font-weight: 700;
+}
+.start_booking_package a.dayPanel.dayPanelHeight:hover {
+    color: #fff!important;
+    background-color: #06c!important;
+    transition: all .15s ease-in-out;
+}
+.start_booking_package a.dayPanel.dayPanelHeight:active:focus,
+.start_booking_package a.dayPanel.dayPanelHeight:focus {
+    border-color: #004d99!important;
+    outline: none!important;
+    background-color: #004d99!important;
+    color: #fff;
+}
+.start_booking_package a.dayPanel.dayPanelHeight:focus-visible {
+    color: #06c;
+    z-index: 2!important;
+    box-shadow: 0 0 0 0.5rem rgba(0,102,204,.5)!important;
+    background-color: #fff!important;
+}
+.start_booking_package a.dayPanel.dayPanelHeight.disabled {
+    pointer-events: none!important;
+    color: #5d7083;
+    font-weight: 400;
+}
+.start_booking_package a.dayPanel.dayPanelHeight>div.dayPostion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%!important;
+    height: 100%!important;
+    padding: 0!important;
+}
+.start_booking_package a.dayPanel.dayPanelHeight::before {
+    content: "";
+     display: block;
+     padding-top: 100%;
+ }
+/* STEP 2 */
+.start_booking_package #booking-package_schedulePage:not(.hidden_panel) {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+/* Settimana */
+.start_booking_package #booking-package_schedulePage .daysListPanel {
+    display: flex;
+    flex: 0 0 auto;
+    width: auto!important;
+    flex-direction: column;
+    padding: 12px;
+    font-size: .8rem;
+}
+.start_booking_package #booking-package_schedulePage .daysListPanel > a {
+    display: flex;
+    flex-direction: column;
+    width: 4rem!important;
+    height: 4rem!important;
+    justify-content: center;
+    margin: 4px;
+    border: 2px solid #06c;
+    color: #06c;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+}
+.start_booking_package #booking-package_schedulePage .daysListPanel > a.selectPanelActive {
+    background-color: #06c;
+    color: #fff;
+}
+.start_booking_package #booking-package_schedulePage .daysListPanel > a:hover,
+.start_booking_package #booking-package_schedulePage .daysListPanel > a:focus,
+.start_booking_package #booking-package_schedulePage .daysListPanel > a:focus-visible {
+    background-color: #004d99;
+    color: #fff;
+}
+.start_booking_package #booking-package_schedulePage .daysListPanel > a.selectPanelError {
+    color: #cc334d;
+    border: 1px solid #cc334d;
+    pointer-events: none;
+}
+.start_booking_package #booking-package_schedulePage .daysListPanel > a > div {
+    width: 100%;
+    font-size: 1.5em;
+    line-height: 1em;
+}
+.start_booking_package #booking-package_schedulePage .daysListPanel > a > div:first-child {
+    text-transform: uppercase;
+    font-size: .8rem;
+}
+/* Slot orari*/
+.start_booking_package #booking-package_schedulePage #scheduleMainPanel {
+    position: relative!important;
+    top: 0;
+    left: 0;
+    flex: 1 0 0%;
+    box-shadow: none;
+    overflow: visible;
+    z-index: 3;
+}
+.start_booking_package #booking-package_schedulePage #scheduleMainPanel::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 0.5rem;
+    pointer-events: none;
+    background: rgb(0,0,0);
+    background: linear-gradient(90deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 100%);
+}
+.start_booking_package #booking-package_schedulePage #scheduleMainPanel > a {
+    font-weight: 700;
+    color: #06c;
+    background-color: #fafafa!important;
+    position: relative;
+    border-color: #dddddd!important;
+    padding: 10px 16px;
+}
+.start_booking_package #booking-package_schedulePage #scheduleMainPanel > a:not(.selectPanelError):hover {
+    background-color: #fff!important;
+}
+.start_booking_package #booking-package_schedulePage #scheduleMainPanel > a:not(.selectPanelError):focus-visible{
+    z-index: 2;
+    box-shadow: 0 0 0 0.5rem rgba(0,102,204,.5)!important;
+}
+.start_booking_package #booking-package_schedulePage #scheduleMainPanel > a.selectPanelError {
+    color: #5d7083;
+    text-decoration: line-through;
+    font-weight: 400;
+    background-color: #f0f0f0!important;
+    pointer-events: none;
+}
+/* Bottoni */
+.start_booking_package #booking-package_inputFormPanel {
+    clear: both;
+}
+.start_booking_package #booking-package_schedulePage .bottomPanelForPositionInherit {
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 24px!important;
+}
+.start_booking_package #booking-package_schedulePage .bottomPanelForPositionInherit #returnToCalendarButton,
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel #returnToSchedules {
+    margin: 0 auto 0 0;
+    padding: 12px 24px;
+    font-size: 1rem;
+    white-space: initial;
+    text-decoration: none;
+    color: #5d7083;
+    background-color: rgba(0,0,0,0);
+    background-image: none;
+    box-shadow: inset 0 0 0 2px #5d7083!important;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.start_booking_package #booking-package_schedulePage .bottomPanelForPositionInherit #returnToCalendarButton:hover,
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel #returnToSchedules:hover  {
+    color: #656565;
+    box-shadow: inset 0 0 0 2px #656565!important;
+}
+.start_booking_package #booking-package_schedulePage .bottomPanelForPositionInherit #returnToCalendarButton:active:focus,
+.start_booking_package #booking-package_schedulePage .bottomPanelForPositionInherit #returnToCalendarButton:focus-visible,
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel #returnToSchedules:active:focus ,
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel #returnToSchedules:focus-visible  {
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125), 0 0 0 0.25rem rgba(93,112,131,.5)!important;
+}
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel .bookingButton {
+    margin: 0;
+    padding: 12px 24px;
+    font-size: 1rem;
+    white-space: initial;
+    text-decoration: none;
+    color: #fff;
+    background-color: #06c;
+    background-image: none;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 1px 1px rgba(0,0,0,.075)!important;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel .bookingButton:hover  {
+    background-color: #0053a5;
+    color: #fff;
+    border-color: #004d99;
+    border: none;
+    outline: none;
+}
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel .bookingButton:active:focus,
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel .bookingButton:focus-visible  {
+    background-color: #004d99;
+    border-color: #00468d;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125), 0 0 0 0.25rem rgba(0,102,204,.5)!important;
+    border: none;
+    outline: none;
+}
+.start_booking_package #booking-package_inputFormPanel .cartPanel {
+    float: right;
+}
+.start_booking_package #booking-package_inputFormPanel .bottomBarPanel {
+    padding: 48px 24px 24px 24px!important;
+}
+.start_booking_package #booking-package_inputFormPanel>.bottomBarPanel {
+    float: left;
+}
+.start_booking_package #booking-package_inputFormPanel .row {
+    border: none;
+}
+.start_booking_package #booking-package_inputFormPanel .row:nth-child(2) {
+    text-align: center;
+    padding-top: 24px;
+}
+.start_booking_package #booking-package_inputFormPanel .row:nth-child(2) .name {
+    color: #5d7083;
+    font-size: .8rem;
+    text-transform: uppercase;
+}
+.start_booking_package #booking-package_inputFormPanel .row:nth-child(2) .value {
+    font-size: 1.777rem;
+    line-height: 1.25;
+    font-weight: 700;
+    color: #06c;
+}
+.start_booking_package #booking-package_inputFormPanel .row:nth-child(2) .value span {
+    display: block;
+}
+/* Spinner */
+.start_booking_package #bookingBlockPanel .loader #spinner {
+    stroke: #06c;
+}
+@media(min-width: 992px) {
+}

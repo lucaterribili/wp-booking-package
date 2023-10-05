@@ -1153,146 +1153,6 @@ class booking_package_schedule
 
     }
 
-    public function deleteUser($administrator = 0)
-    {
-
-        $reality = false;
-        $userId = 0;
-        if (intval($administrator) == 1) {
-
-            $user = get_user_by('login', sanitize_text_field($_POST['user_login']));
-            if ($user !== false) {
-
-                $reality = true;
-
-            }
-            $userId = $user->ID;
-
-        } else {
-
-            $userId = get_current_user_id();
-            if ($userId != 0) {
-
-                $reality = true;
-
-            }
-
-        }
-
-        if ($reality === true) {
-
-            $response = array('status' => 'success', 'userId' => $userId);
-            if (wp_delete_user($userId) === true) {
-
-                $this->deleteForPluginUser($userId);
-                return $response;
-
-            }
-
-            $response['status'] = 'error';
-            return $response;
-
-        } else {
-
-            $response = array('status' => 'error', 'userId' => $userId);
-            return $response;
-
-        }
-
-    }
-
-    public function deleteForPluginUser($user_id)
-    {
-
-        global $wpdb;
-        $creditCard = new booking_package_CreditCard($this->pluginName, $this->prefix);
-        $user = $this->get_user($user_id, false);
-        if (isset($user['user']['subscription_list']) && is_null($user['user']['subscription_list']) === false) {
-
-            $items = $user['user']['subscription_list'];
-            foreach ((array)$items as $key => $value) {
-
-                $secret_key = get_option($this->prefix . 'stripe_secret_key', null);
-                $response = $creditCard->deleteSubscription($value, $secret_key);
-
-            }
-
-        }
-
-        $table_name = $wpdb->prefix . 'booking_package_users';
-        $wpdb->delete($table_name, array('key' => intval($user_id)), array('%d'));
-        do_action('booking_package_delete_user', $user_id);
-
-    }
-
-    public function deleteSubscription($productKey = false, $userId = null)
-    {
-
-        global $wpdb;
-        $productKey = sanitize_text_field($productKey);
-        $response = array('status' => 1);
-        $creditCard = new booking_package_CreditCard($this->pluginName, $this->prefix);
-
-        if (is_null($userId)) {
-
-            $user = $this->get_user();
-
-        } else {
-
-            $user = $this->get_user($userId, false);
-
-        }
-
-        if (intval($user['status']) == 1) {
-
-            $subscription_list = $user['user']['subscription_list'];
-            if (isset($subscription_list[$productKey])) {
-
-                $secret_key = get_option($this->prefix . 'stripe_secret_key', null);
-                $response = $creditCard->deleteSubscription($subscription_list[$productKey], $secret_key);
-                if ($response['deleted'] === true) {
-
-                    #unset($subscription_list[$productKey]);
-                    $subscription_list[$productKey]['canceled'] = 1;
-                    $bool = $this->update_subscription_list_of_user($user['user']['current_member_id'],
-                        $subscription_list);
-                    $response['status'] = 1;
-                    $response['bool'] = $bool;
-                    #$response['user'] = $user;
-                    #$response['subscription_list'] = $subscription_list;
-
-                } else {
-
-                    if ($response['code'] == 404) {
-
-                        unset($subscription_list[$productKey]);
-                        $bool = $this->update_subscription_list_of_user($user['user']['current_member_id'],
-                            $subscription_list);
-                        $response['bool'] = $bool;
-
-                    }
-
-                    $response['status'] = 0;
-
-                }
-                return $response;
-
-            } else {
-
-                $response = array('status' => 0, 'reload' => 1);
-
-            }
-
-            return $subscription_list;
-
-        } else {
-
-            return $user;
-
-        }
-
-    }
-
     public function get_user($userId = null, $statusCheck = true)
     {
 
@@ -1929,6 +1789,146 @@ class booking_package_schedule
             }
 
             return array('date' => trim($date), 'time' => (trim($time)), 'title' => trim($title));
+
+        }
+
+    }
+
+    public function deleteUser($administrator = 0)
+    {
+
+        $reality = false;
+        $userId = 0;
+        if (intval($administrator) == 1) {
+
+            $user = get_user_by('login', sanitize_text_field($_POST['user_login']));
+            if ($user !== false) {
+
+                $reality = true;
+
+            }
+            $userId = $user->ID;
+
+        } else {
+
+            $userId = get_current_user_id();
+            if ($userId != 0) {
+
+                $reality = true;
+
+            }
+
+        }
+
+        if ($reality === true) {
+
+            $response = array('status' => 'success', 'userId' => $userId);
+            if (wp_delete_user($userId) === true) {
+
+                $this->deleteForPluginUser($userId);
+                return $response;
+
+            }
+
+            $response['status'] = 'error';
+            return $response;
+
+        } else {
+
+            $response = array('status' => 'error', 'userId' => $userId);
+            return $response;
+
+        }
+
+    }
+
+    public function deleteForPluginUser($user_id)
+    {
+
+        global $wpdb;
+        $creditCard = new booking_package_CreditCard($this->pluginName, $this->prefix);
+        $user = $this->get_user($user_id, false);
+        if (isset($user['user']['subscription_list']) && is_null($user['user']['subscription_list']) === false) {
+
+            $items = $user['user']['subscription_list'];
+            foreach ((array)$items as $key => $value) {
+
+                $secret_key = get_option($this->prefix . 'stripe_secret_key', null);
+                $response = $creditCard->deleteSubscription($value, $secret_key);
+
+            }
+
+        }
+
+        $table_name = $wpdb->prefix . 'booking_package_users';
+        $wpdb->delete($table_name, array('key' => intval($user_id)), array('%d'));
+        do_action('booking_package_delete_user', $user_id);
+
+    }
+
+    public function deleteSubscription($productKey = false, $userId = null)
+    {
+
+        global $wpdb;
+        $productKey = sanitize_text_field($productKey);
+        $response = array('status' => 1);
+        $creditCard = new booking_package_CreditCard($this->pluginName, $this->prefix);
+
+        if (is_null($userId)) {
+
+            $user = $this->get_user();
+
+        } else {
+
+            $user = $this->get_user($userId, false);
+
+        }
+
+        if (intval($user['status']) == 1) {
+
+            $subscription_list = $user['user']['subscription_list'];
+            if (isset($subscription_list[$productKey])) {
+
+                $secret_key = get_option($this->prefix . 'stripe_secret_key', null);
+                $response = $creditCard->deleteSubscription($subscription_list[$productKey], $secret_key);
+                if ($response['deleted'] === true) {
+
+                    #unset($subscription_list[$productKey]);
+                    $subscription_list[$productKey]['canceled'] = 1;
+                    $bool = $this->update_subscription_list_of_user($user['user']['current_member_id'],
+                        $subscription_list);
+                    $response['status'] = 1;
+                    $response['bool'] = $bool;
+                    #$response['user'] = $user;
+                    #$response['subscription_list'] = $subscription_list;
+
+                } else {
+
+                    if ($response['code'] == 404) {
+
+                        unset($subscription_list[$productKey]);
+                        $bool = $this->update_subscription_list_of_user($user['user']['current_member_id'],
+                            $subscription_list);
+                        $response['bool'] = $bool;
+
+                    }
+
+                    $response['status'] = 0;
+
+                }
+                return $response;
+
+            } else {
+
+                $response = array('status' => 0, 'reload' => 1);
+
+            }
+
+            return $subscription_list;
+
+        } else {
+
+            return $user;
 
         }
 
@@ -3550,23 +3550,24 @@ class booking_package_schedule
 
     public function getCalendarAccountListData($columns = '*')
     {
-
         global $wpdb;
         $table_name = $wpdb->prefix . 'booking_package_calendarAccount';
-        // HACK 2.3: MODIFICA QUERY
-        $current_user_id = get_current_user_id();
-        // Ottieni gli ID dei gruppi a cui appartiene l'utente corrente
-        $user_groups = $wpdb->get_col("
+        if (is_admin()) {
+            // HACK 2.3: MODIFICA QUERY
+            $current_user_id = get_current_user_id();
+            // Ottieni gli ID dei gruppi a cui appartiene l'utente corrente
+            $user_groups = $wpdb->get_col("
             SELECT g.group_id
             FROM wp_groups_group g
             INNER JOIN wp_groups_user_group ug ON g.group_id = ug.group_id 
             WHERE ug.user_id = $current_user_id
             AND g.name != 'Registered'
             GROUP BY g.group_id
-        ");
-        // Costruisci una stringa contenente gli ID dei gruppi separati da virgola
-        $group_ids = implode(',', $user_groups);
-        $rows = $wpdb->get_results("
+            ");
+            if (!empty($user_groups)) {
+                // Costruisci una stringa contenente gli ID dei gruppi separati da virgola
+                $group_ids = implode(',', $user_groups);
+                $rows = $wpdb->get_results("
             SELECT $columns
             FROM $table_name
             WHERE created_by IN (
@@ -3575,6 +3576,13 @@ class booking_package_schedule
                 WHERE group_id IN ($group_ids)
             );
         ", ARRAY_A);
+            } else {
+                $rows = [];
+            }
+        } else {
+            $rows = $wpdb->get_results("SELECT $columns FROM $table_name", ARRAY_A);
+        }
+
         foreach ((array)$rows as $key => $row) {
 
             if (isset($row['icalToken']) && (intval($row['icalToken']) == 0)) {
@@ -9806,14 +9814,14 @@ class booking_package_schedule
         $index = 0;
         foreach ((array)$customersList as $key => $value) {
             // INSERISCO LE INTESTAZIONI NEL FILE
-            if($index === 0) {
+            if ($index === 0) {
                 $headers_column = array_keys($value);
                 $columns = [];
                 foreach ($headers_column as $item) {
                     $item = str_replace('form_', '', $item);
                     $columns[] = __($item, $this->pluginName);
                 }
-               fputcsv($fp, $columns);
+                fputcsv($fp, $columns);
             }
             fputcsv($fp, $value);
             $index++;
@@ -10246,14 +10254,6 @@ class booking_package_schedule
          **/
         return $response;
 
-    }
-
-    protected function getCalendarStatus($administrator, $account)
-    {
-        if(!$administrator) {
-            return ($account['default_approved'] === 1) ? 'approved' : 'pending';
-        }
-        return 'approved';
     }
 
     public function sendBooking($administrator = false)
@@ -12437,49 +12437,12 @@ class booking_package_schedule
 
     }
 
-    public function getStatus($userDetail = false)
+    protected function getCalendarStatus($administrator, $account)
     {
-
-        #$this->automaticApprove = boolval(intval(get_option($this->prefix."automaticApprove", 0)));
-        $this->automaticApprove = intval(get_option($this->prefix . 'automaticApprove', 0));
-        if ($this->automaticApprove == 0) {
-
-            $this->automaticApprove = false;
-
-        } else {
-
-            $this->automaticApprove = true;
-
+        if (!$administrator) {
+            return ($account['default_approved'] === 1) ? 'approved' : 'pending';
         }
-        $status = 'pending';
-        if ($userDetail !== false) {
-
-            if (isset($userDetail['status'])) {
-
-                return $userDetail['status'];
-
-            } else {
-
-                if ($this->automaticApprove === true) {
-
-                    $status = 'approved';
-
-                }
-
-            }
-
-        } else {
-
-            if ($this->automaticApprove === true) {
-
-                $status = 'approved';
-
-            }
-
-        }
-
-        return $status;
-
+        return 'approved';
     }
 
     public function insertPrivateData(
@@ -12799,6 +12762,51 @@ class booking_package_schedule
         }
 
         return $response;
+
+    }
+
+    public function getStatus($userDetail = false)
+    {
+
+        #$this->automaticApprove = boolval(intval(get_option($this->prefix."automaticApprove", 0)));
+        $this->automaticApprove = intval(get_option($this->prefix . 'automaticApprove', 0));
+        if ($this->automaticApprove == 0) {
+
+            $this->automaticApprove = false;
+
+        } else {
+
+            $this->automaticApprove = true;
+
+        }
+        $status = 'pending';
+        if ($userDetail !== false) {
+
+            if (isset($userDetail['status'])) {
+
+                return $userDetail['status'];
+
+            } else {
+
+                if ($this->automaticApprove === true) {
+
+                    $status = 'approved';
+
+                }
+
+            }
+
+        } else {
+
+            if ($this->automaticApprove === true) {
+
+                $status = 'approved';
+
+            }
+
+        }
+
+        return $status;
 
     }
 

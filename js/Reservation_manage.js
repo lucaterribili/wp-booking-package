@@ -14,9 +14,9 @@ var schedule_data = schedule_data;
 var booking_package_dictionary = booking_package_dictionary;
 var booking_manage = null;
 
-window.addEventListener('load', function(){
+window.addEventListener('load', function () {
 
-    if(schedule_data != null && booking_package_dictionary != null){
+    if (schedule_data != null && booking_package_dictionary != null) {
 
         booking_manage = new Booking_manage(schedule_data, booking_package_dictionary, false);
         booking_manage.start();
@@ -25,18 +25,24 @@ window.addEventListener('load', function(){
 
 });
 
-window.addEventListener('error', function(event) {
+window.addEventListener('error', function (event) {
 
     var error = new scriptError(schedule_data, booking_package_dictionary, event.message, event.filename, event.lineno, event.colno, event.error);
     error.send();
 
 }, false);
 
-var changeStatusForDashboard = function(button, key, cancellationToken, accountKey, status, month, day, year){
+var changeStatusForDashboard = function (button, key, cancellationToken, accountKey, status, month, day, year) {
 
-    var visitor = {key: key, cancellationToken: cancellationToken, accountKey: accountKey, status: status, date: {month: month, day: day, year: year}};
+    var visitor = {
+        key: key,
+        cancellationToken: cancellationToken,
+        accountKey: accountKey,
+        status: status,
+        date: {month: month, day: day, year: year}
+    };
 
-    if(booking_manage != null){
+    if (booking_manage != null) {
         console.log(visitor);
         booking_manage.changeStatusForDashboard(button, visitor);
 
@@ -104,9 +110,9 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     if (schedule_data.guestForDayOfTheWeekRates != null) {
 
-            this._guestForDayOfTheWeekRates = parseInt(schedule_data.guestForDayOfTheWeekRates);
+        this._guestForDayOfTheWeekRates = parseInt(schedule_data.guestForDayOfTheWeekRates);
 
-        }
+    }
 
     if (schedule_data.clock != null) {
 
@@ -140,13 +146,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         this._rightButtonPanel = document.getElementById("rightButtonPanel");
 
         this._courseBool = false;
-        if(schedule_data.courseBool == 'true'){
+        if (schedule_data.courseBool == 'true') {
 
             this._courseBool = true;
 
         }
 
-        this._blockPanel.onclick = function(){
+        this._blockPanel.onclick = function () {
 
             object._leftButtonPanel.textContent = null;
             object._rightButtonPanel.textContent = null;
@@ -154,7 +160,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         };
 
-        document.getElementById("media_modal_close").onclick = function(){
+        document.getElementById("media_modal_close").onclick = function () {
 
             object._leftButtonPanel.textContent = null;
             object._rightButtonPanel.textContent = null;
@@ -178,7 +184,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.start = function(){
+    this.start = function () {
 
         const object = this;
         let accountKey = this.getCookie(this._schedule_data.prefix + "accountKey");
@@ -191,7 +197,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             let status = false;
             //for(var i = 0; i < this._schedule_data.calendarAccountList.length; i++){
-            for(var i in this._schedule_data.calendarAccountList){
+            for (var i in this._schedule_data.calendarAccountList) {
 
                 var calendarAccount = this._schedule_data.calendarAccountList[i];
                 if (accountKey == calendarAccount.key) {
@@ -220,7 +226,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         try {
 
             object._console.log(dashboardRequest);
-            if(dashboardRequest == null || dashboardRequest.status == null){
+            if (dashboardRequest == null || dashboardRequest.status == null) {
 
                 throw "Error dashboardRequest";
 
@@ -234,7 +240,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             }
 
-        } catch(error) {
+        } catch (error) {
 
             //console.error(error);
 
@@ -243,18 +249,18 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.getCookie = function(c_name){
+    this.getCookie = function (c_name) {
         const object = this;
         object._console.log("c_name = " + c_name);
-        if(document.cookie.length > 0){
+        if (document.cookie.length > 0) {
 
             let st = document.cookie.indexOf(c_name + "=");
             object._console.log(st);
-            if(st != -1){
+            if (st != -1) {
 
                 st = st + c_name.length + 1;
                 let ed = document.cookie.indexOf(";", st);
-                if(ed == -1){
+                if (ed == -1) {
                     ed = document.cookie.length;
                 }
 
@@ -262,7 +268,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 object._console.log("value = " + value);
                 return value;
 
-            }else {
+            } else {
 
                 return null;
 
@@ -272,31 +278,31 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.setFunction = function(name, post){
+    this.setFunction = function (name, post) {
 
         this._function = {name: name, post: post};
 
     };
 
-    this.getFunction = function(){
+    this.getFunction = function () {
 
         return this._function;
 
     };
 
-    this.getServices = function() {
+    this.getServices = function () {
 
         return this._services;
 
     };
 
-    this.setEmailEnableList = function(emailEnableList) {
+    this.setEmailEnableList = function (emailEnableList) {
 
         this._emailEnableList = emailEnableList;
 
     };
 
-    this.lookingForServices = function(service) {
+    this.lookingForServices = function (service) {
 
         var services = this._services;
         for (var key in services) {
@@ -313,31 +319,31 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.resetServices = function() {
+    this.resetServices = function () {
 
         this._services = [];
 
     };
 
-    this.setServices = function(updateServices) {
+    this.setServices = function (updateServices) {
 
         this._services = updateServices;
 
     };
 
-    this.addServices = function(service) {
+    this.addServices = function (service) {
 
         this._services.push(service);
 
     };
 
-    this.resetVisitorServices = function() {
+    this.resetVisitorServices = function () {
 
         this._visitorServices = [];
 
     };
 
-    this.setVisitorServices = function(services) {
+    this.setVisitorServices = function (services) {
 
         //this._visitorServices = [];
         if (this._visitorServices.length == 0) {
@@ -352,12 +358,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
         //this._visitorServices = JSON.parse(JSON.stringify(services));
-        object._visitorServices = services.map( list => ({...list}));
+        object._visitorServices = services.map(list => ({...list}));
         this._console.log(this._visitorServices);
 
     };
 
-    this.lookingForVisitorServices = function(target) {
+    this.lookingForVisitorServices = function (target) {
 
         var services = this._visitorServices;
         this._console.log(this._visitorServices);
@@ -375,12 +381,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.addVisitorServices = function(target) {
+    this.addVisitorServices = function (target) {
 
         var object = this;
         object._console.log(target);
         if (target.selectedOptionsList == null) {
-
 
 
         }
@@ -408,32 +413,32 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
         object._console.log(services);
-        object._visitorServices = services.map( list => ({...list}));
+        object._visitorServices = services.map(list => ({...list}));
         //services.push(target);
         return object._visitorServices;
 
     };
 
-    this.getVisitorServices = function() {
+    this.getVisitorServices = function () {
 
         this._console.log(this._visitorServices);
         return this._visitorServices;
 
     };
 
-    this.setResponseText = function(responseText){
+    this.setResponseText = function (responseText) {
 
         this._responseText = responseText;
 
     };
 
-    this.getResponseText = function(){
+    this.getResponseText = function () {
 
         return this._responseText;
 
     };
 
-    this.setUserInformation = function(userInformation) {
+    this.setUserInformation = function (userInformation) {
 
         if (userInformation == null) {
 
@@ -445,48 +450,48 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.getUserInformation = function() {
+    this.getUserInformation = function () {
 
         return this._userInformation;
 
     };
 
-    this.getGuestsList = function(){
+    this.getGuestsList = function () {
 
         return this._guestsList;
 
     };
 
-    this.setMaxApplicantCount = function(maxApplicantCount) {
+    this.setMaxApplicantCount = function (maxApplicantCount) {
 
         this._maxApplicantCount = maxApplicantCount;
 
     };
 
-    this.getMaxApplicantCount = function() {
+    this.getMaxApplicantCount = function () {
 
         return this._maxApplicantCount;
 
     };
 
-    this.getReservationData = function(month, day, year, accountKey, createSchedules, callback){
+    this.getReservationData = function (month, day, year, accountKey, createSchedules, callback) {
         let calendarPanel = document.getElementById("calendarPage");
-        if(accountKey === '0') {
+        if (accountKey === '0') {
             let noneElement = document.createElement("div");
             noneElement.innerHTML = 'Seleziona un calendario esistente';
             calendarPanel.appendChild(noneElement);
             let calendarHeader = document.querySelector('.calendarPanel');
-            if(calendarHeader) {
+            if (calendarHeader) {
                 calendarHeader.remove();
             }
             //calendar
             let calendar = document.querySelector('.calendar');
-            if(calendar) {
+            if (calendar) {
                 calendar.remove();
             }
             //footerOnCalendar
             let footerOnCalendar = document.querySelector('.footerOnCalendar');
-            if(footerOnCalendar) {
+            if (footerOnCalendar) {
                 footerOnCalendar.remove();
             }
             return;
@@ -495,10 +500,19 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         //object._startOfWeek = object._calendarAccountList[accountKey].startOfWeek;
         object._console.log(object._loadingPanel);
         object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
-        const post = {nonce: object._nonce, action: object._action, mode: object._prefix + 'getReservationData', year: year, month: month, day: 1, accountKey: accountKey, createSchedules: parseInt(createSchedules)};
+        const post = {
+            nonce: object._nonce,
+            action: object._action,
+            mode: object._prefix + 'getReservationData',
+            year: year,
+            month: month,
+            day: 1,
+            accountKey: accountKey,
+            createSchedules: parseInt(createSchedules)
+        };
         object.setFunction("getReservationData", post);
 
-        new Booking_App_XMLHttp(object._url, post, object._webApp, function(calendarData){
+        new Booking_App_XMLHttp(object._url, post, object._webApp, function (calendarData) {
 
             object._loadingPanel.setAttribute("class", "hidden_panel");
             if (object._isExtensionsValid != 1) {
@@ -569,8 +583,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
 
-
-        }, function(responseText){
+        }, function (responseText) {
 
             object.setResponseText(responseText);
 
@@ -579,8 +592,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
     };
 
 
-
-    this.selectCalendarAccount = function(calendarData, month, day, year, selectCalendarAccountPanel, calendarAccountList, accountKey){
+    this.selectCalendarAccount = function (calendarData, month, day, year, selectCalendarAccountPanel, calendarAccountList, accountKey) {
 
         const object = this;
         object._console.log("accountKey = " + accountKey);
@@ -629,7 +641,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             */
         }
 
-        select.onchange = function(){
+        select.onchange = function () {
             object._console.log("onchange = " + this.selectedIndex);
             let key = this.selectedIndex;
             let accountKey = this.options[key].value;
@@ -640,7 +652,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.createCalendar = function(calendarData, month, day, year, accountKey) {
+    this.createCalendar = function (calendarData, month, day, year, accountKey) {
         const object = this;
         this.date = {month: month, day: day, year: year};
         let calendarPanel = document.getElementById("calendarPage");
@@ -665,7 +677,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
          *
          * QUI CONTROLLO SE ESISTE UN CALENDARIO
          */
-        if(accountKey === 0) {
+        if (accountKey === 0) {
             let noneElement = document.createElement("div");
             noneElement.innerHTML = 'Non è presente alcun calendario';
             calendarPanel.appendChild(noneElement);
@@ -712,7 +724,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         calendarPanel.appendChild(topPanel);
 
         let downloadBool = false;
-        object._calendar.create(calendarPanel, calendarData, month, day, year, '', function(callback) {
+        object._calendar.create(calendarPanel, calendarData, month, day, year, '', function (callback) {
 
             object._console.log(callback);
             var dayPanel = callback.eventPanel;
@@ -785,7 +797,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 }
 
-                dayPanel.onclick = function(){
+                dayPanel.onclick = function () {
 
                     var dayKey = parseInt(this.getAttribute("data-day"));
                     var monthKey = parseInt(this.getAttribute("data-month"));
@@ -795,7 +807,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     document.getElementById("reservation_users").setAttribute("class", "media_menu_item active");
                     document.getElementById("add_reservation").setAttribute("class", "media_menu_item");
                     //setCalendarDate({month: month, day: dayKey, year: year});
-                    object.viewUserList(monthKey, dayKey, yearKey, calendarData, accountKey, function(callback){
+                    object.viewUserList(monthKey, dayKey, yearKey, calendarData, accountKey, function (callback) {
 
                         object._console.log("editPublicSchedule callback");
 
@@ -813,7 +825,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         });
 
-        returnLabel.onclick = function(){
+        returnLabel.onclick = function () {
 
             if (month == 1) {
 
@@ -829,7 +841,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         };
 
-        nextLabel.onclick = function(){
+        nextLabel.onclick = function () {
 
             if (month == 12) {
 
@@ -865,21 +877,21 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         if (object._dashboardRequest.status == 1) {
 
-            object.viewUserList(object._dashboardRequest.month, object._dashboardRequest.day, object._dashboardRequest.year, calendarData, accountKey, function(callback){
+            object.viewUserList(object._dashboardRequest.month, object._dashboardRequest.day, object._dashboardRequest.year, calendarData, accountKey, function (callback) {
 
                 object._console.log("editPublicSchedule callback");
 
             });
 
-    	}
+        }
 
     };
 
-    this.viewUserList = function(month, day, year, calendarData, accountKey, callback){
+    this.viewUserList = function (month, day, year, calendarData, accountKey, callback) {
 
         var object = this;
         var weekName = [object._i18n.get('Sun'), object._i18n.get('Mon'), object._i18n.get('Tue'), object._i18n.get('Wed'), object._i18n.get('Thu'), object._i18n.get('Fri'), object._i18n.get('Sat')];
-    	object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
+        object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
         object._calendar.setClock(object._clock);
         var calendarKey = object._calendar.getDateKey(month, day, year);
         object._console.log(month + "/" + day + "/" + year);
@@ -901,7 +913,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         document.getElementById("media_router").setAttribute("class", "media_left_zero");
         document.getElementById("frame_toolbar").setAttribute("class", "media_frame_toolbar media_left_zero");
 
-        var reservation_users_callback = function(response) {
+        var reservation_users_callback = function (response) {
 
             object._console.log("reservation_users_callback");
             object._console.log("buttonAction = " + object._buttonAction);
@@ -939,7 +951,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         };
 
-        var add_reservation_callback = function(response){
+        var add_reservation_callback = function (response) {
 
             object._console.log(response);
             object._hotel.resetCheckDate();
@@ -949,7 +961,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         };
 
-        var changeButtonAction = function(buttonAction, mode, month, day, year, calendarData, add_reservationPanel, add_reservation_callback, callback){
+        var changeButtonAction = function (buttonAction, mode, month, day, year, calendarData, add_reservationPanel, add_reservation_callback, callback) {
 
             month = parseInt(month);
             day = parseInt(day);
@@ -972,7 +984,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 if (mode == 0) {
 
                     day--;
-                    if(day == 0){
+                    if (day == 0) {
 
                         calendarChange = 1;
                         month--;
@@ -1009,20 +1021,30 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 } else {
 
                     object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
-                    var post = {nonce: object._nonce, action: object._action, mode: object._prefix + 'getReservationData', year: year, month: month, day: 1, accountKey: accountKey};
+                    var post = {
+                        nonce: object._nonce,
+                        action: object._action,
+                        mode: object._prefix + 'getReservationData',
+                        year: year,
+                        month: month,
+                        day: 1,
+                        accountKey: accountKey
+                    };
                     object.setFunction("viewUserList", post);
-                    new Booking_App_XMLHttp(object._url, post, object._webApp, function(calendarData){
+                    new Booking_App_XMLHttp(object._url, post, object._webApp, function (calendarData) {
 
                         object._loadingPanel.setAttribute("class", "hidden_panel");
                         object._servicesControl.setNationalHoliday(calendarData.nationalHoliday.calendar);
                         object._console.log(calendarData);
                         object.createCalendar(calendarData, calendarData.date.month, calendarData.date.day, calendarData.date.year, accountKey);
                         var day = 1;
-                        if (mode === 0) {day = calendarData.date.lastDay;}
+                        if (mode === 0) {
+                            day = calendarData.date.lastDay;
+                        }
                         object.viewUserList(month, day, year, calendarData, accountKey, callback);
                         object._loadingPanel.setAttribute("class", "hidden_panel");
 
-                    }, function(responseText){
+                    }, function (responseText) {
 
                         object.setResponseText(responseText);
 
@@ -1128,13 +1150,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
 
-
         var menuTabList = {reservation_users: 'Reservation users', add_reservation: 'Add reservation'};
         for (var key in menuTabList) {
 
             var tabPanel = document.getElementById(key);
             tabPanel.setAttribute("data-key", key);
-            tabPanel.onclick = function(){
+            tabPanel.onclick = function () {
 
                 var clickKey = this.getAttribute("data-key");
                 for (var key in menuTabList) {
@@ -1248,13 +1269,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             nextChangeButton.setAttribute("style", "margin-left: 10px;");
             object._leftButtonPanel.appendChild(nextChangeButton);
 
-            beforButton.onclick = function() {
+            beforButton.onclick = function () {
 
                 changeButtonAction(object._buttonAction, 0, month, day, year, calendarData, add_reservationPanel, add_reservation_callback, callback);
 
             };
 
-            nextButton.onclick = function() {
+            nextButton.onclick = function () {
 
                 changeButtonAction(object._buttonAction, 1, month, day, year, calendarData, add_reservationPanel, add_reservation_callback, callback);
 
@@ -1275,11 +1296,9 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
 
-
-
     };
 
-    this.changeStatusForDashboard = function(button, visitor){
+    this.changeStatusForDashboard = function (button, visitor) {
 
         var object = this;
         object._console.log("changeStatusForDashboard");
@@ -1290,7 +1309,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        object.changeStatus(visitor.accountKey, visitor, true, false, function(response){
+        object.changeStatus(visitor.accountKey, visitor, true, false, function (response) {
 
             object._console.log(response);
             var status = null;
@@ -1304,7 +1323,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 button.setAttribute("class", "status approved");
                 status = "approved";
 
-            } else if(response.bookingStatus.toLowerCase() == 'canceled') {
+            } else if (response.bookingStatus.toLowerCase() == 'canceled') {
 
                 button.setAttribute("class", "status canceled");
                 status = "canceled";
@@ -1314,13 +1333,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             visitor.status = status;
             button.textContent = object._i18n.get(status.toUpperCase());
             object._console.log(visitor);
-            button.setAttribute("onClick", "changeStatusForDashboard(this, " + visitor.key + ", '"  + visitor.cancellationToken + "', " + visitor.accountKey + ", '" + response.bookingStatus.toLowerCase() + "', " + visitor.date.month + ", " + visitor.date.day + ", " + visitor.date.year + ")");
+            button.setAttribute("onClick", "changeStatusForDashboard(this, " + visitor.key + ", '" + visitor.cancellationToken + "', " + visitor.accountKey + ", '" + response.bookingStatus.toLowerCase() + "', " + visitor.date.month + ", " + visitor.date.day + ", " + visitor.date.year + ")");
 
         });
 
     };
 
-    this.changeStatus = function(accountKey, reservation, statusClick, reload, callback){
+    this.changeStatus = function (accountKey, reservation, statusClick, reload, callback) {
 
         var object = this;
         var enable = false;
@@ -1355,7 +1374,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         closeButton.setAttribute("data-close", 1);
 
         var selectButtonList = [approvedButton, pendingButton, canceledButton, closeButton];
-        confirm.selectPanelShow(object._i18n.get("Change status"), selectButtonList, status, enable, function(newStatus){
+        confirm.selectPanelShow(object._i18n.get("Change status"), selectButtonList, status, enable, function (newStatus) {
 
             object._console.log(newStatus);
             if (newStatus != false) {
@@ -1380,7 +1399,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 object._console.log("enable = " + enable);
 
-                confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("Do you send e-mail notifications to customers or administrators?"), enable, function(sendEmail){
+                confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("Do you send e-mail notifications to customers or administrators?"), enable, function (sendEmail) {
 
                     if (reload == true) {
                         reload = 1;
@@ -1388,16 +1407,29 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         reload = 0;
                     }
 
-                    var post = {nonce: object._nonce, action: object._action, mode: 'updateStatus', key: reservation.key, token: reservation.cancellationToken, oldStatus: status, newStatus: newStatus, month: reservation.date.month, year: reservation.date.year, sendEmail: Number(sendEmail), accountKey: reservation.accountKey, reload: reload};
+                    var post = {
+                        nonce: object._nonce,
+                        action: object._action,
+                        mode: 'updateStatus',
+                        key: reservation.key,
+                        token: reservation.cancellationToken,
+                        oldStatus: status,
+                        newStatus: newStatus,
+                        month: reservation.date.month,
+                        year: reservation.date.year,
+                        sendEmail: Number(sendEmail),
+                        accountKey: reservation.accountKey,
+                        reload: reload
+                    };
                     object._console.log(post);
                     object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
                     object.setFunction("changeStatus", post);
-                    new Booking_App_XMLHttp(object._url, post, object._webApp, function(response){
+                    new Booking_App_XMLHttp(object._url, post, object._webApp, function (response) {
 
                         object._loadingPanel.setAttribute("class", "hidden_panel");
                         response.bookingStatus = newStatus;
                         object._console.log(response);
-                        if(reload == true){
+                        if (reload == true) {
 
                             object.createCalendar(response, response.date.month, response.date.day, response.date.year, accountKey);
 
@@ -1406,7 +1438,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         callback(response);
 
 
-                    }, function(responseText){
+                    }, function (responseText) {
 
                         object.setResponseText(responseText);
 
@@ -1422,7 +1454,6 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
 
-
         });
 
         return null;
@@ -1430,39 +1461,38 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.reservation_users = function(reservation_usersPanel, month, day, year, calendarData, accountKey, callback){
+    this.reservation_users = function (reservation_usersPanel, month, day, year, calendarData, accountKey, callback) {
 
         var object = this;
         object._console.log(calendarData.account.type);
         object._console.log("buttonAction = " + object._buttonAction);
-        if(object._buttonAction != "updateSchedule" && object._buttonAction != "showUserInfo"){
+        if (object._buttonAction != "updateSchedule" && object._buttonAction != "showUserInfo") {
 
             object._rightButtonPanel.textContent = null;
             object._buttonAction = "reservation_users";
 
-        }else{
-
+        } else {
 
 
         }
 
-        if(document.getElementById("userInfoPanel") != null){
+        if (document.getElementById("userInfoPanel") != null) {
 
             //document.getElementById("userInfoPanel").setAttribute("class", "hidden_panel");
 
         }
 
         var weekName = [object._i18n.get('Sun'), object._i18n.get('Mon'), object._i18n.get('Tue'), object._i18n.get('Wed'), object._i18n.get('Thu'), object._i18n.get('Fri'), object._i18n.get('Sat')];
-    	object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
+        object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
         object._calendar.setClock(object._clock);
         var calendarKey = object._calendar.getDateKey(month, day, year);
 
         var reservationList = null;
-        if(calendarData.account.type == 'day'){
+        if (calendarData.account.type == 'day') {
 
             reservationList = calendarData.reservation[parseInt(calendarKey)];
 
-        }else{
+        } else {
 
             reservationList = calendarData.reservationForHotel;
 
@@ -1537,7 +1567,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     td.appendChild(status);
                     tr.appendChild(td);
 
-                    (function(formData, praivateData, callback) {
+                    (function (formData, praivateData, callback) {
 
                         var sort = [];
                         for (var i = 0; i < formData.length; i++) {
@@ -1577,7 +1607,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                         callback(sort);
 
-                    })(object._formData, userInfo.praivateData, function(praivateData) {
+                    })(object._formData, userInfo.praivateData, function (praivateData) {
 
                         object._console.log(praivateData);
                         for (var i = 0; i < 5; i++) {
@@ -1603,7 +1633,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     var statusClick = false;
                     if (userInfo.status != "canceled") {
 
-                        status.onclick = function(){
+                        status.onclick = function () {
 
                             var key = parseInt(this.getAttribute("data-key"));
                             object._console.log(key);
@@ -1613,14 +1643,14 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                             object._console.log(object._emailEnableList);
                             object._console.log("enable = " + Boolean(parseInt(object._emailEnableList.mail_new_admin.enable)));
 
-                            object.changeStatus(accountKey, reservationList[key], statusClick, true, function(response){
+                            object.changeStatus(accountKey, reservationList[key], statusClick, true, function (response) {
 
                                 object._console.log(response);
-                                if(response.statusClick != null){
+                                if (response.statusClick != null) {
 
                                     statusClick = response.statusClick;
 
-                                }else{
+                                } else {
 
                                     callback(response);
 
@@ -1634,23 +1664,23 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     }
 
 
-                    tr.onclick = function(){
+                    tr.onclick = function () {
 
-                        if(statusClick == false){
+                        if (statusClick == false) {
 
                             var key = parseInt(this.getAttribute("data-key"));
                             object._console.log(key);
                             object._console.log(reservationList[key]);
                             object.setSelectedKey(key);
                             object.resetVisitorServices();
-                            object.showUserInfo(key, calendarData, reservationList[key], true, accountKey, function(response){
+                            object.showUserInfo(key, calendarData, reservationList[key], true, accountKey, function (response) {
 
                                 object._console.log(response);
-                                if(response.status == "returnButton"){
+                                if (response.status == "returnButton") {
 
                                     object.reservation_users(reservation_usersPanel, response.month, response.day, response.year, calendarData, accountKey, callback);
 
-                                }else{
+                                } else {
 
                                     callback(response);
 
@@ -1672,7 +1702,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var startKey = calendarData.calendar[calendarKey].number;
             var endKey = startKey + 7;
 
-            if(calendarArray[endKey] == null){
+            if (calendarArray[endKey] == null) {
 
                 startKey = calendarArray.length - 7;
                 endKey = calendarArray.length;
@@ -1698,7 +1728,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var left = 0;
             var visitors = {};
             object._calendar.setShortWeekNameBool(true);
-            for(var i = startKey; i < endKey; i++){
+            for (var i = startKey; i < endKey; i++) {
 
                 var key = calendarArray[i];
                 end = key;
@@ -1707,38 +1737,38 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 object._console.log(calendarInfo);
 
 
-                (function(reservationList, date, start, nights, visitors){
+                (function (reservationList, date, start, nights, visitors) {
 
                     object._console.log(reservationList);
                     object._console.log("date = " + date);
                     object._console.log("start = " + start);
 
-                    for(var key in reservationList){
+                    for (var key in reservationList) {
 
                         var reservation = reservationList[key];
                         var id = reservation.key;
                         //object._console.log(reservation);
-                        if(visitors[id] != null){
+                        if (visitors[id] != null) {
 
                             var endDay = start;
 
                             visitors[id].day++;
                             visitors[id].displayNights--;
                             visitors[id].endDay = endDay;
-                            if(visitors[id].checkOut == date){
+                            if (visitors[id].checkOut == date) {
 
                                 visitors[id].checkOutBool = 1;
 
                             }
                             object._console.log(visitors[id]);
 
-                        }else{
+                        } else {
 
                             var name = [];
-                            for(var i = 0; i < reservation.praivateData.length; i++){
+                            for (var i = 0; i < reservation.praivateData.length; i++) {
 
                                 var input = reservation.praivateData[i];
-                                if(input.isName == "true"){
+                                if (input.isName == "true") {
 
                                     name.push(input.value);
 
@@ -1748,23 +1778,34 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                             name = name.join(" ");
                             var startDay = start;
-                            if(date == parseInt(reservation.date.checkIn)){
+                            if (date == parseInt(reservation.date.checkIn)) {
 
                                 startDay = start + 0.5;
 
                             }
 
                             var endDay = start;
-                            if(date == parseInt(reservation.date.checkIn)){
+                            if (date == parseInt(reservation.date.checkIn)) {
 
                                 endDay = start - 0.5;
 
                             }
 
-                            visitors[id] = {key: reservation.key, day: 0, status: reservation.status, nights: reservation.accommodationDetails.nights, displayNights: reservation.accommodationDetails.nights - start, name: name, startDay: startDay, endDay: endDay, checkIn: parseInt(reservation.date.checkIn), checkOut: parseInt(reservation.date.checkOut), checkOutBool: 0};
+                            visitors[id] = {
+                                key: reservation.key,
+                                day: 0,
+                                status: reservation.status,
+                                nights: reservation.accommodationDetails.nights,
+                                displayNights: reservation.accommodationDetails.nights - start,
+                                name: name,
+                                startDay: startDay,
+                                endDay: endDay,
+                                checkIn: parseInt(reservation.date.checkIn),
+                                checkOut: parseInt(reservation.date.checkOut),
+                                checkOutBool: 0
+                            };
 
                         }
-
 
 
                     }
@@ -1805,12 +1846,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             reservation_usersPanel.appendChild(visitorListPanel);
 
             var i = 0;
-            for(var key in visitors){
+            for (var key in visitors) {
 
                 object._console.log(visitors[key]);
                 var width = 14.2 * visitors[key].day;
                 var left = 14.2 * visitors[key].startDay;
-                if(visitors[key].checkOut > end){
+                if (visitors[key].checkOut > end) {
 
                     width = 14.2 * (visitors[key].day + 0.5);
 
@@ -1818,13 +1859,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 }
 
                 object._console.log("key = " + key + "width = " + (width + left));
-                if(visitors[key].checkOutBool == 0 && visitors[key].day == 6){
+                if (visitors[key].checkOutBool == 0 && visitors[key].day == 6) {
 
                     width = 99.4 - left;
 
-                }else{
+                } else {
 
-                    if(visitors[key].startDay == 0){
+                    if (visitors[key].startDay == 0) {
 
                         width += 7.1;
 
@@ -1854,7 +1895,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 }
 
-                visitorPanel.onclick = function(){
+                visitorPanel.onclick = function () {
 
                     var key = this.getAttribute("data-key");
                     object._console.log("key = " + key);
@@ -1865,14 +1906,14 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     object.setSelectedKey(index);
                     object._console.log(key);
                     object._console.log(reservationList[checkIn][key]);
-                    object.showUserInfo(key, calendarData, reservationList[checkIn][key], true, accountKey, function(response){
+                    object.showUserInfo(key, calendarData, reservationList[checkIn][key], true, accountKey, function (response) {
 
                         object._console.log(response);
-                        if(response.status == "returnButton"){
+                        if (response.status == "returnButton") {
 
                             object.reservation_users(reservation_usersPanel, response.month, response.day, response.year, calendarData, accountKey, callback);
 
-                        }else{
+                        } else {
 
                             callback(response);
 
@@ -1891,7 +1932,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         //object._console.log(th.clientWidth);
 
-        if(object._dashboardRequest.status == 1){
+        if (object._dashboardRequest.status == 1) {
 
             object._console.log(object._dashboardRequest);
             var key = 0;
@@ -1922,7 +1963,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
             object.setSelectedKey(key);
-            object.showUserInfo(key, calendarData, visitorData, true, accountKey, function(response){
+            object.showUserInfo(key, calendarData, visitorData, true, accountKey, function (response) {
 
                 object._console.log(response);
                 if (response.status == "returnButton") {
@@ -1943,7 +1984,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.showUserInfo = function(key, calendarData, reservationData, animation, accountKey, callback) {
+    this.showUserInfo = function (key, calendarData, reservationData, animation, accountKey, callback) {
 
         var object = this;
         var options = "[]";
@@ -2010,7 +2051,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         //document.getElementById("beforButton").classList.add("hidden_panel");
 
         var weekName = [object._i18n.get('Sun'), object._i18n.get('Mon'), object._i18n.get('Tue'), object._i18n.get('Wed'), object._i18n.get('Thu'), object._i18n.get('Fri'), object._i18n.get('Sat')];
-    	object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
+        object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
         object._calendar.setClock(object._clock);
         infoPanel.textContent = null;
 
@@ -2023,13 +2064,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         object._console.log(date);
         /**
-        var formPanel = document.createElement("div");
-        formPanel.id = "inputFormPanel";
-        infoPanel.appendChild(formPanel);
+         var formPanel = document.createElement("div");
+         formPanel.id = "inputFormPanel";
+         infoPanel.appendChild(formPanel);
 
-        var rowPanel = object.createRowPanel("ID", reservationData.key, null, null, null);
-        formPanel.appendChild(rowPanel);
-        **/
+         var rowPanel = object.createRowPanel("ID", reservationData.key, null, null, null);
+         formPanel.appendChild(rowPanel);
+         **/
         var bookingTimeChange = document.createElement("div");
         bookingTimeChange.setAttribute("data-status", "1");
         bookingTimeChange.setAttribute("class", "change hidden_panel");
@@ -2040,7 +2081,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         courseChange.setAttribute("class", "change hidden_panel");
         courseChange.textContent = object._i18n.get("Change");
 
-        var response = object.showUserDetails(key, calendarData, reservationData, accountKey, true, infoPanel, bookingTimeChange, courseChange, function(response){
+        var response = object.showUserDetails(key, calendarData, reservationData, accountKey, true, infoPanel, bookingTimeChange, courseChange, function (response) {
 
             object._console.log(response);
             callback(response);
@@ -2059,7 +2100,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         var formData = response.formData;
         var totalNumberOfGuestsPanel = response.totalNumberOfGuestsPanel;
 
-        var cancelToEdit = function(){
+        var cancelToEdit = function () {
 
             bookingTimeChange.classList.add("hidden_panel");
             bookingTimeChange.setAttribute("data-status", "1");
@@ -2070,7 +2111,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
 
             var date = object._calendar.formatBookingDate(reservationData.date.month, reservationData.date.day, reservationData.date.year, reservationData.date.hour, reservationData.date.min, reservationData.scheduleTitle, reservationData.date.week, 'text');
-            if(document.getElementById("booking_date") != null){
+            if (document.getElementById("booking_date") != null) {
 
                 object._console.log("date = " + date);
                 var dateLabel = document.getElementById("booking_date");
@@ -2080,7 +2121,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             }
 
-            if(reservationData.courseKey != null && reservationData.courseTime != null && document.getElementById("booking_course") != null){
+            if (reservationData.courseKey != null && reservationData.courseTime != null && document.getElementById("booking_course") != null) {
 
                 object._console.log(reservationData);
                 var courseLabel = document.getElementById("booking_course");
@@ -2090,7 +2131,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             }
 
-            if(document.getElementById("booking_cost") != null){
+            if (document.getElementById("booking_cost") != null) {
 
                 var cost = object._format.formatCost(reservationData.courseCost, reservationData.currency);
                 document.getElementById("booking_cost").textContent = cost;
@@ -2130,23 +2171,23 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 }
                 /** Rooms **/
                 /**
-                var guestsList = object._hotel.getGuestsList();
-                for(var key in guestsList){
+                 var guestsList = object._hotel.getGuestsList();
+                 for(var key in guestsList){
 
-                    object._console.log(guestsList[key]);
-                    var guestsParentPanel = document.getElementById("guests_" + key).parentElement;
-                    var guestsPanel = document.getElementById("guests_" + key);
-                    var guestsSelectPanel = document.getElementById("select_guests_" + key);
-                    guestsPanel.classList.remove("hidden_panel");
-                    object._console.log(guestsSelectPanel);
-                    if(guestsSelectPanel != null){
+                 object._console.log(guestsList[key]);
+                 var guestsParentPanel = document.getElementById("guests_" + key).parentElement;
+                 var guestsPanel = document.getElementById("guests_" + key);
+                 var guestsSelectPanel = document.getElementById("select_guests_" + key);
+                 guestsPanel.classList.remove("hidden_panel");
+                 object._console.log(guestsSelectPanel);
+                 if(guestsSelectPanel != null){
 
-                        guestsParentPanel.removeChild(guestsSelectPanel);
+                 guestsParentPanel.removeChild(guestsSelectPanel);
 
-                    }
+                 }
 
-                }
-                **/
+                 }
+                 **/
 
                 var totalNumberOfGuests = parseInt(reservationData.accommodationDetails.adult) + parseInt(reservationData.accommodationDetails.children);
                 if (totalNumberOfGuestsPanel != null) {
@@ -2176,7 +2217,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         if (blockPanel != null) {
 
-            blockPanel.onclick = function(event){
+            blockPanel.onclick = function (event) {
 
                 object._console.log("blockPanel click");
                 object._buttonAction = "reservation_users";
@@ -2197,7 +2238,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
         var object = this;
-        editButton.onclick = function(){
+        editButton.onclick = function () {
 
             options = reservationData.options;
             object.setVisitorServices(options);
@@ -2211,17 +2252,17 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             /**
              * var extensionsFunction = new ExtensionsFunction();
-            extensionsFunction.edtiBookingUser(object, editButton, deleteButton, rightButtonPanel, formPanel, changePanel, reservationDate, reservationData, formPanelList, formData, function(response){
+             extensionsFunction.edtiBookingUser(object, editButton, deleteButton, rightButtonPanel, formPanel, changePanel, reservationDate, reservationData, formPanelList, formData, function(response){
 
-                rightButtonPanel.textContent = null;
-                response.action = 'refresh';
-                buttonAction = "reservation_users";
-                createCalendar(response, response.date.month, response.date.day, response.date.year);
-                callback(response);
+             rightButtonPanel.textContent = null;
+             response.action = 'refresh';
+             buttonAction = "reservation_users";
+             createCalendar(response, response.date.month, response.date.day, response.date.year);
+             callback(response);
 
-            });
-            return null;
-            **/
+             });
+             return null;
+             **/
 
             editButton.setAttribute("class", "hidden_panel");
             deleteButton.setAttribute("class", "hidden_panel");
@@ -2245,15 +2286,15 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var input = new Booking_Package_Input(object._debug);
             input.setAdmin(true);
 
-            if(calendarData.account.type == "hotel"){
+            if (calendarData.account.type == "hotel") {
 
                 /**
-                var value = input.createInput(i, form, inputData, null);
-                var rowPanel = createRowPanel(form.name, value, null, form.required, null);
-                **/
+                 var value = input.createInput(i, form, inputData, null);
+                 var rowPanel = createRowPanel(form.name, value, null, form.required, null);
+                 **/
                 var visitorsDetails = object._hotel.verifySchedule(false);
                 object._console.log(visitorsDetails);
-                if(visitorsDetails.status == true){
+                if (visitorsDetails.status == true) {
 
                     /** Rooms **/
                     var guestsList = object._hotel.getGuestsList();
@@ -2264,11 +2305,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         var roomNumber = parseInt(roomKey) + 1;
                         object._console.log(room);
 
-                        for(var key in guestsList){
+                        for (var key in guestsList) {
 
                             object._console.log(key);
                             var guests = guestsList[key];
-                            guestsList[key].json = (function(guests, valueGuest){
+                            guestsList[key].json = (function (guests, valueGuest) {
 
                                 if (valueGuest == null) {
 
@@ -2291,7 +2332,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                             })(guestsList[key].json, room.guests[key]);
 
-                            guestsList[key].value = (function(valueGuest){
+                            guestsList[key].value = (function (valueGuest) {
 
                                 if (valueGuest == null) {
 
@@ -2307,23 +2348,23 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                             })(room.guests[key]);
 
                             object._console.log(guestsList[key]);
-                            var value = input.createInput(key, guestsList[key], inputData, function(event){
+                            var value = input.createInput(key, guestsList[key], inputData, function (event) {
 
                                 var key = this.parentElement.getAttribute("data-guset");
                                 var roomKey = this.parentElement.getAttribute('data-room');
                                 var index = parseInt(this.selectedIndex);
                                 var response = object._hotel.updateSelectedGuests(key, index, roomKey, true);
                                 /**
-                                var guestsList = object._hotel.getRoom(roomKey);
-                                var list = JSON.parse(guestsList[key].json);
-                                var selectedGuest = list[index];
-                                guestsList[key].index = index;
-                                guestsList[key].person = parseInt(selectedGuest.number);
-                                object._console.log('roomKey = ' + roomKey);
-                                object._console.log('index = ' + index);
-                                object._console.log(selectedGuest);
-                                **/
-                                //var response = object._hotel.setGuests(key, index, list[index].number, parseInt(roomKey));
+                                 var guestsList = object._hotel.getRoom(roomKey);
+                                 var list = JSON.parse(guestsList[key].json);
+                                 var selectedGuest = list[index];
+                                 guestsList[key].index = index;
+                                 guestsList[key].person = parseInt(selectedGuest.number);
+                                 object._console.log('roomKey = ' + roomKey);
+                                 object._console.log('index = ' + index);
+                                 object._console.log(selectedGuest);
+                                 **/
+                                    //var response = object._hotel.setGuests(key, index, list[index].number, parseInt(roomKey));
                                 var feeList = object._hotel.getFeeList();
                                 var verifyGuests = object._hotel.verifyGuestsInRooms(response.rooms);
                                 object._console.log(verifyGuests);
@@ -2334,18 +2375,18 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                                 }
                                 document.getElementById("totalGuests").textContent = person;
-                                if(verifyGuests.booking == false || response.nights == 0 || verifyGuests.requiredGuests == false){
+                                if (verifyGuests.booking == false || response.nights == 0 || verifyGuests.requiredGuests == false) {
 
                                     saveButton.disabled = true;
 
-                                }else{
+                                } else {
 
                                     saveButton.disabled = false;
 
                                 }
 
                                 totalNumberOfGuestsPanel.classList.remove("errorPanel");
-                                if(verifyGuests.booking == false){
+                                if (verifyGuests.booking == false) {
 
                                     totalNumberOfGuestsPanel.classList.add("errorPanel");
 
@@ -2374,56 +2415,56 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     }
                     /** Rooms **/
                     /**
-                    var guestsList = object._hotel.getGuestsList();
-                    for(var key in guestsList){
+                     var guestsList = object._hotel.getGuestsList();
+                     for(var key in guestsList){
 
-                        object._console.log(guestsList[key]);
-                        var value = input.createInput(key, guestsList[key], inputData, function(event){
+                     object._console.log(guestsList[key]);
+                     var value = input.createInput(key, guestsList[key], inputData, function(event){
 
-                            var key = this.parentElement.getAttribute("data-guset");
-                            var index = parseInt(this.selectedIndex);
-                            var list = JSON.parse(guestsList[key].json);
-                            guestsList[key].index = index;
-                            var response = object._hotel.setGuests(key, index, list[index].number, 1);
-                            var feeList = object._hotel.getFeeList();
-                            document.getElementById("totalGuests").textContent = response.person;
-                            if(response.booking == false || response.nights == 0 || response.requiredGuests == false){
+                     var key = this.parentElement.getAttribute("data-guset");
+                     var index = parseInt(this.selectedIndex);
+                     var list = JSON.parse(guestsList[key].json);
+                     guestsList[key].index = index;
+                     var response = object._hotel.setGuests(key, index, list[index].number, 1);
+                     var feeList = object._hotel.getFeeList();
+                     document.getElementById("totalGuests").textContent = response.person;
+                     if(response.booking == false || response.nights == 0 || response.requiredGuests == false){
 
-                                saveButton.disabled = true;
+                     saveButton.disabled = true;
 
-                            }else{
+                     }else{
 
-                                saveButton.disabled = false;
+                     saveButton.disabled = false;
 
-                            }
+                     }
 
-                            totalNumberOfGuestsPanel.classList.remove("errorPanel");
-                            if(response.booking == false){
+                     totalNumberOfGuestsPanel.classList.remove("errorPanel");
+                     if(response.booking == false){
 
-                                totalNumberOfGuestsPanel.classList.add("errorPanel");
+                     totalNumberOfGuestsPanel.classList.add("errorPanel");
 
-                            }
+                     }
 
-                            object._console.log(totalNumberOfGuestsPanel);
+                     object._console.log(totalNumberOfGuestsPanel);
 
-                            object._console.log(response);
-                            object._console.log(this.selectedIndex);
-                            object._console.log(guestsList[key]);
-                            object._console.log(list[index]);
+                     object._console.log(response);
+                     object._console.log(this.selectedIndex);
+                     object._console.log(guestsList[key]);
+                     object._console.log(list[index]);
 
-                        });
-                        value.id = "select_guests_" + key;
-                        value.setAttribute("data-guset", key);
-                        object._console.log(value);
-                        var guestsParentPanel = document.getElementById("guests_" + key).parentElement;
-                        var guestsPanel = document.getElementById("guests_" + key);
-                        guestsPanel.classList.add("hidden_panel");
-                        guestsParentPanel.appendChild(value);
-                        object._console.log(guestsPanel);
-                        guestsPanel = value;
+                     });
+                     value.id = "select_guests_" + key;
+                     value.setAttribute("data-guset", key);
+                     object._console.log(value);
+                     var guestsParentPanel = document.getElementById("guests_" + key).parentElement;
+                     var guestsPanel = document.getElementById("guests_" + key);
+                     guestsPanel.classList.add("hidden_panel");
+                     guestsParentPanel.appendChild(value);
+                     object._console.log(guestsPanel);
+                     guestsPanel = value;
 
-                    }
-                    **/
+                     }
+                     **/
 
                 }
 
@@ -2431,7 +2472,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
 
-            for(var i = 0; i < formPanelList.length; i++){
+            for (var i = 0; i < formPanelList.length; i++) {
 
                 //var key = parseInt(formPanelList[i].getAttribute("data-key"));
                 var form = formData[i];
@@ -2439,7 +2480,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 formPanel.removeChild(formPanelList[i]);
                 var value = input.createInput(i, form, inputData, null);
                 var rowPanel = object.createRowPanel(form.name, value, null, form.required, null);
-                if(form.active != 'true'){
+                if (form.active != 'true') {
 
                     rowPanel.classList.add("hidden_panel");
 
@@ -2451,36 +2492,36 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
             object._console.log(formPanelList);
-            saveButton.onclick = function(){
+            saveButton.onclick = function () {
 
                 var date = {month: (reservationDate.month + 1), day: reservationDate.day, year: reservationDate.year};
                 var schedule = {key: reservationData.scheduleKey, unixTime: reservationData.scheduleUnixTime};
                 var course = {key: reservationData.courseKey};
-                if(reservationData.courseKey == null){
+                if (reservationData.courseKey == null) {
                     course = null
                 }
 
                 var valueList = {};
                 var post = object.verifyForm("updateBooking", object._nonce, object._action, date, schedule, course, formData, inputPanelList, inputData, valueList, []);
                 var booking_date = null;
-                if(calendarData.account.type == "day"){
+                if (calendarData.account.type == "day") {
 
                     booking_date = document.getElementById("booking_date").getAttribute("data-key");
 
-                }else{
+                } else {
 
                     booking_date = document.getElementById("checkIn").getAttribute("data-id");
 
                 }
                 object._console.log(booking_date);
-                if(booking_date != reservationData.scheduleKey){
+                if (booking_date != reservationData.scheduleKey) {
 
                     post['update_booking_date'] = booking_date;
 
                 }
 
 
-                if(calendarData.account.type == "hotel"){
+                if (calendarData.account.type == "hotel") {
 
                     post.json = JSON.stringify(object._hotel.verifySchedule(false));
 
@@ -2498,7 +2539,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 post.month = parseInt(month);
                 post.day = parseInt(day);
                 post.year = year;
-                if(options == null) {
+                if (options == null) {
 
                     options = "[]";
 
@@ -2541,7 +2582,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     post.accountKey = reservationData.accountKey;
                     post.updateKey = reservationData.key;
                     object._console.log(post);
-                    new Booking_App_XMLHttp(object._url, post, object._webApp, function(response){
+                    new Booking_App_XMLHttp(object._url, post, object._webApp, function (response) {
 
                         object._console.log(response);
                         if (response.status == "success") {
@@ -2580,7 +2621,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         }
                         object._loadingPanel.setAttribute("class", "hidden_panel");
 
-                    }, function(responseText){
+                    }, function (responseText) {
 
                         object.setResponseText(responseText);
 
@@ -2590,12 +2631,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             }
 
-            returnButton.onclick = function(){
+            returnButton.onclick = function () {
 
                 var edit_title = document.getElementById("edit_title");
                 edit_title.textContent = object._calendar.formatBookingDate(reservationData.date.month, reservationData.date.day, reservationData.date.year, null, null, null, null, 'text');
 
-                if(document.getElementById("changePanel") != null && document.getElementById("changePanel").getAttribute("class") != "return_panel"){
+                if (document.getElementById("changePanel") != null && document.getElementById("changePanel").getAttribute("class") != "return_panel") {
 
                     document.getElementById("changePanel").setAttribute("class", "return_change_panel");
 
@@ -2605,12 +2646,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 object._rightButtonPanel.removeChild(saveButton);
                 editButton.setAttribute("class", "button media-button button-primary button-large media-button-insert");
                 deleteButton.setAttribute("class", "button media-button button-primary button-large media-button-insert");
-                for(var key in inputPanelList){
+                for (var key in inputPanelList) {
 
                     formPanel.removeChild(inputPanelList[key]);
                     //var form = formData[i];
                     var rowPanel = object.createRowPanel(formData[key]['name'], formData[key]['value'], null, null, null);
-                    if(formData[key].active != 'true'){
+                    if (formData[key].active != 'true') {
 
                         rowPanel.classList.add("hidden_panel");
 
@@ -2628,7 +2669,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        deleteButton.onclick = function(){
+        deleteButton.onclick = function () {
 
             object._console.log(object._emailEnableList);
             object._console.log("enable = " + Boolean(parseInt(object._emailEnableList.mail_deleted.enable)));
@@ -2649,21 +2690,30 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             }
             object._console.log(reservationData.payToken);
-            confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("This booking has been paid by credit card. Do you refund the price to the customer?"), refoundBool, function(refoundValue){
+            confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("This booking has been paid by credit card. Do you refund the price to the customer?"), refoundBool, function (refoundValue) {
 
                 object._console.log("refoundValue = " + refoundValue);
-                confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("Do you send e-mail notifications to customers or administrators?"), enable, function(sendEmail){
+                confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("Do you send e-mail notifications to customers or administrators?"), enable, function (sendEmail) {
 
                     object._console.log("sendEmail = " + sendEmail);
                     object._console.log("sendEmail = " + parseInt(sendEmail));
-                    confirm.dialogPanelShow(object._i18n.get("Warning"), object._i18n.get("Are you sure you want to delete this booking?"), false, function(result){
+                    confirm.dialogPanelShow(object._i18n.get("Warning"), object._i18n.get("Are you sure you want to delete this booking?"), false, function (result) {
 
                         object._console.log(result);
                         if (result == true) {
 
                             object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
-                            var post = {nonce: object._nonce, action: object._action, mode: 'deleteBookingData', key: reservationData.key, token: reservationData.cancellationToken, sendEmail: Number(sendEmail), refound: Number(refoundValue), accountKey: reservationData.accountKey};
-                            new Booking_App_XMLHttp(object._url, post, object._webApp, function(response) {
+                            var post = {
+                                nonce: object._nonce,
+                                action: object._action,
+                                mode: 'deleteBookingData',
+                                key: reservationData.key,
+                                token: reservationData.cancellationToken,
+                                sendEmail: Number(sendEmail),
+                                refound: Number(refoundValue),
+                                accountKey: reservationData.accountKey
+                            };
+                            new Booking_App_XMLHttp(object._url, post, object._webApp, function (response) {
 
                                 object._console.log(response);
                                 if (response.status == 'success') {
@@ -2695,7 +2745,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                                 }
                                 object._loadingPanel.setAttribute("class", "hidden_panel");
 
-                            }, function(responseText){
+                            }, function (responseText) {
 
                                 object.setResponseText(responseText);
 
@@ -2716,7 +2766,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         var year = reservationData.date.year;
         var confirm = new Confirm(object._debug);
 
-        bookingTimeChange.onclick = function(){
+        bookingTimeChange.onclick = function () {
 
             object._console.log(options);
             //if(typeof ExtensionsFunction != "function"){
@@ -2729,16 +2779,16 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
             */
             let data_status = parseInt(bookingTimeChange.getAttribute("data-status"));
-            if(data_status == 1){
+            if (data_status == 1) {
 
                 data_status = 0;
                 bookingTimeChange.textContent = object._i18n.get("Change");
                 courseChange.classList.add("hidden_panel");
-                object.createToChangePanelForTimeOrCourse(month, day, year, reservationData, calendarData, "date", options, accountKey, function(response){
+                object.createToChangePanelForTimeOrCourse(month, day, year, reservationData, calendarData, "date", options, accountKey, function (response) {
 
                     object._console.log("bookingTimeChange.onclick");
                     object._console.log(response);
-                    if(response.status == "statusButton"){
+                    if (response.status == "statusButton") {
 
                         calendarData = response.calendarData;
                         bookingTimeChange.setAttribute("data-status", response.value);
@@ -2747,13 +2797,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         document.getElementById("beforChangeButton").classList.add("hidden_panel");
                         document.getElementById("nextChangeButton").classList.add("hidden_panel");
 
-                    }else if(response.status == "statusButton"){
+                    } else if (response.status == "statusButton") {
 
 
+                    } else {
 
-                    }else{
-
-                        if(response.month != null && response.day != null && response.year != null){
+                        if (response.month != null && response.day != null && response.year != null) {
 
                             month = response.month;
                             day = response.day;
@@ -2769,7 +2818,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 });
 
-            }else{
+            } else {
 
                 data_status = 1;
                 bookingTimeChange.textContent = object._i18n.get("Change");
@@ -2788,7 +2837,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
 
-        courseChange.onclick = function(){
+        courseChange.onclick = function () {
 
             object._console.log(options);
             object._console.log(object.getVisitorServices());
@@ -2801,15 +2850,15 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
             var data_status = parseInt(courseChange.getAttribute("data-status"));
-            if(data_status == 1){
+            if (data_status == 1) {
 
                 data_status = 0;
                 courseChange.textContent = object._i18n.get("Change");
                 bookingTimeChange.classList.add("hidden_panel");
-                object.createToChangePanelForTimeOrCourse(month, day, year, reservationData, calendarData, "course", options, accountKey, function(response){
+                object.createToChangePanelForTimeOrCourse(month, day, year, reservationData, calendarData, "course", options, accountKey, function (response) {
 
                     object._console.log(response);
-                    if(response.status == "statusButton"){
+                    if (response.status == "statusButton") {
 
                         object._console.log(options);
                         options = response.options;
@@ -2819,13 +2868,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         courseChange.textContent = object._i18n.get("Change");
                         bookingTimeChange.classList.remove("hidden_panel");
 
-                    }else if(response.status == "statusButton"){
+                    } else if (response.status == "statusButton") {
 
 
+                    } else {
 
-                    }else{
-
-                        if(response.month != null && response.day != null && response.year != null){
+                        if (response.month != null && response.day != null && response.year != null) {
 
                             month = response.month;
                             day = response.day;
@@ -2841,7 +2889,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 });
 
-            }else{
+            } else {
 
                 data_status = 1;
                 courseChange.textContent = object._i18n.get("Change");
@@ -2858,7 +2906,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.showUserDetails = function(key, calendarData, reservationData, accountKey, showStatusForHotel, infoPanel, bookingTimeChange, courseChange, callback){
+    this.showUserDetails = function (key, calendarData, reservationData, accountKey, showStatusForHotel, infoPanel, bookingTimeChange, courseChange, callback) {
 
         var object = this;
         var options = "[]";
@@ -2866,7 +2914,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         object._console.log("showStatusForHotel = " + showStatusForHotel);
         object._console.log(object._calendarAccount);
         var weekName = [object._i18n.get('Sun'), object._i18n.get('Mon'), object._i18n.get('Tue'), object._i18n.get('Wed'), object._i18n.get('Thu'), object._i18n.get('Fri'), object._i18n.get('Sat')];
-    	object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
+        object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
         object._calendar.setClock(object._clock);
         infoPanel.textContent = null;
 
@@ -2918,12 +2966,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             statusLabel.textContent = object._i18n.get(status);
             if (status.toUpperCase() != 'CANCELED') {
 
-                statusLabel.onclick = function(){
+                statusLabel.onclick = function () {
 
                     object._console.log(this);
                     if (reservationData.status != 'canceled') {
 
-                        object.changeStatus(accountKey, reservationData, null, true, function(response){
+                        object.changeStatus(accountKey, reservationData, null, true, function (response) {
 
                             object._console.log(response);
                             if (response.bookingStatus == null) {
@@ -3000,7 +3048,6 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             object._hotel.setCheckOutKey(reservationData.accommodationDetails.checkOutSchedule.key);
 
             object._console.log(object._hotel.getCheckDate());
-
 
 
             var visitorsDetails = object._hotel.verifySchedule(false);
@@ -3112,15 +3159,15 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             object._console.log(object._hotel.getGuestsList());
 
-            if(reservationData.accommodationDetails.adult != null && reservationData.accommodationDetails.children != null){
+            if (reservationData.accommodationDetails.adult != null && reservationData.accommodationDetails.children != null) {
 
                 var totalNumberOfGuests = parseInt(reservationData.accommodationDetails.adult) + parseInt(reservationData.accommodationDetails.children);
                 var totalNumberOfGuestsValue = 0;
-                if(totalNumberOfGuests > 1){
+                if (totalNumberOfGuests > 1) {
 
                     totalNumberOfGuestsValue = totalNumberOfGuests + " " + object._i18n.get("people");
 
-                }else if(totalNumberOfGuests == 1){
+                } else if (totalNumberOfGuests == 1) {
 
                     totalNumberOfGuestsValue = totalNumberOfGuests + " " + object._i18n.get("person");
 
@@ -3167,9 +3214,9 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             formPanel.appendChild(rowPanel);
 
             /**
-            var timestampPanel = object.createRowPanel(object._i18n.get("Submission date"), timestamp, "timestamp", null, null);
-            formPanel.appendChild(timestampPanel);
-            **/
+             var timestampPanel = object.createRowPanel(object._i18n.get("Submission date"), timestamp, "timestamp", null, null);
+             formPanel.appendChild(timestampPanel);
+             **/
 
         } else {
 
@@ -3194,7 +3241,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var goodsList = [];
             var responseGuests = [];
             var cost = 0;
-            if(reservationData.options.length > 0){
+            if (reservationData.options.length > 0) {
 
                 var serviceCost = 0;
                 var hasMultipleServices = false;
@@ -3289,7 +3336,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                             var ul = document.createElement("ul");
                             valuePanel.appendChild(ul);
-                            for(var i = 0; i < options.length; i++){
+                            for (var i = 0; i < options.length; i++) {
 
                                 var option = options[i];
                                 if (parseInt(option.selected) == 1) {
@@ -3338,17 +3385,16 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 }
 
 
-
             }
 
 
-            if(reservationData.scheduleCost != null){
+            if (reservationData.scheduleCost != null) {
 
                 cost += parseInt(reservationData.scheduleCost);
 
             }
 
-            if(reservationData.courseCost != null){
+            if (reservationData.courseCost != null) {
 
                 cost += parseInt(reservationData.courseCost);
 
@@ -3430,25 +3476,25 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 formPanel.appendChild(isTaxes.surchargePanel);
                 /**
-                var responseTaxes = taxes.getTaxes();
-                object._console.log(responseTaxes);
-                for (var key in responseTaxes) {
+                 var responseTaxes = taxes.getTaxes();
+                 object._console.log(responseTaxes);
+                 for (var key in responseTaxes) {
 
-                    var tax = responseTaxes[key];
-                    if (tax.active != 'true') {
+                 var tax = responseTaxes[key];
+                 if (tax.active != 'true') {
 
-                        continue;
+                 continue;
 
-                    }
+                 }
 
-                    if ((tax.type == 'tax' && tax.tax == 'tax_exclusive') || tax.type == 'surcharge') {
+                 if ((tax.type == 'tax' && tax.tax == 'tax_exclusive') || tax.type == 'surcharge') {
 
-                        cost += parseInt(tax.taxValue);
+                 cost += parseInt(tax.taxValue);
 
-                    }
+                 }
 
-                }
-                **/
+                 }
+                 **/
                 var responseTaxes = taxes.getTaxes();
                 var reflectAdditional = 1;
                 if (responseGuests.reflectAdditional > 0) {
@@ -3461,25 +3507,25 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             }
             /**
-            var responseTaxes = taxes.getTaxes();
-            object._console.log(responseTaxes);
-            for (var key in responseTaxes) {
+             var responseTaxes = taxes.getTaxes();
+             object._console.log(responseTaxes);
+             for (var key in responseTaxes) {
 
-                var tax = responseTaxes[key];
-                if (tax.active != 'true') {
+             var tax = responseTaxes[key];
+             if (tax.active != 'true') {
 
-                    continue;
+             continue;
 
-                }
+             }
 
-                if ((tax.type == 'tax' && tax.tax == 'tax_exclusive') || tax.type == 'surcharge') {
+             if ((tax.type == 'tax' && tax.tax == 'tax_exclusive') || tax.type == 'surcharge') {
 
-                    cost += parseInt(tax.taxValue);
+             cost += parseInt(tax.taxValue);
 
-                }
+             }
 
-            }
-            **/
+             }
+             **/
 
             if (cost != 0) {
 
@@ -3490,9 +3536,9 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
             /**
-            var timestampPanel = object.createRowPanel(object._i18n.get("Submission date"), timestamp, "timestamp", null, null);
-            formPanel.appendChild(timestampPanel);
-            **/
+             var timestampPanel = object.createRowPanel(object._i18n.get("Submission date"), timestamp, "timestamp", null, null);
+             formPanel.appendChild(timestampPanel);
+             **/
 
         }
 
@@ -3546,11 +3592,16 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        return {formPanel: formPanel, formPanelList: formPanelList, totalNumberOfGuestsPanel: totalNumberOfGuestsPanel, formData: formData};
+        return {
+            formPanel: formPanel,
+            formPanelList: formPanelList,
+            totalNumberOfGuestsPanel: totalNumberOfGuestsPanel,
+            formData: formData
+        };
 
     }
 
-    this.getDiscountCostByCoupon = function(coupon, totalCost) {
+    this.getDiscountCostByCoupon = function (coupon, totalCost) {
 
         var object = this;
         if (coupon.key == null) {
@@ -3581,7 +3632,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.showGuestsPanelForDays = function(formPanel, guests) {
+    this.showGuestsPanelForDays = function (formPanel, guests) {
 
         var object = this;
         for (var i = 0; i < guests.length; i++) {
@@ -3611,7 +3662,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.createToChangePanelForTimeOrCourse = function(month, day, year, reservationData, calendarData, changeAction, options, accountKey, callback){
+    this.createToChangePanelForTimeOrCourse = function (month, day, year, reservationData, calendarData, changeAction, options, accountKey, callback) {
 
         var object = this;
         var preparation = JSON.parse(reservationData.preparation);
@@ -3631,23 +3682,23 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         object._console.log(guests);
 
         var weekName = [object._i18n.get('Sun'), object._i18n.get('Mon'), object._i18n.get('Tue'), object._i18n.get('Wed'), object._i18n.get('Thu'), object._i18n.get('Fri'), object._i18n.get('Sat')];
-    	object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
-    	object._calendar.setClock(object._clock);
-    	let expirationDate = object._calendar.getDateKey(month, day, year);
-    	var calendarKey = object._calendar.getDateKey(month, day, year);
+        object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
+        object._calendar.setClock(object._clock);
+        let expirationDate = object._calendar.getDateKey(month, day, year);
+        var calendarKey = object._calendar.getDateKey(month, day, year);
         object._nationalHoliday = calendarData.nationalHoliday.calendar;
 
         var edit_title = document.getElementById("edit_title");
         edit_title.textContent = object._calendar.formatBookingDate(month, day, year, null, null, null, calendarData.calendar[calendarKey].week, 'text');
 
         var changePanel = null;
-        if(document.getElementById("changePanel") == null){
+        if (document.getElementById("changePanel") == null) {
 
             changePanel = document.createElement("div");
             changePanel.id = "changePanel";
             object._contentPanel.appendChild(changePanel);
 
-        }else{
+        } else {
 
             changePanel = document.getElementById("changePanel");
 
@@ -3670,11 +3721,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        var changeButtonAction = function(mode, month, day, year, calendarData){
+        var changeButtonAction = function (mode, month, day, year, calendarData) {
 
             object._console.log("mode = " + mode);
             object._console.log("buttonAction = " + object._buttonAction);
-            if(object._buttonAction != 'updateSchedule'){
+            if (object._buttonAction != 'updateSchedule') {
 
                 return null;
 
@@ -3687,27 +3738,37 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             object._console.log("month = " + month + " day = " + day + " year = " + year + " lastDay = " + lastDay);
             var date = object.verifyCalendar(mode, month, day, year, lastDay);
-            if(date.calendarChange === 0){
+            if (date.calendarChange === 0) {
 
                 object.createToChangePanelForTimeOrCourse(date.month, date.day, date.year, reservationData, calendarData, changeAction, JSON.stringify(options), accountKey, callback);
                 callback({month: date.month, day: date.day, year: date.year, calendarData: calendarData});
 
-            }else{
+            } else {
 
                 object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
-                var post = {nonce: object._nonce, action: object._action, mode: object._prefix + 'getReservationData', year: date.year, month: date.month, day: 1, accountKey: accountKey};
-                new Booking_App_XMLHttp(object._url, post, object._webApp, function(calendarData){
+                var post = {
+                    nonce: object._nonce,
+                    action: object._action,
+                    mode: object._prefix + 'getReservationData',
+                    year: date.year,
+                    month: date.month,
+                    day: 1,
+                    accountKey: accountKey
+                };
+                new Booking_App_XMLHttp(object._url, post, object._webApp, function (calendarData) {
 
                     object._loadingPanel.setAttribute("class", "hidden_panel");
                     object._console.log(calendarData);
                     object._servicesControl.setNationalHoliday(calendarData.nationalHoliday.calendar);
                     var day = 1;
-                    if(mode === 0){day = calendarData.date.lastDay;}
+                    if (mode === 0) {
+                        day = calendarData.date.lastDay;
+                    }
                     object.createToChangePanelForTimeOrCourse(date.month, day, date.year, reservationData, calendarData, changeAction, JSON.stringify(options), accountKey, callback);
                     callback({month: date.month, day: day, year: date.year, calendarData: calendarData});
                     object._loadingPanel.setAttribute("class", "hidden_panel");
 
-                }, function(responseText){
+                }, function (responseText) {
 
                     object.setResponseText(responseText);
 
@@ -3725,7 +3786,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         var selectedService = [];
         var courseTime = null;
         var courseKey = null;
-        if(courseLabel != null){
+        if (courseLabel != null) {
 
             //courseTime = parseInt(courseLabel.getAttribute("data-time"));
             courseKey = parseInt(courseLabel.getAttribute("data-key"));
@@ -3776,7 +3837,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                         }
 
-                        if(typeof service.options == 'string') {
+                        if (typeof service.options == 'string') {
 
                             service.options = JSON.parse(service.options);
 
@@ -3826,7 +3887,6 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
 
-
         }
 
         object._console.log("courseTime = " + courseTime);
@@ -3844,9 +3904,9 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         object._console.log(updateSchedule[calendarKey]);
         object._console.log(reservationData);
         var timeToProvide = [];
-        for(var i = 0; i < object._courseList.length; i++){
+        for (var i = 0; i < object._courseList.length; i++) {
 
-            if(parseInt(object._courseList[i].key) == courseKey) {
+            if (parseInt(object._courseList[i].key) == courseKey) {
 
                 timeToProvide = object._courseList[i].timeToProvide;
                 break;
@@ -3923,7 +3983,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     schedulePanel.setAttribute("data-status", 1);
                     schedulePanel.setAttribute("class", "courseAndScheduleRow");
-                    schedulePanel.onclick = function(){
+                    schedulePanel.onclick = function () {
 
                         this.setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
                         var key = this.getAttribute("data-key");
@@ -4112,7 +4172,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 //checkBox.disabled = true;
 
-                checkBox.onclick = function() {
+                checkBox.onclick = function () {
 
                     if (this.checked == true) {
 
@@ -4156,7 +4216,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     coursePanel.setAttribute("data-status", 1);
                     coursePanel.setAttribute("class", "courseAndScheduleRow");
-                    coursePanel.onclick = function(){
+                    coursePanel.onclick = function () {
 
                         this.setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
                         var key = this.getAttribute("data-key");
@@ -4217,7 +4277,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                             if (checkBox.checked == true) {
 
                                 var selectOptionsPanel = document.getElementById("selectOptionsPanel");
-                                object.getOptionsPanel(courseData, options, guests, function(response){
+                                object.getOptionsPanel(courseData, options, guests, function (response) {
 
                                     var selectedOptions = response.selectedOptions;
                                     object._courseList[key]["selectedOptionsList"] = selectedOptions;
@@ -4282,7 +4342,6 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 }
 
 
-
                 var table_row = document.createElement("div");
                 table_row.appendChild(coursePanel);
 
@@ -4293,7 +4352,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        var getSelectedServices = function() {
+        var getSelectedServices = function () {
 
             var selectedServices = [];
             for (var i in object._courseList) {
@@ -4312,93 +4371,93 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         };
 
         /**
-        var closeCourseWindow = function(key, courseListPanel, courseData, courseLabel, calendarData, options, callback){
+         var closeCourseWindow = function(key, courseListPanel, courseData, courseLabel, calendarData, options, callback){
 
-            object.unselectPanel(key, courseListPanel, "courseAndScheduleRow");
-            courseLabel.setAttribute("data-key", courseData.key);
-            courseLabel.setAttribute("data-time", courseData.time);
-            //courseLabel.textContent = courseData.name;
-            courseLabel.textContent = null;
+         object.unselectPanel(key, courseListPanel, "courseAndScheduleRow");
+         courseLabel.setAttribute("data-key", courseData.key);
+         courseLabel.setAttribute("data-time", courseData.time);
+         //courseLabel.textContent = courseData.name;
+         courseLabel.textContent = null;
 
-            var totalCost = 0;
-            var coursePanel = document.createElement("div");
-            coursePanel.classList.add("mainPlan");
-            courseLabel.appendChild(coursePanel);
+         var totalCost = 0;
+         var coursePanel = document.createElement("div");
+         coursePanel.classList.add("mainPlan");
+         courseLabel.appendChild(coursePanel);
 
-            var courseNamePanel = document.createElement("span");
-            courseNamePanel.classList.add("planName");
-            courseNamePanel.textContent = courseData.name;
-            coursePanel.appendChild(courseNamePanel);
-            if (parseInt(courseData.cost) > 0) {
+         var courseNamePanel = document.createElement("span");
+         courseNamePanel.classList.add("planName");
+         courseNamePanel.textContent = courseData.name;
+         coursePanel.appendChild(courseNamePanel);
+         if (parseInt(courseData.cost) > 0) {
 
-                totalCost += parseInt(courseData.cost);
-                var courseCostPanel = document.createElement("span");
-                courseCostPanel.classList.add("planPrice");
-                courseCostPanel.textContent = object._format.formatCost(courseData.cost, reservationData.currency);
-                coursePanel.appendChild(courseCostPanel);
+         totalCost += parseInt(courseData.cost);
+         var courseCostPanel = document.createElement("span");
+         courseCostPanel.classList.add("planPrice");
+         courseCostPanel.textContent = object._format.formatCost(courseData.cost, reservationData.currency);
+         coursePanel.appendChild(courseCostPanel);
 
-            }
+         }
 
-            object._console.log(options);
-            if (options != null && options.length > 0) {
+         object._console.log(options);
+         if (options != null && options.length > 0) {
 
-                var ul = document.createElement("ul");
-                courseLabel.appendChild(ul);
+         var ul = document.createElement("ul");
+         courseLabel.appendChild(ul);
 
-                for(var i = 0; i < options.length; i++){
+         for(var i = 0; i < options.length; i++){
 
-                    var option = options[i];
-                    object._console.log(option);
-                    if (parseInt(option.selected) == 1) {
+         var option = options[i];
+         object._console.log(option);
+         if (parseInt(option.selected) == 1) {
 
-                        totalCost += parseInt(option.cost);
+         totalCost += parseInt(option.cost);
 
-                        var optionNamePanel = document.createElement("span");
-                        optionNamePanel.classList.add("planName");
-                        optionNamePanel.textContent = option.name;
+         var optionNamePanel = document.createElement("span");
+         optionNamePanel.classList.add("planName");
+         optionNamePanel.textContent = option.name;
 
-                        var optionPricePanel = document.createElement("span");
-                        optionPricePanel.classList.add("planPrice");
-                        if (parseInt(option.cost) > 0) {
+         var optionPricePanel = document.createElement("span");
+         optionPricePanel.classList.add("planPrice");
+         if (parseInt(option.cost) > 0) {
 
-                            optionPricePanel.textContent = object._format.formatCost(option.cost, reservationData.currency);
+         optionPricePanel.textContent = object._format.formatCost(option.cost, reservationData.currency);
 
-                        }
+         }
 
-                        var li = document.createElement("li");
-                        li.appendChild(optionNamePanel);
-                        li.appendChild(optionPricePanel);
-                        ul.appendChild(li);
+         var li = document.createElement("li");
+         li.appendChild(optionNamePanel);
+         li.appendChild(optionPricePanel);
+         ul.appendChild(li);
 
-                    }
+         }
 
-                }
+         }
 
-            }
+         }
 
-            if(document.getElementById("booking_cost") != null){
+         if(document.getElementById("booking_cost") != null){
 
-                var cost = object._format.formatCost(totalCost, reservationData.currency);
-                document.getElementById("booking_cost").textContent = cost;
+         var cost = object._format.formatCost(totalCost, reservationData.currency);
+         document.getElementById("booking_cost").textContent = cost;
 
-            }
+         }
 
-            document.getElementById("beforChangeButton").classList.add("hidden_panel");
-            document.getElementById("nextChangeButton").classList.add("hidden_panel");
-            document.getElementById("changePanel").setAttribute("class", "return_change_panel");
-            callback({status: "statusButton", value: "1", calendarData: calendarData, options: JSON.stringify(options)});
+         document.getElementById("beforChangeButton").classList.add("hidden_panel");
+         document.getElementById("nextChangeButton").classList.add("hidden_panel");
+         document.getElementById("changePanel").setAttribute("class", "return_change_panel");
+         callback({status: "statusButton", value: "1", calendarData: calendarData, options: JSON.stringify(options)});
 
-        }
-        **/
+         }
+         **/
 
-        beforChangeButton.onclick = function(){
+        beforChangeButton.onclick = function () {
 
             object._console.log("day = " + day);
             changeButtonAction(0, month, day, year, calendarData);
 
         }
 
-        nextChangeButton.onclick = function(){
+        nextChangeButton.onclick = function () {
 
             object._console.log("day = " + day);
             changeButtonAction(1, month, day, year, calendarData);
@@ -4407,130 +4466,130 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.preparToUpdateSchedule = function(reservationData, calendarData, courseTime, changeAction, preparation){
+    this.preparToUpdateSchedule = function (reservationData, calendarData, courseTime, changeAction, preparation) {
 
-    	var object = this;
-    	object._console.log(calendarData);
-		object._console.log("changeAction = " + changeAction);
-		object._console.log("courseTime = " + courseTime);
-		object._console.log(preparation);
-		object._console.log(typeof preparation);
-		if (preparation == null) {
+        var object = this;
+        object._console.log(calendarData);
+        object._console.log("changeAction = " + changeAction);
+        object._console.log("courseTime = " + courseTime);
+        object._console.log(preparation);
+        object._console.log(typeof preparation);
+        if (preparation == null) {
 
-		    preparation = {position: "before_after", time: 0};
-		    object._console.log(preparation);
+            preparation = {position: "before_after", time: 0};
+            object._console.log(preparation);
 
-		}
-		var planBool = true;
-		var start = parseInt(reservationData.scheduleUnixTime);
-		//var end = start + parseInt(reservationData.courseTime) * 60;
-		var end = start + parseInt(courseTime) * 60;
+        }
+        var planBool = true;
+        var start = parseInt(reservationData.scheduleUnixTime);
+        //var end = start + parseInt(reservationData.courseTime) * 60;
+        var end = start + parseInt(courseTime) * 60;
 
-		if (preparation != null && preparation.time != null && preparation.position != null) {
+        if (preparation != null && preparation.time != null && preparation.position != null) {
 
-		    if (preparation.position == 'before_after' || preparation.position == 'before') {
+            if (preparation.position == 'before_after' || preparation.position == 'before') {
 
-		        start -= preparation.time * 60;
+                start -= preparation.time * 60;
 
-		    }
+            }
 
-		    if (preparation.position == 'before_after' || preparation.position == 'after') {
+            if (preparation.position == 'before_after' || preparation.position == 'after') {
 
-		        end += preparation.time * 60;
+                end += preparation.time * 60;
 
-		    }
+            }
 
-		}
+        }
 
-		if (start == end) {
+        if (start == end) {
 
-        	planBool = false;
+            planBool = false;
 
-    	}
-		object._console.log("start = " + start + " end = " + end);
-		var applicantCount = parseInt(reservationData.applicantCount);
-		var schedule = {};
-		var scheduleAll = [];
+        }
+        object._console.log("start = " + start + " end = " + end);
+        var applicantCount = parseInt(reservationData.applicantCount);
+        var schedule = {};
+        var scheduleAll = [];
 
-		var count = 0;
-		for(var key in calendarData.schedule){
+        var count = 0;
+        for (var key in calendarData.schedule) {
 
-        	var daySchedule = [];
-			for(var i = 0; i < calendarData.schedule[key].length; i++){
+            var daySchedule = [];
+            for (var i = 0; i < calendarData.schedule[key].length; i++) {
 
-            	var newDate = {};
-				Object.assign(newDate , calendarData.schedule[key][i]);
-				var unixTime = parseInt(newDate.unixTime);
-				if(planBool === true && unixTime >= start && unixTime < end){
+                var newDate = {};
+                Object.assign(newDate, calendarData.schedule[key][i]);
+                var unixTime = parseInt(newDate.unixTime);
+                if (planBool === true && unixTime >= start && unixTime < end) {
 
-                	newDate.remainder = parseInt(newDate.remainder) + applicantCount;
-					object._console.log(newDate);
+                    newDate.remainder = parseInt(newDate.remainder) + applicantCount;
+                    object._console.log(newDate);
 
-            	}else if(planBool === false && unixTime == start){
+                } else if (planBool === false && unixTime == start) {
 
-                	newDate.remainder = parseInt(newDate.remainder) + applicantCount;
-					object._console.log(newDate);
+                    newDate.remainder = parseInt(newDate.remainder) + applicantCount;
+                    object._console.log(newDate);
 
-            	}
+                }
 
-				if(newDate.stop == "true"){
+                if (newDate.stop == "true") {
 
-                	newDate.remainder = 0;
+                    newDate.remainder = 0;
 
-            	}
+                }
 
-				newDate.select = true;
-				newDate.count = count;
-				scheduleAll.push(newDate);
-				daySchedule.push(newDate);
-				count++;
+                newDate.select = true;
+                newDate.count = count;
+                scheduleAll.push(newDate);
+                daySchedule.push(newDate);
+                count++;
 
-				if(planBool === true && newDate.remainder <= 0){
+                if (planBool === true && newDate.remainder <= 0) {
 
-                	(function(scheduleAll, unixTime, courseTime, applicantCount, start, end){
+                    (function (scheduleAll, unixTime, courseTime, applicantCount, start, end) {
 
-                    	var endTime = parseInt(unixTime) - (parseInt(courseTime) * 60);
-						object._console.log("unixTime = " + unixTime + " endTime = " + endTime + " courseTime = " + courseTime + " length = " + scheduleAll.length);
-						for(var i = scheduleAll.length; i > 0; i--){
+                        var endTime = parseInt(unixTime) - (parseInt(courseTime) * 60);
+                        object._console.log("unixTime = " + unixTime + " endTime = " + endTime + " courseTime = " + courseTime + " length = " + scheduleAll.length);
+                        for (var i = scheduleAll.length; i > 0; i--) {
 
-                        	var schedule = scheduleAll[(i - 1)];
-							var time = schedule.year + "/" + schedule.month + "/" + schedule.day + " " + schedule.hour + ":" + schedule.min + " remainder = " + schedule.remainder;
-							if(endTime >= schedule.unixTime){
+                            var schedule = scheduleAll[(i - 1)];
+                            var time = schedule.year + "/" + schedule.month + "/" + schedule.day + " " + schedule.hour + ":" + schedule.min + " remainder = " + schedule.remainder;
+                            if (endTime >= schedule.unixTime) {
 
-                            	break;
+                                break;
 
-                        	}
+                            }
 
-							if(schedule.remainder > 0 && (unixTime <= start && unixTime > end) && changeAction == 'course'){
+                            if (schedule.remainder > 0 && (unixTime <= start && unixTime > end) && changeAction == 'course') {
 
-                            	schedule.remainder -= applicantCount;
+                                schedule.remainder -= applicantCount;
 
-                        	}
+                            }
 
-							if(schedule.remainder > 0 && changeAction == 'date'){
+                            if (schedule.remainder > 0 && changeAction == 'date') {
 
-                            	//schedule.remainder -= applicantCount;
-								schedule.remainder = 0;
+                                //schedule.remainder -= applicantCount;
+                                schedule.remainder = 0;
 
-                        	}
+                            }
 
-                    	}
+                        }
 
-                	})(scheduleAll, newDate.unixTime, courseTime, applicantCount, start, end);
+                    })(scheduleAll, newDate.unixTime, courseTime, applicantCount, start, end);
 
-            	}
+                }
 
-        	}
+            }
 
-			schedule[key] = daySchedule;
+            schedule[key] = daySchedule;
 
-    	}
+        }
 
-		return {schedule: schedule, scheduleAll: scheduleAll};
+        return {schedule: schedule, scheduleAll: scheduleAll};
 
-	}
+    }
 
-    this.add_reservation = function(add_reservationPanel, month, day, year, calendarData, accountKey, callback){
+    this.add_reservation = function (add_reservationPanel, month, day, year, calendarData, accountKey, callback) {
 
         var object = this;
         object._buttonAction = "add_reservation";
@@ -4583,14 +4642,14 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var calendarKey = object._calendar.getDateKey(month, day, year);
             var checkDate = object._hotel.getCheckDate();
             object._console.log(checkDate);
-            if(checkDate.checkIn == null && calendarData.schedule[parseInt(calendarKey)] != null && calendarData.schedule[parseInt(calendarKey)][0] != null){
+            if (checkDate.checkIn == null && calendarData.schedule[parseInt(calendarKey)] != null && calendarData.schedule[parseInt(calendarKey)][0] != null) {
 
                 checkDate.checkIn = calendarData.schedule[parseInt(calendarKey)][0];
                 object._console.log(object._hotel.getCheckDate());
 
             }
 
-            var bookingCalendar = function(calendarData){
+            var bookingCalendar = function (calendarData) {
 
                 var year = parseInt(calendarData.date.year);
                 var month = parseInt(calendarData.date.month);
@@ -4603,7 +4662,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
 
                 var dayHeight = parseInt(scheduleMainPanel.clientWidth / 7);
-    	        object._console.log("dayHeight = " + dayHeight);
+                object._console.log("dayHeight = " + dayHeight);
 
                 var datePanel = document.createElement("div");
                 datePanel.setAttribute("class", "calendarData");
@@ -4613,11 +4672,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 var returnLabel = document.createElement("label");
                 returnLabel.setAttribute("class", "arrowLeft");
-                if(month == 1){
+                if (month == 1) {
 
                     returnLabel.textContent = "＜" + object._calendar.formatBookingDate(12, null, null, null, null, null, null, 'text');
 
-                }else{
+                } else {
 
                     returnLabel.textContent = "＜" + object._calendar.formatBookingDate((month - 1), null, null, null, null, null, null, 'text');
 
@@ -4630,11 +4689,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 var nextLabel = document.createElement("label");
                 nextLabel.setAttribute("class", "arrowRight");
-                if(month == 12){
+                if (month == 12) {
 
                     nextLabel.textContent = object._calendar.formatBookingDate(1, null, null, null, null, null, null, 'text') + "＞";
 
-                }else{
+                } else {
 
                     nextLabel.textContent = object._calendar.formatBookingDate((month + 1), null, null, null, null, null, null, 'text') + "＞";
 
@@ -4656,22 +4715,22 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 var checkDate = object._hotel.getCheckDate();
                 object._console.log(checkDate);
                 /**
-                if(checkDate.checkIn == null && calendarData.schedule[parseInt(calendarKey)] != null && calendarData.schedule[parseInt(calendarKey)][0] != null){
+                 if(checkDate.checkIn == null && calendarData.schedule[parseInt(calendarKey)] != null && calendarData.schedule[parseInt(calendarKey)][0] != null){
 
-                    checkDate.checkIn = calendarData.schedule[parseInt(calendarKey)][0];
-                    object._console.log(hotel.getCheckDate());
+                 checkDate.checkIn = calendarData.schedule[parseInt(calendarKey)][0];
+                 object._console.log(hotel.getCheckDate());
 
-                }
-                **/
+                 }
+                 **/
 
                 var scopeOfDay = {start: null, end: null};
                 var dayPanelList = {};
-                object._calendar.create(scheduleMainPanel, calendarData, month, day, year, '', function(calendarCallback){
+                object._calendar.create(scheduleMainPanel, calendarData, month, day, year, '', function (calendarCallback) {
 
                     object._console.log(calendarCallback);
                     var key = parseInt(calendarCallback.key);
                     var dayPanel = calendarCallback['eventPanel'];
-                    if(key > 0){
+                    if (key > 0) {
 
                         dayPanelList[key] = dayPanel;
                         object._hotel.setDayPanelList(dayPanelList);
@@ -4679,35 +4738,35 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     }
                     dayPanel.setAttribute("style", "height: " + (dayHeight) + "px;");
                     dayPanel.setAttribute("data-unixTime", 0);
-                    if(calendarData.schedule[key] != null && calendarData.schedule[key][0] != null){
+                    if (calendarData.schedule[key] != null && calendarData.schedule[key][0] != null) {
 
                         dayPanel.setAttribute("data-unixTime", calendarData.schedule[key][0].unixTime);
 
-                        if(calendarData.schedule[key].length != 0){
+                        if (calendarData.schedule[key].length != 0) {
 
                             object._hotel.addSchedule(calendarData.schedule[key][0]);
 
-                            if(checkDate.checkIn != null && checkDate.checkIn.unixTime == calendarData.schedule[key][0].unixTime && calendarData.schedule[key][0].remainder > 0){
+                            if (checkDate.checkIn != null && checkDate.checkIn.unixTime == calendarData.schedule[key][0].unixTime && calendarData.schedule[key][0].remainder > 0) {
 
                                 dayPanel.classList.add("selectedDayPanel");
 
                             }
 
-                            if((checkDate.checkIn != null && checkDate.checkOut != null) && (checkDate.checkIn.unixTime <= calendarData.schedule[key][0].unixTime && checkDate.checkOut.unixTime >= calendarData.schedule[key][0].unixTime)){
+                            if ((checkDate.checkIn != null && checkDate.checkOut != null) && (checkDate.checkIn.unixTime <= calendarData.schedule[key][0].unixTime && checkDate.checkOut.unixTime >= calendarData.schedule[key][0].unixTime)) {
 
                                 object._console.log("checkDate.checkIn.unixTime = " + checkDate.checkIn.unixTime);
                                 dayPanel.classList.add("selectedDayPanel");
 
                             }
 
-                            if(parseInt(calendarData.schedule[key][0].remainder) <= 0 || calendarData.schedule[key][0].stop == 'true'){
+                            if (parseInt(calendarData.schedule[key][0].remainder) <= 0 || calendarData.schedule[key][0].stop == 'true') {
 
                                 dayPanel.classList.remove("selectedDayPanel");
                                 dayPanel.classList.add("closeDay");
 
                             }
 
-                            dayPanel.onclick = function(){
+                            dayPanel.onclick = function () {
 
                                 var dateKey = parseInt(this.getAttribute("data-key"));
                                 object._console.log("dateKey = " + dateKey);
@@ -4718,7 +4777,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                                 var schedule = calendarData.schedule[dateKey][0];
                                 var checkOutUnixTime = parseInt(schedule.unixTime);
                                 var checkOutBool = true;
-                                if(checkIn == parseInt(schedule.key)){
+                                if (checkIn == parseInt(schedule.key)) {
 
                                     //return null;
 
@@ -4727,9 +4786,9 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                                 var checkDate = object._hotel.getCheckDate();
                                 object._console.log(checkDate);
 
-                                if(checkDate.checkIn == null){
+                                if (checkDate.checkIn == null) {
 
-                                    if(schedule.remainder <= 0){
+                                    if (schedule.remainder <= 0) {
 
                                         return null;
 
@@ -4754,7 +4813,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                                     var checkInDatePanel = document.getElementById("checkIn");
                                     checkInDatePanel.textContent = date;
 
-                                }else{
+                                } else {
 
                                     var checkInUnixTime = parseInt(checkDate.checkIn.unixTime);
                                     var checkInMonth = parseInt(checkDate.checkIn.month);
@@ -4762,20 +4821,20 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                                     var checkInYear = parseInt(checkDate.checkIn.year);
 
                                     var verifySchedule = false;
-                                    if(checkInUnixTime < checkOutUnixTime){
+                                    if (checkInUnixTime < checkOutUnixTime) {
 
                                         object._hotel.setCheckOut(schedule);
                                         object._hotel.setCheckOutKey(schedule.key);
                                         verifySchedule = object._hotel.verifySchedule(true);
                                         object._console.log(verifySchedule);
-                                        for(var key in dayPanelList){
+                                        for (var key in dayPanelList) {
 
                                             var checkOut = parseInt(dayPanelList[key].getAttribute("data-unixTime"));
-                                            if(verifySchedule.status == true && checkInUnixTime <= checkOut && checkOutUnixTime >= checkOut){
+                                            if (verifySchedule.status == true && checkInUnixTime <= checkOut && checkOutUnixTime >= checkOut) {
 
                                                 dayPanelList[key].classList.add("selectedDayPanel");
 
-                                            }else if(checkInUnixTime != checkOut){
+                                            } else if (checkInUnixTime != checkOut) {
 
                                                 dayPanelList[key].classList.remove("selectedDayPanel");
 
@@ -4786,14 +4845,14 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                                     }
 
                                     var checkOut = document.getElementById("checkOut");
-                                    if(verifySchedule.status == true){
+                                    if (verifySchedule.status == true) {
 
                                         checkOut.setAttribute("data-check", schedule.key);
                                         checkOut.textContent = object._calendar.formatBookingDate(schedule.month, schedule.day, schedule.year, null, null, null, schedule.weekKey, 'text');
                                         object._hotel.setCheckOut(schedule);
                                         object._hotel.setCheckOutKey(schedule.key);
 
-                                    }else{
+                                    } else {
 
                                         object._hotel.setCheckOut(null);
                                         object._hotel.setCheckOutKey(null);
@@ -4808,14 +4867,14 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                             }
 
-                        }else{
+                        } else {
 
                             dayPanel.classList.add("closeDay");
                             dayPanel.classList.remove("pointer");
 
                         }
 
-                    }else{
+                    } else {
 
                         dayPanel.classList.add("closeDay");
                         dayPanel.classList.remove("pointer");
@@ -4824,7 +4883,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 });
 
-                returnLabel.onclick = function(){
+                returnLabel.onclick = function () {
 
                     if (month == 1) {
 
@@ -4837,7 +4896,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     }
 
-                    object.getReservationData(month, 1, year, accountKey, 0, function(calendarData){
+                    object.getReservationData(month, 1, year, accountKey, 0, function (calendarData) {
 
                         object._console.log(calendarData);
                         bookingCalendar(calendarData);
@@ -4846,7 +4905,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 }
 
-                nextLabel.onclick = function(){
+                nextLabel.onclick = function () {
 
                     if (month == 12) {
 
@@ -4859,7 +4918,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     }
 
-                    object.getReservationData(month, 1, year, accountKey, 0, function(calendarData){
+                    object.getReservationData(month, 1, year, accountKey, 0, function (calendarData) {
 
                         object._console.log(calendarData);
                         bookingCalendar(calendarData);
@@ -4872,16 +4931,15 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             bookingCalendar(calendarData);
 
-            object.createForm(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, null, null, accountKey, function(response){
+            object.createForm(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, null, null, accountKey, function (response) {
 
-                if(response.action == 'refresh'){
+                if (response.action == 'refresh') {
 
                     callback(response);
 
                 }
 
             });
-
 
 
         } else {
@@ -4893,8 +4951,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     var errorMessage = object._i18n.get("Service is not registered. ");
                     errorMessage += object._i18n.get("Please create a service.");
                     var confirm = new Confirm(object._debug);
-                    confirm.alertPanelShow(object._i18n.get("Error"), errorMessage, false, function(caalback){
-
+                    confirm.alertPanelShow(object._i18n.get("Error"), errorMessage, false, function (caalback) {
 
 
                     });
@@ -4932,13 +4989,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         if (options.length > 0) {
 
                             object._console.log(options);
-                            object.createOptionsPanel(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, coursePanel, month, day, year, calendarData, firstService, course, accountKey, function(response){
+                            object.createOptionsPanel(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, coursePanel, month, day, year, calendarData, firstService, course, accountKey, function (response) {
 
                                 object._console.log(firstService);
                                 object._console.log(course);
                                 object._console.log(response);
                                 courseList[parseInt(response.key)].selectedOptionsList = response.selectedOptions;
-                                object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, response.selectedOptions, accountKey, function(response){
+                                object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, response.selectedOptions, accountKey, function (response) {
 
                                     callback(response);
 
@@ -4982,7 +5039,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     }
                     //checkBox.disabled = true;
 
-                    checkBox.onclick = function() {
+                    checkBox.onclick = function () {
 
                         if (this.checked == true) {
 
@@ -5002,7 +5059,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     var label = document.createElement("span");
                     label.appendChild(checkBox);
                     label.appendChild(courseNamePanel);
-                    if(parseInt(object._calendarAccount.hasMultipleServices) == 0){
+                    if (parseInt(object._calendarAccount.hasMultipleServices) == 0) {
 
                         checkBox.classList.add("hidden_panel");
 
@@ -5010,16 +5067,16 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     coursePanel.appendChild(label);
                     /**
-                    if(course.cost != null){
+                     if(course.cost != null){
 
-                        var cost = object._format.formatCost(course.cost, object._currency);
-                        var courseCostPanel = document.createElement("span");
-                        courseCostPanel.classList.add("courseCostPanel");
-                        courseCostPanel.textContent = cost;
-                        coursePanel.appendChild(courseCostPanel);
+                     var cost = object._format.formatCost(course.cost, object._currency);
+                     var courseCostPanel = document.createElement("span");
+                     courseCostPanel.classList.add("courseCostPanel");
+                     courseCostPanel.textContent = cost;
+                     coursePanel.appendChild(courseCostPanel);
 
-                    }
-                    **/
+                     }
+                     **/
                     var responseCosts = object._servicesControl.getCostsInService(course, calendarData.guestsList, parseInt(calendarData.account.guestsBool), object._isExtensionsValid);
                     object._console.log(responseCosts);
                     if (responseCosts.max != null && isNaN(parseInt(responseCosts.max)) === false && parseInt(responseCosts.max) != 0) {
@@ -5046,7 +5103,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     courseMainPanel.appendChild(table_row);
 
-                    coursePanel.onclick = function(){
+                    coursePanel.onclick = function () {
 
                         var coursePanel = this;
                         coursePanel.setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
@@ -5063,7 +5120,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         object._console.log(options);
 
                         var checkBox = checkBoxList[parseInt(key)];
-                        if(parseInt(object._calendarAccount.hasMultipleServices) == 0){
+                        if (parseInt(object._calendarAccount.hasMultipleServices) == 0) {
 
                             for (var i in courseList) {
 
@@ -5077,13 +5134,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         } else {
 
                             object._console.log(checkBox);
-                            if(checkBox.checked == true){
+                            if (checkBox.checked == true) {
 
                                 checkBox.checked = false;
                                 this.setAttribute("class", "courseAndScheduleRow");
                                 courseList[parseInt(key)].selected = 0;
 
-                            }else{
+                            } else {
 
                                 checkBox.checked = true;
                                 this.setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
@@ -5115,7 +5172,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                         if (options.length <= 0) {
 
-                            object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, null, accountKey, function(response){
+                            object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, null, accountKey, function (response) {
 
                                 callback(response);
 
@@ -5127,10 +5184,10 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                             object._console.log(checkBox);
                             if (checkBox.checked == true) {
 
-                                object.createOptionsPanel(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, coursePanel, month, day, year, calendarData, key, course, accountKey, function(response){
+                                object.createOptionsPanel(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, coursePanel, month, day, year, calendarData, key, course, accountKey, function (response) {
 
                                     courseList[parseInt(key)].selectedOptionsList = response.selectedOptions;
-                                    object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, response.selectedOptions, accountKey, function(response){
+                                    object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, response.selectedOptions, accountKey, function (response) {
 
                                         callback(response);
 
@@ -5149,13 +5206,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 }
                 object._console.log(coursePanelList);
                 //coursePanelList[0].setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
-                if(coursePanelList[0] != null){
+                if (coursePanelList[0] != null) {
 
                     coursePanelList[0].setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
 
                 }
 
-                object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, object._courseList , null, accountKey, function(response){
+                object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, object._courseList, null, accountKey, function (response) {
 
                     callback(response);
 
@@ -5167,7 +5224,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 scheduleMainPanel.setAttribute("style", "left: 0;");
                 scheduleMainPanel.setAttribute("class", "schedulePanel");
 
-                object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, null, null, accountKey, function(response){
+                object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, null, null, accountKey, function (response) {
 
                     callback(response);
 
@@ -5178,12 +5235,9 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
 
-
-
-
     }
 
-    this.getOptionsPanel = function(course, options, guestsList, callback){
+    this.getOptionsPanel = function (course, options, guestsList, callback) {
 
         var object = this;
         var selectedOptions = [];
@@ -5221,7 +5275,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        for(var i = 0; i < options.length; i++){
+        for (var i = 0; i < options.length; i++) {
 
             var option = options[i];
             var responseCosts = object._servicesControl.getCostsInService(option, guestsList, isGuests, object._isExtensionsValid);
@@ -5247,7 +5301,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             checkBox.setAttribute("data-key", i);
             checkBox.type = "checkbox";
             checkBox.value = 1;
-            if(parseInt(option.selected) == 1){
+            if (parseInt(option.selected) == 1) {
 
                 checkBox.checked = true;
                 optionPanel.classList.add("courseAndScheduleRowActive");
@@ -5259,7 +5313,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var label = document.createElement("label");
             label.appendChild(checkBox);
             label.appendChild(titleLabel);
-            if(parseInt(course.selectOptions) == 0){
+            if (parseInt(course.selectOptions) == 0) {
 
                 checkBox.classList.add("hidden_panel");
 
@@ -5284,20 +5338,20 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             }
 
             bodyPanel.appendChild(optionPanel);
-            optionPanel.onclick = function(){
+            optionPanel.onclick = function () {
 
                 object._console.log(course);
                 var key = parseInt(this.getAttribute("data-key"));
                 var option = options[key];
                 object._console.log(option);
                 var checkBox = checkBoxList[key];
-                if(checkBox.checked == true){
+                if (checkBox.checked == true) {
 
                     checkBox.checked = false;
                     this.setAttribute("class", "courseAndScheduleRow");
                     selectedOptions[key].selected = 0;
 
-                }else{
+                } else {
 
                     checkBox.checked = true;
                     this.setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
@@ -5307,25 +5361,25 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 object._console.log(selectedOptions);
                 nextButton.disabled = true;
-                for(var i = 0; i < selectedOptions.length; i++){
+                for (var i = 0; i < selectedOptions.length; i++) {
 
-                    if(selectedOptions[i].selected == 1){
+                    if (selectedOptions[i].selected == 1) {
 
-                        if(parseInt(course.selectOptions) == 0){
+                        if (parseInt(course.selectOptions) == 0) {
 
                             object._console.log(course);
                             var response = {status: "createSchedule", selectedOptions: selectedOptions};
                             callback(response);
                             /**
-                            selectOptionsPanel.classList.add("hidden_panel");
-                            object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, selectedOptions, accountKey, function(response){
+                             selectOptionsPanel.classList.add("hidden_panel");
+                             object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, selectedOptions, accountKey, function(response){
 
-                                callback(response);
+                             callback(response);
 
-                            });
-                            **/
+                             });
+                             **/
 
-                        }else{
+                        } else {
 
                             nextButton.disabled = false;
 
@@ -5347,33 +5401,33 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
         nextButton.removeEventListener("check", null);
-        nextButton.onclick = function(){
+        nextButton.onclick = function () {
 
             var response = {status: "createSchedule", selectedOptions: selectedOptions};
             callback(response);
             /**
-            selectOptionsPanel.classList.add("hidden_panel");
-            object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, selectedOptions, accountKey, function(response){
+             selectOptionsPanel.classList.add("hidden_panel");
+             object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, selectedOptions, accountKey, function(response){
 
-                callback(response);
+             callback(response);
 
-            });
-            **/
+             });
+             **/
 
         }
 
-        selectOptionsPanel.getElementsByClassName("blockPanel")[0].onclick = function(){
+        selectOptionsPanel.getElementsByClassName("blockPanel")[0].onclick = function () {
 
             var response = {status: "close", selectedOptions: selectedOptions};
             callback(response);
             /**
-            selectOptionsPanel.classList.add("hidden_panel");
-            if (coursePanel != null) {
+             selectOptionsPanel.classList.add("hidden_panel");
+             if (coursePanel != null) {
 
-                coursePanel.setAttribute("class", "courseAndScheduleRow");
+             coursePanel.setAttribute("class", "courseAndScheduleRow");
 
-            }
-            **/
+             }
+             **/
 
         }
 
@@ -5381,11 +5435,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.createOptionsPanel = function(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, coursePanel, month, day, year, calendarData, courseKey, course, accountKey, callback){
+    this.createOptionsPanel = function (mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, coursePanel, month, day, year, calendarData, courseKey, course, accountKey, callback) {
 
         var object = this;
         var selectOptionsPanel = document.getElementById("selectOptionsPanel");
-        object.getOptionsPanel(course, course.options, calendarData.guestsList, function(response){
+        object.getOptionsPanel(course, course.options, calendarData.guestsList, function (response) {
 
             if (response.status == "createSchedule") {
 
@@ -5393,12 +5447,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 selectOptionsPanel.classList.add("hidden_panel");
                 callback({selectedOptions: selectedOptions, key: courseKey});
                 /**
-                object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, selectedOptions, accountKey, function(response){
+                 object.createSchedule(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, course, selectedOptions, accountKey, function(response){
 
-                    callback(response);
+                 callback(response);
 
-                });
-                **/
+                 });
+                 **/
 
             } else if (response.status == "close") {
 
@@ -5415,7 +5469,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.createBookingCalendar = function(add_reservationPanel, day, calendarData, accountKey, scheduleMainPanel, callback){
+    this.createBookingCalendar = function (add_reservationPanel, day, calendarData, accountKey, scheduleMainPanel, callback) {
 
         var object = this;
         var year = parseInt(calendarData.date.year);
@@ -5425,7 +5479,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         object._calendar = new Booking_App_Calendar(weekName, object._dateFormat, object._positionOfWeek, object._positionTimeDate, object._startOfWeek, object._i18n, object._debug);
         object._calendar.setClock(object._clock);
         var dayHeight = parseInt(scheduleMainPanel.clientWidth / 7);
-    	object._console.log("dayHeight = " + dayHeight);
+        object._console.log("dayHeight = " + dayHeight);
 
         var datePanel = document.createElement("div");
         datePanel.setAttribute("class", "calendarData");
@@ -5435,11 +5489,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         var returnLabel = document.createElement("label");
         returnLabel.setAttribute("class", "arrowLeft");
-        if(month == 1){
+        if (month == 1) {
 
             returnLabel.textContent = "＜" + object._calendar.formatBookingDate(12, null, null, null, null, null, null, 'text');
 
-        }else{
+        } else {
 
             returnLabel.textContent = "＜" + object._calendar.formatBookingDate((month - 1), null, null, null, null, null, null, 'text');
 
@@ -5452,11 +5506,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         var nextLabel = document.createElement("label");
         nextLabel.setAttribute("class", "arrowRight");
-        if(month == 12){
+        if (month == 12) {
 
             nextLabel.textContent = object._calendar.formatBookingDate(1, null, null, null, null, null, null, 'text') + "＞";
 
-        }else{
+        } else {
 
             nextLabel.textContent = object._calendar.formatBookingDate((month + 1), null, null, null, null, null, null, 'text') + "＞";
 
@@ -5476,35 +5530,35 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         var clickPoint = {start: null, end: null};
         var scopeOfDay = {start: null, end: null};
         var dayPanelList = {};
-        object._calendar.create(scheduleMainPanel, calendarData, month, day, year, '', function(callback){
+        object._calendar.create(scheduleMainPanel, calendarData, month, day, year, '', function (callback) {
 
             object._console.log(callback);
             var key = parseInt(callback.day);
             var dayPanel = callback['eventPanel'];
-            if(key > 0){
+            if (key > 0) {
 
                 dayPanelList[key] = dayPanel;
 
             }
             dayPanel.setAttribute("style", "height: " + (dayHeight / 2) + "px;");
-            if(calendarData.schedule[key] != null && calendarData.schedule[key][0] != null){
+            if (calendarData.schedule[key] != null && calendarData.schedule[key][0] != null) {
 
                 object._console.log(calendarData.schedule[key]);
-                if(calendarData.schedule[key].length != 0){
+                if (calendarData.schedule[key].length != 0) {
 
-                    if(key == parseInt(day)){
+                    if (key == parseInt(day)) {
 
                         dayPanel.classList.add("selectedDayPanel");
 
                     }
 
-                    if(parseInt(calendarData.schedule[key][0].remainder) <= 0){
+                    if (parseInt(calendarData.schedule[key][0].remainder) <= 0) {
 
                         dayPanel.classList.add("closeDay");
 
                     }
 
-                    dayPanel.onclick = function(){
+                    dayPanel.onclick = function () {
 
                         var dateKey = parseInt(this.getAttribute("data-key"));
                         object._console.log("dateKey = " + dateKey);
@@ -5515,21 +5569,21 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         var schedule = calendarData.schedule[dateKey][0];
                         var checkOutUnixTime = parseInt(schedule.unixTime);
                         var checkOutBool = true;
-                        if(checkInUnixTime < checkOutUnixTime){
+                        if (checkInUnixTime < checkOutUnixTime) {
 
-                            for(var key in dayPanelList){
+                            for (var key in dayPanelList) {
 
-                                if(day <= parseInt(key) && dateKey >= parseInt(key)){
+                                if (day <= parseInt(key) && dateKey >= parseInt(key)) {
 
                                     var remainder = parseInt(calendarData.schedule[key][0].remainder);
-                                    if(remainder == 0 && parseInt(key) != dateKey){
+                                    if (remainder == 0 && parseInt(key) != dateKey) {
 
-                                        (function(){
+                                        (function () {
 
                                             object._console.log("remainder = " + remainder);
-                                            for(var key in dayPanelList){
+                                            for (var key in dayPanelList) {
 
-                                                if(day != parseInt(key)){
+                                                if (day != parseInt(key)) {
 
                                                     dayPanelList[key].classList.remove("selectedDayPanel");
 
@@ -5543,7 +5597,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                                     }
                                     dayPanelList[key].classList.add("selectedDayPanel");
 
-                                }else{
+                                } else {
 
                                     dayPanelList[key].classList.remove("selectedDayPanel");
 
@@ -5554,12 +5608,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         }
 
                         var checkOut = document.getElementById("checkOut");
-                        if(checkOutBool == true){
+                        if (checkOutBool == true) {
 
                             checkOut.setAttribute("data-check", schedule.key);
                             checkOut.textContent = object._calendar.formatBookingDate(schedule.month, schedule.day, schedule.year, null, null, null, schedule.weekKey, 'text');
 
-                        }else{
+                        } else {
 
                             checkOut.setAttribute("data-check", null);
                             checkOut.textContent = object._i18n.get("Please choose a departure date from the calendar");
@@ -5568,14 +5622,14 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     }
 
-                }else{
+                } else {
 
                     dayPanel.classList.add("closeDay");
                     dayPanel.classList.remove("pointer");
 
                 }
 
-            }else{
+            } else {
 
                 dayPanel.classList.add("closeDay");
                 dayPanel.classList.remove("pointer");
@@ -5586,12 +5640,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.getTotalTimeInOptions = function(options){
+    this.getTotalTimeInOptions = function (options) {
 
         var totalTimeInOptions = 0;
         if (options != null) {
 
-            for(var i = 0; i < options.length; i++) {
+            for (var i = 0; i < options.length; i++) {
 
                 var option = options[i];
                 if (parseInt(option.selected) == 1) {
@@ -5609,7 +5663,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.createSchedule = function(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, selectedOptions, accountKey, callback){
+    this.createSchedule = function (mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, selectedOptions, accountKey, callback) {
 
         var object = this;
         var weekName = [object._i18n.get('Sun'), object._i18n.get('Mon'), object._i18n.get('Tue'), object._i18n.get('Wed'), object._i18n.get('Thu'), object._i18n.get('Fri'), object._i18n.get('Sat')];
@@ -5658,7 +5712,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         closeButton.setAttribute("style", "margin-left: 10px;");
         object._rightButtonPanel.textContent = null;
         object._rightButtonPanel.appendChild(closeButton);
-        closeButton.onclick = function() {
+        closeButton.onclick = function () {
 
             object._console.log("closeButton");
             object._rightButtonPanel.textContent = null;
@@ -5721,7 +5775,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var courseTime = 0;
             if (object._positionPreparationTime == 'before_after' || object._positionPreparationTime == 'after') {
 
-                    courseTime = object._preparationTime;
+                courseTime = object._preparationTime;
 
             }
 
@@ -5748,7 +5802,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var afterPreparationTime = 0;
             if (object._positionPreparationTime == 'before_after' || object._positionPreparationTime == 'before') {
 
-                    afterPreparationTime = object._preparationTime;
+                afterPreparationTime = object._preparationTime;
 
             }
             //var courseTime = parseInt(course["time"]) + totalTimeInOptions;
@@ -5762,7 +5816,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     var rejectionTime = (parseInt(schedule["hour"]) * 60 + parseInt(schedule["min"])) - courseTime;
                     object._console.log("rejectionTime = " + rejectionTime);
 
-                    (function(schedule, key, courseTime, rejectionTime, afterPreparationTime, callback){
+                    (function (schedule, key, courseTime, rejectionTime, afterPreparationTime, callback) {
 
                         object._console.log(key);
                         var stopUnixTime = parseInt(schedule[key].unixTime);
@@ -5790,7 +5844,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                         }
 
-                    })(calendarData['schedule'][calendarKey], i, courseTime, rejectionTime, afterPreparationTime, function(key){
+                    })(calendarData['schedule'][calendarKey], i, courseTime, rejectionTime, afterPreparationTime, function (key) {
 
                         object._console.log("callback key = " + key);
                         calendarData['schedule'][calendarKey][key]["select"] = false;
@@ -5851,7 +5905,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                 schedulePanel.setAttribute("data-status", 1);
                 schedulePanel.setAttribute("class", "courseAndScheduleRow");
-                schedulePanel.onclick = function(){
+                schedulePanel.onclick = function () {
 
                     closeButton.setAttribute("class", "hidden_panel");
                     this.setAttribute("class", "courseAndScheduleRow courseAndScheduleRowActive");
@@ -5884,7 +5938,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         var remainder = parseInt(schedule.remainder);
                         if (remainders.length > 0) {
 
-                            remainder = remainders.reduce(function(a, b) {
+                            remainder = remainders.reduce(function (a, b) {
 
                                 return Math.min(a, b);
 
@@ -5899,7 +5953,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
 
                     object.unselectPanel(key, scheduleListPanel, "courseAndScheduleRow");
-                    object.createForm(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, schedule, selectedOptions, accountKey, function(response){
+                    object.createForm(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, schedule, selectedOptions, accountKey, function (response) {
 
                         if (response.action == 'return') {
 
@@ -5935,7 +5989,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
     }
 
 
-    this.createForm = function(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, schedule, selectedOptions, accountKey, callback){
+    this.createForm = function (mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, schedule, selectedOptions, accountKey, callback) {
 
         var object = this;
         object._console.log("accountKey = " + accountKey);
@@ -5994,16 +6048,16 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         //formMainPanel.setAttribute("class", "courseListPanel box_shadow show_panel");
         formMainPanel.setAttribute("class", "createFormPanel_show box_shadow show_panel_for_new_booking test");
         /**
-        if(calendarData.account.type == "day"){
+         if(calendarData.account.type == "day"){
 
-            formMainPanel.setAttribute("class", "createFormPanel_show box_shadow show_panel");
+         formMainPanel.setAttribute("class", "createFormPanel_show box_shadow show_panel");
 
-        }else{
+         }else{
 
-            formMainPanel.setAttribute("class", "createFormPanel_show box_shadow");
+         formMainPanel.setAttribute("class", "createFormPanel_show box_shadow");
 
-        }
-        **/
+         }
+         **/
 
         var bookingButton = document.createElement("button");
         bookingButton.textContent = object._i18n.get('Booking');
@@ -6033,10 +6087,10 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             //lookForUserButton.textContent = 'search supervisor_account';
             lookForUserButton.appendChild(lookForUserIcon);
             formPanel.appendChild(lookForUserButton);
-            lookForUserButton.onclick = function() {
+            lookForUserButton.onclick = function () {
 
                 object._console.log('onclick');
-                object.lookForUser(function(user) {
+                object.lookForUser(function (user) {
 
                     object.setUserInformation(user);
                     object.createForm(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, schedule, selectedOptions, accountKey, callback);
@@ -6048,7 +6102,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
         var totalCost = 0;
-        if(schedule != null){
+        if (schedule != null) {
 
             var date = object._calendar.formatBookingDate(calendarData.date.month, day, calendarData.date.year, schedule.hour, schedule.min, schedule.title, schedule.weekKey, 'text');
             var rowPanel = object.createRowPanel(object._i18n.get("Booking Date"), date, null, null, null);
@@ -6069,7 +6123,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             deleteUserButton.textContent = 'close';
             deleteUserButton.classList.add('material-icons');
             deleteUserButton.classList.add('deleteUserButton');
-            deleteUserButton.onclick = function() {
+            deleteUserButton.onclick = function () {
 
                 object.setUserInformation(null);
                 object.createForm(mainPanel, courseMainPanel, scheduleMainPanel, formMainPanel, month, day, year, calendarData, courseList, schedule, selectedOptions, accountKey, callback);
@@ -6167,7 +6221,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 addRoomButton.id = 'addRoomButton';
                 addRoomButton.classList.add('addRoomButton');
                 addRoomButton.textContent = object._i18n.get('Add another room');
-                addRoomButton.onclick = function(event) {
+                addRoomButton.onclick = function (event) {
 
                     bookingButton.disabled = true;
                     var visitorDetails = object._hotel.getDetails();
@@ -6212,7 +6266,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             var rowPanel = object.createRowPanel(object._i18n.get("Total amount"), formatPrice, "totalPrice", null, null);
             formPanel.appendChild(rowPanel);
 
-            object._hotel.setCallback(function(response){
+            object._hotel.setCallback(function (response) {
 
                 object._console.log(response);
 
@@ -6299,7 +6353,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 for (var key in response.taxes) {
 
                     if ((response.taxes[key].type == 'tax' && response.taxes[key].tax == 'tax_exclusive') || response.taxes[key].type == 'surcharge') {
-                    //if (response.taxes[key].tax == 'tax_exclusive') {
+                        //if (response.taxes[key].tax == 'tax_exclusive') {
 
                         taxAmount += response.taxes[key].taxValue;
 
@@ -6329,7 +6383,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             });
 
-            checkInClear.onclick = function(){
+            checkInClear.onclick = function () {
 
                 this.classList.add("hidden_panel");
                 var dayPanelList = object._hotel.getDayPanelList();
@@ -6347,8 +6401,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             };
 
-            checkOutClear.onclick = function(){
-
+            checkOutClear.onclick = function () {
 
 
             };
@@ -6408,52 +6461,52 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                     var guestsInput = new Booking_Package_Input(object._debug);
                     guestsInput.setPrefix(object._prefix);
-                    var guestsSelectPanel = guestsInput.createInput(guestsList[key]['name'].replace(/\\/g, ""), guestsList[key], {}, function(event){
+                    var guestsSelectPanel = guestsInput.createInput(guestsList[key]['name'].replace(/\\/g, ""), guestsList[key], {}, function (event) {
 
                         var selectBox = this;
                         object._console.log(selectBox);
                         multipleApplicantCount = object._servicesControl.getSelectedGuest(guestsList, selectBox, multipleApplicantCountList);
                         /**
-                        var selectedGuestsKey = this.parentElement.getAttribute("data-guset");
+                         var selectedGuestsKey = this.parentElement.getAttribute("data-guset");
 
-                        var index = parseInt(this.selectedIndex);
-                        var guests = guestsList[selectedGuestsKey];
-                        var option = selectBox.options[index];
-                        var optionKey = parseInt(option.getAttribute('data-optionsKey'));
-                        object._console.log(option);
-                        var parentPanel = document.getElementById(object._prefix + 'guests_' + guests.key);
-                        parentPanel.classList.remove('rowError');
-                        var values = guests.values;
-                        var list = guests.json;
-                        if (typeof guests.json == 'string') {
+                         var index = parseInt(this.selectedIndex);
+                         var guests = guestsList[selectedGuestsKey];
+                         var option = selectBox.options[index];
+                         var optionKey = parseInt(option.getAttribute('data-optionsKey'));
+                         object._console.log(option);
+                         var parentPanel = document.getElementById(object._prefix + 'guests_' + guests.key);
+                         parentPanel.classList.remove('rowError');
+                         var values = guests.values;
+                         var list = guests.json;
+                         if (typeof guests.json == 'string') {
 
-                            list = JSON.parse(guests.json);
+                         list = JSON.parse(guests.json);
 
-                        }
-                        //guests.index = index;
-                        guests.index = optionKey;
-                        guests.selectedName = values[optionKey];
+                         }
+                         //guests.index = index;
+                         guests.index = optionKey;
+                         guests.selectedName = values[optionKey];
 
-                        object._console.log(guests);
-                        object._console.log(values);
-                        object._console.log(selectedGuestsKey);
-                        object._console.log(index);
-                        object._console.log(list);
-                        guests.number = parseInt(list[optionKey].number);
-                        if (guests.guestsInCapacity == 'included') {
+                         object._console.log(guests);
+                         object._console.log(values);
+                         object._console.log(selectedGuestsKey);
+                         object._console.log(index);
+                         object._console.log(list);
+                         guests.number = parseInt(list[optionKey].number);
+                         if (guests.guestsInCapacity == 'included') {
 
-                            object._console.log(values[index]);
-                            object._console.log(list[index]);
-                            multipleApplicantCountList[selectedGuestsKey] = parseInt(list[optionKey].number);
+                         object._console.log(values[index]);
+                         object._console.log(list[index]);
+                         multipleApplicantCountList[selectedGuestsKey] = parseInt(list[optionKey].number);
 
-                        }
+                         }
 
-                        multipleApplicantCount = multipleApplicantCountList.reduce(function(a, b) {
+                         multipleApplicantCount = multipleApplicantCountList.reduce(function(a, b) {
 
-                            return a + b;
+                         return a + b;
 
-                        });
-                        **/
+                         });
+                         **/
                         object._console.log(multipleApplicantCountList);
                         object._console.log(multipleApplicantCount);
 
@@ -6656,18 +6709,20 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         }
 
 
-        if(returnButton != null){
+        if (returnButton != null) {
 
-            returnButton.onclick = function(){
+            returnButton.onclick = function () {
 
                 object._console.log("returnButton onclick");
-                if(returnButton != null){object._rightButtonPanel.removeChild(returnButton);}
+                if (returnButton != null) {
+                    object._rightButtonPanel.removeChild(returnButton);
+                }
                 object._rightButtonPanel.removeChild(bookingButton);
                 mainPanel.setAttribute("class", "courseAndSchedulePanel_return");
                 //formMainPanel.setAttribute("class", "courseListPanel");
                 formMainPanel.setAttribute("class", "createFormPanel_return return_panel_for_new_booking");
                 callback({action: 'return'});
-                var timer = setInterval(function(){
+                var timer = setInterval(function () {
 
                     formMainPanel.textContent = null;
                     clearInterval(timer);
@@ -6678,7 +6733,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        bookingButton.onclick = function(){
+        bookingButton.onclick = function () {
 
             object._console.log(object._emailEnableList);
             object._console.log("enable = " + Boolean(parseInt(object._emailEnableList.mail_new_admin.enable)));
@@ -6692,7 +6747,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             object._console.log("enable = " + enable);
 
             var confirm = new Confirm(object._debug);
-            confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("Do you send e-mail notifications to customers or administrators?"), enable, function(sendEmail){
+            confirm.dialogPanelShow(object._i18n.get("Attention"), object._i18n.get("Do you send e-mail notifications to customers or administrators?"), enable, function (sendEmail) {
 
                 var valueList = {};
                 var post = object.verifyForm("sendBooking", object._nonce, object._action, calendarData.date, schedule, courseList, object._formData, formPanelList, inputData, valueList, object.getGuestsList());
@@ -6726,7 +6781,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     }
 
                     object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
-                    new Booking_App_XMLHttp(object._url, post, object._webApp, function(response){
+                    new Booking_App_XMLHttp(object._url, post, object._webApp, function (response) {
 
                         object._console.log(response);
                         if (response.status == "success") {
@@ -6746,7 +6801,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         }
                         object._loadingPanel.setAttribute("class", "hidden_panel");
 
-                    }, function(responseText){
+                    }, function (responseText) {
 
                         object.setResponseText(responseText);
 
@@ -6760,7 +6815,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.addGuestsForRoom = function(guestsList, input, totalNumberOfGuests, roomNo, multipleRooms, deleteRoom, bookingButton){
+    this.addGuestsForRoom = function (guestsList, input, totalNumberOfGuests, roomNo, multipleRooms, deleteRoom, bookingButton) {
 
         var object = this;
         object._console.log('addGuestsForRoom');
@@ -6785,7 +6840,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             deleteRoomButton.textContent = 'delete';
             deleteRoomButton.setAttribute('data-room', roomNo);
             roomPanel.appendChild(deleteRoomButton);
-            deleteRoomButton.onclick = function(event) {
+            deleteRoomButton.onclick = function (event) {
 
                 var deleteRoomButton = this;
                 var roomNo = parseInt(deleteRoomButton.getAttribute('data-room'));
@@ -6809,12 +6864,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         }
 
-        for(var key in guestsList){
+        for (var key in guestsList) {
 
             var list = JSON.parse(guestsList[key].json);
             object._console.log(list);
             var values = [];
-            for(var i = 0; i < list.length; i++){
+            for (var i = 0; i < list.length; i++) {
 
                 values.push(list[i].name);
 
@@ -6827,14 +6882,14 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             guestsList[key].index = 0;
             guestsList[key].person = 0;
             object._hotel.addGuests(key, guestsList[key], roomNo);
-            if(list[0] != null){
+            if (list[0] != null) {
 
                 guestsList[key].person = parseInt(list[0].number);
                 var response = object._hotel.setGuests(key, 0, list[0].number, roomNo);
 
             }
 
-            var value = input.createInput(guestsList[key]['name'], guestsList[key], {}, function(event){
+            var value = input.createInput(guestsList[key]['name'], guestsList[key], {}, function (event) {
 
                 var key = this.parentElement.getAttribute("data-guset");
                 var index = parseInt(this.selectedIndex);
@@ -6847,7 +6902,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                 object._hotel.pushCallback();
 
                 totalNumberOfGuests.classList.remove("errorPanel");
-                if(response.booking == false){
+                if (response.booking == false) {
 
                     totalNumberOfGuests.classList.add("errorPanel");
 
@@ -6897,7 +6952,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.updateRoomNumber = function() {
+    this.updateRoomNumber = function () {
 
         var object = this;
         var roomNumberLabels = document.getElementById('roomListPanel').getElementsByClassName('roomNoLabel');
@@ -6912,7 +6967,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     };
 
-    this.lookForUser = function(callback){
+    this.lookForUser = function (callback) {
 
         var object = this;
         object._console.log('lookForUser');
@@ -6930,21 +6985,21 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         var load_blockPanel = document.getElementById('load_blockPanel');
         load_blockPanel.classList.remove('hidden_panel');
 
-        document.getElementById('lookForUserPanel_return_button').onclick = function() {
+        document.getElementById('lookForUserPanel_return_button').onclick = function () {
 
             lookForUserPanel.classList.add('hidden_panel');
             load_blockPanel.classList.add('hidden_panel');
 
         };
 
-        load_blockPanel.onclick = function() {
+        load_blockPanel.onclick = function () {
 
             lookForUserPanel.classList.add('hidden_panel');
             load_blockPanel.classList.add('hidden_panel');
 
         };
 
-        search_users_text.onkeydown = function(event) {
+        search_users_text.onkeydown = function (event) {
 
             if (event.key != null && event.key.toLocaleLowerCase() == 'enter') {
 
@@ -6954,7 +7009,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         };
 
-        search_user_button.onclick = function() {
+        search_user_button.onclick = function () {
 
             getMembers(search_users_text.value);
 
@@ -6976,11 +7031,21 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             search_users_text.disabled = true;
             search_user_button.disabled = true;
             object._console.log(keywords);
-            var post = {mode: 'getMembers', nonce: object._nonce, action: object._action, keywords: keywords, page: null, number: 20, offset: 0, authority: 'user', meta: 1};
+            var post = {
+                mode: 'getMembers',
+                nonce: object._nonce,
+                action: object._action,
+                keywords: keywords,
+                page: null,
+                number: 20,
+                offset: 0,
+                authority: 'user',
+                meta: 1
+            };
             object._console.log(post);
             object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
             object.setFunction("lookForUser", post);
-            new Booking_App_XMLHttp(object._url, post, object._webApp, function(users){
+            new Booking_App_XMLHttp(object._url, post, object._webApp, function (users) {
 
                 object._loadingPanel.setAttribute("class", "hidden_panel");
                 search_users_text.disabled = false;
@@ -7006,7 +7071,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                     table.setAttribute('class', 'wp-list-table widefat fixed striped');
                     inputPanel.appendChild(table);
 
-                    for (var i = 0; i < users.length; i ++) {
+                    for (var i = 0; i < users.length; i++) {
 
                         var user = users[i];
                         object._console.log(user);
@@ -7023,7 +7088,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         tr.appendChild(tdEmail);
                         tbody.appendChild(tr);
 
-                        tr.onclick = function() {
+                        tr.onclick = function () {
 
                             var key = parseInt(this.getAttribute('data-key'));
                             var user = users[key];
@@ -7047,21 +7112,28 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.downloadCSV = function(month, day, year, accountKey, form, downloadBool, style){
+    this.downloadCSV = function (month, day, year, accountKey, form, downloadBool, style) {
 
         var object = this;
         object._console.log("month = " + month + " day = " + day + " year = " + year);
         form.method = "post";
         form.target = "_blank";
-        var post = {nonce: object._nonce_download, action: object._action, mode: object._prefix + 'getDownloadCSV', year: year, month: month, accountKey: accountKey};
+        var post = {
+            nonce: object._nonce_download,
+            action: object._action,
+            mode: object._prefix + 'getDownloadCSV',
+            year: year,
+            month: month,
+            accountKey: accountKey
+        };
 
-        if(day != null){
+        if (day != null) {
 
             post.day = day;
 
         }
 
-        for(var key in post){
+        for (var key in post) {
 
             var hidden = document.createElement("input");
             hidden.type = "hidden";
@@ -7082,77 +7154,77 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
     }
 
     /**
-    this.downloadCSV = function(month, day, year, accountKey, downloadButton){
+     this.downloadCSV = function(month, day, year, accountKey, downloadButton){
 
-        var object = this;
-        object._console.log("month = " + month + " day = " + day + " year = " + year);
-        var object = this;
+     var object = this;
+     object._console.log("month = " + month + " day = " + day + " year = " + year);
+     var object = this;
 
-        object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
-        var post = {nonce: object._nonce, action: object._action, mode: 'getDownloadCSV', year: year, month: month, accountKey: accountKey};
-        if(day != null){
+     object._loadingPanel.setAttribute("class", "loading_modal_backdrop");
+     var post = {nonce: object._nonce, action: object._action, mode: 'getDownloadCSV', year: year, month: month, accountKey: accountKey};
+     if(day != null){
 
-            post.day = day;
+     post.day = day;
 
-        }
+     }
 
-        object.setFunction("downloadCSV", post);
-        new Booking_App_XMLHttp(object._url, post, object._webApp, function(response){
+     object.setFunction("downloadCSV", post);
+     new Booking_App_XMLHttp(object._url, post, object._webApp, function(response){
 
-            object._loadingPanel.setAttribute("class", "hidden_panel");
-            var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-            var content = response.csv;
-            var blob = new Blob([bom, content], {"type": "application/octet-stream"});
-            object._console.log(blob);
-            if (window.navigator.msSaveBlob){
+     object._loadingPanel.setAttribute("class", "hidden_panel");
+     var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+     var content = response.csv;
+     var blob = new Blob([bom, content], {"type": "application/octet-stream"});
+     object._console.log(blob);
+     if (window.navigator.msSaveBlob){
 
-                object._console.log("msSaveBlob is support");
-                window.navigator.msSaveBlob(blob, "list.csv");
+     object._console.log("msSaveBlob is support");
+     window.navigator.msSaveBlob(blob, "list.csv");
 
-            }else{
+     }else{
 
-                object._console.log("msSaveBlob is not support");
-                downloadButton.href = window.URL.createObjectURL(blob);
-                window.open(window.URL.createObjectURL(blob), '_blank');
+     object._console.log("msSaveBlob is not support");
+     downloadButton.href = window.URL.createObjectURL(blob);
+     window.open(window.URL.createObjectURL(blob), '_blank');
 
-            }
+     }
 
-        }, function(responseText){
+     }, function(responseText){
 
-            object.setResponseText(responseText);
+     object.setResponseText(responseText);
 
-        });
+     });
 
-    }
-    **/
+     }
+     **/
 
-    this.verifyCalendar = function(mode, month, day, year, lastDay){
+    this.verifyCalendar = function (mode, month, day, year, lastDay) {
 
         var calendarChange = 0;
-        if(mode == 0){
+        if (mode == 0) {
 
             day--;
-            if(day == 0){
+            if (day == 0) {
 
                 calendarChange = 1;
                 month--;
                 day = 1;
-                if(month == 0){
+                if (month == 0) {
                     month = 12;
                     year--;
                 }
 
             }
 
-        }else if(mode == 1){
+        } else if (mode == 1) {
 
             day++;
-            if(day > lastDay){
+            if (day > lastDay) {
 
                 calendarChange = 1;
                 month++;
                 day = 1;
-                if(month == 13){
+                if (month == 13) {
                     month = 1;
                     year++;
                 }
@@ -7166,7 +7238,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.verifyForm = function(mode, nonce, action, date, schedule, courseList, formData, formPanelList, inputData, valueList, guestsList){
+    this.verifyForm = function (mode, nonce, action, date, schedule, courseList, formData, formPanelList, inputData, valueList, guestsList) {
 
         var object = this;
         object._console.log(date);
@@ -7242,7 +7314,12 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                         guestPanel.classList.remove('rowError');
                         guestPanel.removeAttribute("data-errorInput");
-                        var postGuest = {key: guest.key, name: guest.name, selectedName: guest.selectedName, index: guest.index};
+                        var postGuest = {
+                            key: guest.key,
+                            name: guest.name,
+                            selectedName: guest.selectedName,
+                            index: guest.index
+                        };
                         postGuests.push(postGuest);
 
                     }
@@ -7288,7 +7365,18 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         if (sendBool === true) {
 
             object._console.log('_courseBool = ' + object._courseBool);
-            var post = {nonce: nonce, action: action, mode: mode, month: date.month, day: 1, year: date.year, applicantCount: '1', permission: 'public', timeKey: schedule.key, unixTime: schedule.unixTime};
+            var post = {
+                nonce: nonce,
+                action: action,
+                mode: mode,
+                month: date.month,
+                day: 1,
+                year: date.year,
+                applicantCount: '1',
+                permission: 'public',
+                timeKey: schedule.key,
+                unixTime: schedule.unixTime
+            };
             if (postGuests.length > 0) {
 
                 post.guests = JSON.stringify(postGuests);
@@ -7367,13 +7455,13 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.unselectPanel = function(selectedKey, panelList, styleName){
+    this.unselectPanel = function (selectedKey, panelList, styleName) {
 
-        for(var i = 0; i < panelList.length; i++){
+        for (var i = 0; i < panelList.length; i++) {
 
             var key = panelList[i].getAttribute("data-key");
             var status = parseInt(panelList[i].getAttribute("data-status"));
-            if(key != selectedKey && status === 1){
+            if (key != selectedKey && status === 1) {
 
                 panelList[i].setAttribute("class", styleName);
 
@@ -7384,7 +7472,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.createRowPanel = function(name, value, id, required, actionElement){
+    this.createRowPanel = function (name, value, id, required, actionElement) {
 
         var object = this;
         if (typeof name == "string") {
@@ -7420,7 +7508,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         namePanel.setAttribute("class", "name");
         namePanel.textContent = name;
         //object._console.log("typeof required = " + typeof required);
-        if ( (typeof required == "string" && required == 'true') || (typeof required == "number" && required == 1) ) {
+        if ((typeof required == "string" && required == 'true') || (typeof required == "number" && required == 1)) {
 
             namePanel.setAttribute("class", "name required");
 
@@ -7473,7 +7561,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
             doneButton.textContent = "done_outline";
             rowPanel.appendChild(doneButton);
 
-            editButton.onclick = function(){
+            editButton.onclick = function () {
 
                 var id = editButton.getAttribute("data-id");
                 var valueId = "value_" + id;
@@ -7485,7 +7573,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
             };
 
-            doneButton.onclick = function(){
+            doneButton.onclick = function () {
 
                 var id = doneButton.getAttribute("data-id");
                 var valueId = "value_" + id;
@@ -7511,7 +7599,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.editPanelShow = function(showBool){
+    this.editPanelShow = function (showBool) {
 
         var object = this;
         var body = document.getElementsByTagName("body")[0];
@@ -7526,7 +7614,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
         } else {
 
-            if( document.getElementById("userInfoPanel") != null) {
+            if (document.getElementById("userInfoPanel") != null) {
 
                 document.getElementById("userInfoPanel").setAttribute("class", "hidden_panel");
 
@@ -7552,31 +7640,31 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.setSelectedKey = function(_selectedKey){
+    this.setSelectedKey = function (_selectedKey) {
 
         this._selectedKey = _selectedKey;
 
     }
 
-    this.getSelectedKey = function(){
+    this.getSelectedKey = function () {
 
         return this._selectedKey;
 
     }
 
-    this.setVisitors = function(_visitors){
+    this.setVisitors = function (_visitors) {
 
         this._visitors = _visitors;
 
     }
 
-    this.getVisitors = function(){
+    this.getVisitors = function () {
 
         return this._visitors;
 
     }
 
-    this.getServiceOrOption = function(services) {
+    this.getServiceOrOption = function (services) {
 
         var mode = "option";
         for (var key in services) {
@@ -7593,7 +7681,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
     }
 
-    this.createServicesPanel = function(panel, services, optionName, guestsList, guestsBool, goodsList, currency) {
+    this.createServicesPanel = function (panel, services, optionName, guestsList, guestsBool, goodsList, currency) {
 
         var object = this;
         var totalCost = 0;
@@ -7778,7 +7866,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
                         //reflectServicePanel.textContent = ' * ' + reflectServiceTitle;
                         courseLinePanel.appendChild(reflectServicePanel);
 
-                        courseLinePanel.onclick = function() {
+                        courseLinePanel.onclick = function () {
 
                             var key = parseInt(this.getAttribute('data-key'));
                             var costPerGuests = document.getElementById('costPerGuests_' + key);
@@ -7804,7 +7892,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                         var ul = document.createElement("ul");
                         panel.appendChild(ul);
-                        for(var i = 0; i < options.length; i++){
+                        for (var i = 0; i < options.length; i++) {
 
                             var option = options[i];
                             var responseCosts = object._servicesControl.getCostsInService(option, guestsList, isGuests, object._isExtensionsValid);
@@ -7911,7 +7999,7 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                                         }
 
-                                        optionPanel.onclick = function() {
+                                        optionPanel.onclick = function () {
 
                                             var serviceKey = this.getAttribute('data-serviceKey');
                                             var optionKey = this.getAttribute('data-optionKey');
@@ -7940,7 +8028,11 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                                     }
 
-                                    var goods = {label: option.name, amount: amount1 + amount2, applicantCount: applicantCount};
+                                    var goods = {
+                                        label: option.name,
+                                        amount: amount1 + amount2,
+                                        applicantCount: applicantCount
+                                    };
                                     goodsList.push(goods);
                                     totalCost += amount1 + amount2;
 
@@ -7960,10 +8052,10 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
 
                                 var li = document.createElement("li");
                                 /**
-                                li.appendChild(optionNamePanel);
-                                li.appendChild(optionPricePanel);
-                                li.appendChild(reflectServicePanel);
-                                **/
+                                 li.appendChild(optionNamePanel);
+                                 li.appendChild(optionPricePanel);
+                                 li.appendChild(reflectServicePanel);
+                                 **/
                                 li.appendChild(optionPanel);
                                 li.appendChild(costPerOptions);
                                 ul.appendChild(li);
@@ -7994,7 +8086,6 @@ function Booking_manage(schedule_data, booking_package_dictionary, webApp) {
         return {services: services, goodsList: goodsList, totalCost: totalCost};
 
     };
-
 
 
 }
